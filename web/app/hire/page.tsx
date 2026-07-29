@@ -1,10 +1,27 @@
-import { ComingSoon } from "@/components/coming-soon";
-export default function Page() {
+import type { Metadata } from "next";
+import { PageHeader } from "@/components/ui";
+import { ProDirectory } from "@/components/hire/pro-directory";
+
+export const metadata: Metadata = {
+  title: "Hire a Pro — KaziHub",
+  description:
+    "Browse verified professional portfolios across Kenya. Compare ratings, packages and past work, then book instantly on WhatsApp.",
+};
+
+export default function HirePage() {
   return (
-    <ComingSoon
-      emoji="👔"
-      title="Hire a Pro"
-      blurb="Verified professional portfolios, packages and instant WhatsApp booking — landing here soon."
-    />
+    <>
+      <PageHeader
+        kicker="👔 Hire a Pro"
+        title={
+          <>
+            Verified pros, <span className="text-gradient">ready to work</span>
+          </>
+        }
+        subtitle="Compare ratings, community level and rates — then book instantly on WhatsApp. Every pro is reviewed by the people they've served."
+        accent="#a78bfa"
+      />
+      <ProDirectory />
+    </>
   );
 }
