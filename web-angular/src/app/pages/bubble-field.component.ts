@@ -42,6 +42,36 @@ const lighten = (c: string, a: number) => { const p = parseColor(c); return `rgb
 const hexRgba = (hex: string, a: number) => { const p = parseColor(hex); return `rgba(${p[0]},${p[1]},${p[2]},${a})`; };
 const FILL_RATIO = 0.52, MIN_MULT = 0.42, MAX_MULT = 2.05;
 
+// ── detail-card helpers (CryptoBubbles-style) ──────────────────────────
+const RATE_BASE: Record<string, number> = { tech: 1500, beauty: 1200, food: 2500, home: 1800, education: 1000, events: 8000, transport: 1500, health: 2500, construction: 2500, creative: 5000, finance: 3000, security: 2000, wellness: 1500, rental: 15000, artisan: 2000, digital: 4000, legal: 3500, farm: 1200, kids: 1000, culture: 2500, civil: 2000 };
+function hashId(s: string): number { let h = 7; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 100000; return h; }
+function avgRate(d: ServiceDatum): number { const b = RATE_BASE[d.cat] ?? 1500; return Math.round((b * (0.6 + (hashId(d.id) % 90) / 100)) / 50) * 50; }
+function periodsOf(d: ServiceDatum): { k: string; v: number }[] {
+  const h = hashId(d.id);
+  const w = (seed: number, scale: number) => parseFloat((d.growth * scale + (((h * seed) % 1000) / 100 - 5)).toFixed(1));
+  return [
+    { k: "1H", v: parseFloat((d.growth * 0.14 + ((h % 40) / 10 - 2)).toFixed(1)) },
+    { k: "1D", v: d.growth },
+    { k: "1W", v: w(3, 1.4) }, { k: "1M", v: w(7, 2.6) }, { k: "1Y", v: w(13, 5.5) },
+  ];
+}
+const TF_XL = [["1h ago", "30m", "now"], ["24h ago", "12h", "now"], ["7d ago", "3d", "now"], ["30d ago", "15d", "now"], ["12m ago", "6m", "now"]];
+function genSeries(seed: number, net: number): number[] {
+  const n = 46, arr = [100]; let v = 100;
+  for (let i = 1; i < n; i++) { const r = (Math.sin(seed * i * 0.7) + Math.sin(seed * i * 0.17 + 1) + Math.sin(seed * i * 0.31 + 2)) / 3; v = v * (1 + r * 0.035); arr.push(v); }
+  const slope = net / (n - 1);
+  for (let i = 0; i < n; i++) arr[i] = 100 + (arr[i] - 100) * 0.6 + slope * i;
+  return arr;
+}
+function chartPaths(arr: number[]) {
+  const n = arr.length, min = Math.min(...arr), max = Math.max(...arr), span = max - min || 1;
+  const W = 300, H = 200, pad = 6;
+  const X = (i: number) => (i / (n - 1)) * W;
+  const Y = (v: number) => H - pad - ((v - min) / span) * (H - 2 * pad);
+  const line = "M" + arr.map((v, i) => `${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join(" L");
+  return { line, area: `${line} L${W} ${H} L0 ${H} Z`, endX: X(n - 1), endY: Y(arr[n - 1]) };
+}
+
 @Component({
   selector: "app-bubble-field",
   standalone: true,
@@ -72,34 +102,114 @@ const FILL_RATIO = 0.52, MIN_MULT = 0.42, MAX_MULT = 2.05;
 
     @if (modal) {
       <div class="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md" (click)="onBackdrop($event)">
-        <div class="max-h-[88vh] w-[min(560px,96vw)] overflow-y-auto rounded-3xl border border-line2 bg-ink-800 p-6">
-          <div class="mb-4 flex items-start justify-between">
-            <div class="text-xl font-bold">{{ modal.emoji }} {{ modal.label }}</div>
-            <button (click)="modal = null" class="h-8 w-8 rounded-full border border-line bg-white/5 text-muted hover:text-fg">✕</button>
+        <div class="flex max-h-[92vh] w-[min(880px,96vw)] flex-col overflow-hidden rounded-2xl border border-line2 bg-[#0b0f1c] shadow-2xl">
+          <!-- header -->
+          <div class="flex items-center gap-2.5 border-b border-line px-3.5 py-3">
+            <span class="flex h-7 w-7 items-center justify-center rounded-full text-[15px]" [style.background]="modal.color">{{ modal.emoji }}</span>
+            <span class="truncate text-[15px] font-bold">{{ modal.label }}</span>
+            <span class="ml-auto font-mono text-sm font-bold" [style.color]="priceCol">KES {{ rate.toLocaleString() }}</span>
+            <span class="font-mono text-[11px] text-muted">{{ tick }}</span>
+            <button (click)="modal = null" class="px-1 text-[17px] leading-none text-muted hover:text-fg">✕</button>
           </div>
-          <div class="mb-4 flex overflow-hidden rounded-xl border border-line">
-            <div class="flex-1 border-r border-line p-3 text-center"><div class="font-mono text-lg font-bold" [style.color]="modal.color">{{ modal.workers }}</div><div class="mt-0.5 text-[9px] uppercase tracking-wide text-muted">Pros</div></div>
-            <div class="flex-1 border-r border-line p-3 text-center"><div class="font-mono text-lg font-bold text-[#ffbe00]">⭐{{ modal.rating }}</div><div class="mt-0.5 text-[9px] uppercase tracking-wide text-muted">Rating</div></div>
-            <div class="flex-1 border-r border-line p-3 text-center"><div class="font-mono text-lg font-bold text-brand-cyan">{{ modal.jobs.toLocaleString() }}</div><div class="mt-0.5 text-[9px] uppercase tracking-wide text-muted">Jobs</div></div>
-            <div class="flex-1 p-3 text-center"><div class="font-mono text-lg font-bold" [style.color]="modal.level.color">{{ modal.level.name }}</div><div class="mt-0.5 text-[9px] uppercase tracking-wide text-muted">Level</div></div>
-          </div>
-          <div class="mb-2 text-[9px] font-bold uppercase tracking-wide text-muted">Available Professionals</div>
-          <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-            @for (w of pros; track w) {
-              <div class="rounded-xl border border-line bg-white/[0.03] p-3">
-                <div class="mb-2 flex h-8 w-8 items-center justify-center rounded-full text-xs font-extrabold text-ink-950" [style.background]="modal.color">{{ w.init }}</div>
-                <div class="text-xs font-semibold">{{ w.name }}</div>
-                <div class="mb-1 text-[10px] text-muted">📍 {{ w.area }}</div>
-                <div class="mb-1.5 text-[11px] text-brand-amber">{{ stars(w.rating) }} {{ w.rating }} ({{ w.jobs }})</div>
-                <span class="mb-1.5 inline-flex rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase" [style.color]="w.levelColor" [style.border-color]="w.levelColor + '44'">{{ w.levelName }}</span>
-                <div class="mt-1.5 text-[11px] font-semibold text-[#25d366]">💬 Chat on WhatsApp</div>
-              </div>
+          <!-- tabs -->
+          <div class="flex border-b border-line px-3.5">
+            @for (t of tabs; track t) {
+              <button (click)="cardTab = t"
+                class="mr-6 border-b-2 py-2.5 text-[13px] font-semibold capitalize transition"
+                [class.border-brand-cyan]="cardTab===t" [class.text-brand-cyan]="cardTab===t"
+                [class.border-transparent]="cardTab!==t" [class.text-muted]="cardTab!==t">{{ t }}</button>
             }
           </div>
-          <div class="mt-4 rounded-2xl border border-brand-green/20 bg-gradient-to-br from-brand-green/[0.08] to-brand-amber/[0.04] p-4 text-center">
-            <h4 class="text-[15px] font-bold">Are you a {{ modal.label }}?</h4>
-            <p class="mx-auto mb-3 mt-1 max-w-sm text-xs text-muted">Join KaziHub — upload your work samples and get found by customers near you. No CV needed.</p>
-            <button class="btn-primary px-4 py-2 text-[13px]">📲 List Yourself Free</button>
+
+          <div class="overflow-y-auto p-3.5">
+            @if (cardTab === 'overview') {
+              <div class="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,300px)_1fr]">
+                <div>
+                  <div class="mb-3 flex items-center gap-2">
+                    <div class="flex flex-1 items-center justify-between rounded-lg border border-line px-3 py-2.5"><span class="text-[11px] text-muted">1 job</span><span class="font-mono text-[13px] font-semibold">1</span></div>
+                    <span class="text-[13px] text-muted">=</span>
+                    <div class="flex flex-1 items-center justify-between rounded-lg border border-line px-3 py-2.5"><span class="text-[11px] text-muted">KES</span><span class="font-mono text-[13px] font-semibold">{{ rate.toLocaleString() }}</span></div>
+                  </div>
+                  <div class="mb-3 flex gap-1.5">
+                    @for (p of pr; track p.k; let i = $index) {
+                      <button (click)="setTf(i)" class="flex-1 rounded-lg border bg-white/[0.02] px-1 py-1.5 text-center"
+                        [style.border-color]="cardTf===i ? (p.v>=0 ? '#00ffb3' : '#ff3d5a') : 'transparent'">
+                        <div class="text-[11px] text-muted">{{ p.k }}</div>
+                        <div class="mt-0.5 text-[12px] font-bold" [style.color]="p.v>=0 ? '#00ffb3' : '#ff3d5a'">{{ fmtPct(p.v) }}</div>
+                      </button>
+                    }
+                  </div>
+                  <div class="mb-1.5 flex cursor-pointer items-center gap-2.5 rounded-xl border border-line bg-gradient-to-r from-brand-cyan/[0.06] to-transparent px-3 py-2.5">
+                    <span class="flex h-6 w-6 items-center justify-center rounded-md bg-brand-cyan/10 text-sm">📣</span>
+                    <div><div class="text-[12px] font-bold">List your service free</div><div class="text-[10px] text-muted">Get found by customers near you →</div></div>
+                    <span class="ml-auto text-muted">›</span>
+                  </div>
+                  <div class="flex items-center justify-between border-t border-line py-2.5 text-[13px]"><span class="text-muted">Rank</span><span class="font-mono font-semibold">#{{ rankVal }}</span></div>
+                  <div class="flex items-center justify-between border-t border-line py-2.5 text-[13px]"><span class="text-muted">Community XP</span><span class="font-mono font-semibold">{{ modal.communityXP.toLocaleString() }}</span></div>
+                  <div class="flex items-center justify-between border-t border-line py-2.5 text-[13px]"><span class="text-muted">Jobs done</span><span class="font-mono font-semibold">{{ modal.jobs.toLocaleString() }}</span></div>
+                  <div class="flex items-center justify-between border-t border-line py-2.5 text-[13px]"><span class="text-muted">Category share</span><span class="font-mono font-semibold">{{ share.toFixed(1) }}%</span></div>
+                  <div class="flex items-center justify-between border-t border-line py-2.5 text-[13px]"><span class="text-muted">Rating</span><span class="font-mono font-semibold text-[#ffbe00]">⭐ {{ modal.rating }}</span></div>
+                  <div class="flex items-center justify-between border-t border-line py-2.5 text-[13px]"><span class="text-muted">Reach</span>
+                    <span class="flex gap-1.5">
+                      <span class="flex h-[22px] w-[22px] items-center justify-center rounded-md border border-line bg-white/[0.03] text-[11px]">💬</span>
+                      <span class="flex h-[22px] w-[22px] items-center justify-center rounded-md border border-line bg-white/[0.03] text-[11px]">📞</span>
+                      <span class="flex h-[22px] w-[22px] items-center justify-center rounded-md border border-line bg-white/[0.03] text-[11px]">📍</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="flex flex-col rounded-xl border border-line bg-black/30 px-3 py-2.5">
+                  <div class="text-right font-mono text-[10px]" [style.color]="chart.up ? '#00ffb3' : '#ff3d5a'">{{ fmtPct(pr[cardTf].v) }} · {{ pr[cardTf].k }}</div>
+                  <svg viewBox="0 0 300 200" preserveAspectRatio="none" class="h-[210px] w-full">
+                    <defs><linearGradient [attr.id]="cardGid" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" [attr.stop-color]="chart.up ? '#00ffb3' : '#ff3d5a'" stop-opacity="0.28"></stop>
+                      <stop offset="1" [attr.stop-color]="chart.up ? '#00ffb3' : '#ff3d5a'" stop-opacity="0"></stop></linearGradient></defs>
+                    <path [attr.d]="chart.area" [attr.fill]="'url(#' + cardGid + ')'"></path>
+                    <path [attr.d]="chart.line" fill="none" [attr.stroke]="chart.up ? '#00ffb3' : '#ff3d5a'" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path>
+                    <circle [attr.cx]="chart.endX" [attr.cy]="chart.endY" r="3" [attr.fill]="chart.up ? '#00ffb3' : '#ff3d5a'"></circle>
+                  </svg>
+                  <div class="mt-1 flex justify-between font-mono text-[9px] text-faint">
+                    <span>{{ xlabels[0] }}</span><span>{{ xlabels[1] }}</span><span>{{ xlabels[2] }}</span>
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (cardTab === 'pros') {
+              <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                @for (w of pros; track w) {
+                  <div class="rounded-xl border border-line bg-white/[0.03] p-3">
+                    <div class="mb-2 flex h-8 w-8 items-center justify-center rounded-full text-xs font-extrabold text-ink-950" [style.background]="modal.color">{{ w.init }}</div>
+                    <div class="text-xs font-semibold">{{ w.name }}</div>
+                    <div class="mb-1 text-[10px] text-muted">📍 {{ w.area }}</div>
+                    <div class="mb-1.5 text-[11px] text-brand-amber">{{ stars(w.rating) }} {{ w.rating }} ({{ w.jobs }})</div>
+                    <span class="mb-1.5 inline-flex rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase" [style.color]="w.levelColor" [style.border-color]="w.levelColor + '44'">{{ w.levelName }}</span>
+                    <div class="mt-1.5 text-[11px] font-semibold text-[#25d366]">💬 Chat on WhatsApp</div>
+                  </div>
+                }
+              </div>
+              <div class="mt-2 rounded-2xl border border-brand-green/20 bg-gradient-to-br from-brand-green/[0.08] to-brand-amber/[0.04] p-4 text-center">
+                <h4 class="text-[15px] font-bold">Are you a {{ modal.label }}?</h4>
+                <p class="mx-auto mb-3 mt-1 max-w-sm text-xs text-muted">Join KaziHub — upload your work samples and get found by customers near you. No CV needed.</p>
+                <button class="btn-primary px-4 py-2 text-[13px]">📲 List Yourself Free</button>
+              </div>
+            }
+
+            @if (cardTab === 'areas') {
+              <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                @for (x of areaRows; track x.a) {
+                  <div class="flex items-center gap-2 rounded-lg border border-line px-3 py-2.5 text-[12px]">
+                    📍<span class="min-w-[78px]">{{ x.a }}</span>
+                    <span class="h-[5px] flex-1 overflow-hidden rounded-full bg-white/10"><span class="block h-full rounded-full" [style.width.%]="x.n / areaMax * 100" [style.background]="modal.color"></span></span>
+                    <span class="font-mono text-[11px] text-muted">{{ x.n }} pros</span>
+                  </div>
+                }
+              </div>
+              <div class="mt-2 rounded-2xl border border-brand-green/20 bg-gradient-to-br from-brand-green/[0.08] to-brand-amber/[0.04] p-4 text-center">
+                <h4 class="text-[15px] font-bold">Are you a {{ modal.label }}?</h4>
+                <p class="mx-auto mb-3 mt-1 max-w-sm text-xs text-muted">Join KaziHub — upload your work samples and get found by customers near you. No CV needed.</p>
+                <button class="btn-primary px-4 py-2 text-[13px]">📲 List Yourself Free</button>
+              </div>
+            }
           </div>
         </div>
       </div>
@@ -117,7 +227,21 @@ export class BubbleFieldComponent implements AfterViewInit, OnChanges, OnDestroy
   modal: ServiceDatum | null = null;
   pros: Pro[] = [];
 
+  // detail-card state
+  tabs = ["overview", "pros", "areas"] as const;
+  cardTab: "overview" | "pros" | "areas" = "overview";
+  cardTf = 1;
+  pr: { k: string; v: number }[] = [];
+  rate = 0; rankVal = 0; share = 0; priceCol = "#00ffb3"; tick = "";
+  xlabels: string[] = TF_XL[1];
+  chart: { line: string; area: string; endX: number; endY: number; up: boolean } = { line: "", area: "", endX: 0, endY: 0, up: true };
+  cardGid = "cg" + Math.floor(Math.random() * 1e6);
+  areaRows: { a: string; n: number }[] = [];
+  areaMax = 1;
+
   private data = buildServiceData();
+  private rankMap: Record<string, number> = {};
+  private catXp: Record<string, number> = {};
   private bubbles: Bubble[] = [];
   private W = 0; private H = 0; private raf = 0; private frame = 0;
   private hov: Bubble | null = null;
@@ -126,11 +250,24 @@ export class BubbleFieldComponent implements AfterViewInit, OnChanges, OnDestroy
   private ro?: ResizeObserver;
   private emojiCache: Record<string, HTMLCanvasElement> = {};
 
-  constructor(private zone: NgZone, private cdr: ChangeDetectorRef) {}
+  constructor(private zone: NgZone, private cdr: ChangeDetectorRef) {
+    this.data.slice().sort((a, b) => b.communityXP - a.communityXP).forEach((d, i) => { this.rankMap[d.id] = i + 1; });
+    for (const d of this.data) this.catXp[d.cat] = (this.catXp[d.cat] ?? 0) + d.communityXP;
+  }
 
   catLabel(cat: string) { const c = CATS[cat]; return c ? `${c.icon} ${c.label}` : cat; }
   stars(r: number) { return "★".repeat(Math.round(r)) + "☆".repeat(5 - Math.round(r)); }
   onBackdrop(e: MouseEvent) { if (e.target === e.currentTarget) this.modal = null; }
+  fmtPct(v: number) { return `${v >= 0 ? "▲ " : "▼ "}${Math.abs(v)}%`; }
+  setTf(i: number) { this.cardTf = i; this.recomputeChart(); }
+  private recomputeChart() {
+    if (!this.modal) return;
+    const sel = this.pr[this.cardTf];
+    const series = genSeries(hashId(this.modal.id) + this.cardTf * 13, sel.v);
+    const cp = chartPaths(series);
+    this.chart = { ...cp, up: sel.v >= 0 };
+    this.xlabels = TF_XL[this.cardTf];
+  }
 
   ngAfterViewInit() {
     const ECS = 64;
@@ -329,6 +466,21 @@ export class BubbleFieldComponent implements AfterViewInit, OnChanges, OnDestroy
       const name = PNAMES[rnd(0, PNAMES.length - 1)], xp = rnd(200, 10000), lv = getLevel(xp);
       return { name, init: name.split(" ").map((p) => p[0]).join(""), area: AREAS[rnd(0, AREAS.length - 1)], rating: rndF(3.8, 5.0), jobs: rnd(4, 220), xp, levelName: lv.name, levelColor: lv.color };
     }).sort((a, b) => b.xp - a.xp);
-    this.modal = d; this.cdr.detectChanges();
+
+    // card state
+    this.cardTab = "overview"; this.cardTf = 1;
+    this.pr = periodsOf(d);
+    this.rate = avgRate(d);
+    this.rankVal = this.rankMap[d.id] ?? 0;
+    this.share = (d.communityXP / (this.catXp[d.cat] || 1)) * 100;
+    this.priceCol = this.pr[1].v >= 0 ? "#00ffb3" : "#ff3d5a";
+    this.tick = "$" + d.cat.toUpperCase().slice(0, 6);
+    const picks = new Set<string>(); const list: { a: string; n: number }[] = [];
+    while (list.length < 8) { const a = AREAS[rnd(0, AREAS.length - 1)]; if (picks.has(a)) continue; picks.add(a); list.push({ a, n: rnd(3, Math.max(4, Math.round(d.workers / 4))) }); }
+    this.areaRows = list.sort((x, y) => y.n - x.n);
+    this.areaMax = this.areaRows[0].n;
+    this.modal = d;
+    this.recomputeChart();
+    this.cdr.detectChanges();
   }
 }

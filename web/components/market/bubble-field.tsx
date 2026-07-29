@@ -44,6 +44,37 @@ const hexRgba = (hex: string, a: number) => { const p = parseColor(hex); return 
 
 const FILL_RATIO = 0.52, MIN_MULT = 0.42, MAX_MULT = 2.05;
 
+// ── detail-card helpers (CryptoBubbles-style) ──────────────────────────
+const RATE_BASE: Record<string, number> = { tech: 1500, beauty: 1200, food: 2500, home: 1800, education: 1000, events: 8000, transport: 1500, health: 2500, construction: 2500, creative: 5000, finance: 3000, security: 2000, wellness: 1500, rental: 15000, artisan: 2000, digital: 4000, legal: 3500, farm: 1200, kids: 1000, culture: 2500, civil: 2000 };
+function hashId(s: string): number { let h = 7; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 100000; return h; }
+function avgRate(d: ServiceDatum): number { const b = RATE_BASE[d.cat] ?? 1500; return Math.round((b * (0.6 + (hashId(d.id) % 90) / 100)) / 50) * 50; }
+function periods(d: ServiceDatum): { k: string; v: number }[] {
+  const h = hashId(d.id);
+  const w = (seed: number, scale: number) => parseFloat((d.growth * scale + (((h * seed) % 1000) / 100 - 5)).toFixed(1));
+  return [
+    { k: "1H", v: parseFloat((d.growth * 0.14 + ((h % 40) / 10 - 2)).toFixed(1)) },
+    { k: "1D", v: d.growth },
+    { k: "1W", v: w(3, 1.4) }, { k: "1M", v: w(7, 2.6) }, { k: "1Y", v: w(13, 5.5) },
+  ];
+}
+const TF_XL = [["1h ago", "30m", "now"], ["24h ago", "12h", "now"], ["7d ago", "3d", "now"], ["30d ago", "15d", "now"], ["12m ago", "6m", "now"]];
+function genSeries(seed: number, net: number): number[] {
+  const n = 46, arr = [100]; let v = 100;
+  for (let i = 1; i < n; i++) { const r = (Math.sin(seed * i * 0.7) + Math.sin(seed * i * 0.17 + 1) + Math.sin(seed * i * 0.31 + 2)) / 3; v = v * (1 + r * 0.035); arr.push(v); }
+  const slope = net / (n - 1);
+  for (let i = 0; i < n; i++) arr[i] = 100 + (arr[i] - 100) * 0.6 + slope * i;
+  return arr;
+}
+function chartPaths(arr: number[]) {
+  const n = arr.length, min = Math.min(...arr), max = Math.max(...arr), span = max - min || 1;
+  const W = 300, H = 200, pad = 6;
+  const X = (i: number) => (i / (n - 1)) * W;
+  const Y = (v: number) => H - pad - ((v - min) / span) * (H - 2 * pad);
+  const line = "M" + arr.map((v, i) => `${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join(" L");
+  return { line, area: `${line} L${W} ${H} L0 ${H} Z`, endX: X(n - 1), endY: Y(arr[n - 1]) };
+}
+const fmtPct = (v: number) => `${v >= 0 ? "▲ " : "▼ "}${Math.abs(v)}%`;
+
 export function BubbleField({ query, activeCat }: { query: string; activeCat: string }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -51,7 +82,16 @@ export function BubbleField({ query, activeCat }: { query: string; activeCat: st
   const queryRef = useRef(query);
   const catRef = useRef(activeCat);
   const [tip, setTip] = useState<{ d: ServiceDatum; x: number; y: number } | null>(null);
-  const [modal, setModal] = useState<{ d: ServiceDatum; pros: Pro[] } | null>(null);
+  const [modal, setModal] = useState<{ d: ServiceDatum; pros: Pro[]; rank: number; share: number } | null>(null);
+
+  // rank (by XP) + per-category XP totals for the detail card
+  const meta = useMemo(() => {
+    const rank: Record<string, number> = {};
+    const catXp: Record<string, number> = {};
+    data.slice().sort((a, b) => b.communityXP - a.communityXP).forEach((d, i) => { rank[d.id] = i + 1; });
+    for (const d of data) catXp[d.cat] = (catXp[d.cat] ?? 0) + d.communityXP;
+    return { rank, catXp };
+  }, [data]);
 
   queryRef.current = query;
   catRef.current = activeCat;
@@ -258,7 +298,8 @@ export function BubbleField({ query, activeCat }: { query: string; activeCat: st
         const name = PNAMES[rnd(0, PNAMES.length - 1)], xp = rnd(200, 10000), lv = getLevel(xp);
         return { name, init: name.split(" ").map((p) => p[0]).join(""), area: AREAS[rnd(0, AREAS.length - 1)], rating: rndF(3.8, 5.0), jobs: rnd(4, 220), xp, levelName: lv.name, levelColor: lv.color };
       }).sort((a, b) => b.xp - a.xp);
-      setModal({ d, pros });
+      const share = (d.communityXP / (meta.catXp[d.cat] || 1)) * 100;
+      setModal({ d, pros, rank: meta.rank[d.id] ?? 0, share });
     };
     const onUp = (e: PointerEvent) => {
       if (drag && !wasDrag) openModal(drag.d);
@@ -297,7 +338,7 @@ export function BubbleField({ query, activeCat }: { query: string; activeCat: st
       </div>
 
       {tip && <BubbleTip tip={tip} />}
-      {modal && <ProModal d={modal.d} pros={modal.pros} onClose={() => setModal(null)} />}
+      {modal && <DetailCard d={modal.d} pros={modal.pros} rank={modal.rank} share={modal.share} onClose={() => setModal(null)} />}
     </>
   );
 }
@@ -338,49 +379,153 @@ function Row({ l, v, color }: { l: string; v: string; color?: string }) {
   );
 }
 
-function ProModal({ d, pros, onClose }: { d: ServiceDatum; pros: Pro[]; onClose: () => void }) {
+function JoinBox({ label }: { label: string }) {
+  return (
+    <div className="mt-2 rounded-2xl border border-brand-green/20 bg-gradient-to-br from-brand-green/[0.08] to-brand-amber/[0.04] p-4 text-center">
+      <h4 className="text-[15px] font-bold">Are you a {label}?</h4>
+      <p className="mx-auto mb-3 mt-1 max-w-sm text-xs text-muted">Join KaziHub — upload your work samples and get found by customers near you. No CV needed.</p>
+      <button className="btn-primary px-4 py-2 text-[13px]">📲 List Yourself Free</button>
+    </div>
+  );
+}
+
+function DetailCard({ d, pros, rank, share, onClose }: { d: ServiceDatum; pros: Pro[]; rank: number; share: number; onClose: () => void }) {
+  const [tab, setTab] = useState<"overview" | "pros" | "areas">("overview");
+  const [tf, setTf] = useState(1);
   const stars = (r: number) => "★".repeat(Math.round(r)) + "☆".repeat(5 - Math.round(r));
+  const pr = useMemo(() => periods(d), [d]);
+  const rate = useMemo(() => avgRate(d), [d]);
+  const areaRows = useMemo(() => {
+    const picks = new Set<string>(); const list: { a: string; n: number }[] = [];
+    while (list.length < 8) { const a = AREAS[rnd(0, AREAS.length - 1)]; if (picks.has(a)) continue; picks.add(a); list.push({ a, n: rnd(3, Math.max(4, Math.round(d.workers / 4))) }); }
+    return list.sort((x, y) => y.n - x.n);
+  }, [d]);
+
+  const sel = pr[tf], up = sel.v >= 0;
+  const priceCol = pr[1].v >= 0 ? "#00ffb3" : "#ff3d5a";
+  const series = useMemo(() => genSeries(hashId(d.id) + tf * 13, sel.v), [d, tf, sel.v]);
+  const cp = chartPaths(series);
+  const gid = `cg-${d.id}-${tf}`;
+
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="max-h-[88vh] w-[min(560px,96vw)] overflow-y-auto rounded-3xl border border-line2 bg-ink-800 p-6">
-        <div className="mb-4 flex items-start justify-between">
-          <div className="text-xl font-bold">{d.emoji} {d.label}</div>
-          <button onClick={onClose} className="h-8 w-8 rounded-full border border-line bg-white/5 text-muted hover:text-fg">✕</button>
+      <div className="flex max-h-[92vh] w-[min(880px,96vw)] flex-col overflow-hidden rounded-2xl border border-line2 bg-[#0b0f1c] shadow-2xl">
+        {/* header */}
+        <div className="flex items-center gap-2.5 border-b border-line px-3.5 py-3">
+          <span className="flex h-7 w-7 items-center justify-center rounded-full text-[15px]" style={{ background: d.color }}>{d.emoji}</span>
+          <span className="truncate text-[15px] font-bold">{d.label}</span>
+          <span className="ml-auto font-mono text-sm font-bold" style={{ color: priceCol }}>KES {rate.toLocaleString()}</span>
+          <span className="font-mono text-[11px] text-muted">${d.cat.toUpperCase().slice(0, 6)}</span>
+          <button onClick={onClose} className="px-1 text-[17px] leading-none text-muted hover:text-fg">✕</button>
         </div>
-        <div className="mb-4 flex overflow-hidden rounded-xl border border-line">
-          <Stat label="Pros" value={String(d.workers)} color={d.color} />
-          <Stat label="Rating" value={`⭐${d.rating}`} color="#ffbe00" />
-          <Stat label="Jobs" value={d.jobs.toLocaleString()} color="#00e5ff" />
-          <Stat label="Level" value={d.level.name} color={d.level.color} last />
-        </div>
-        <div className="mb-2 text-[9px] font-bold uppercase tracking-wide text-muted">Available Professionals</div>
-        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-          {pros.map((w, i) => (
-            <div key={i} className="rounded-xl border border-line bg-white/[0.03] p-3">
-              <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-full text-xs font-extrabold text-ink-950" style={{ background: d.color }}>{w.init}</div>
-              <div className="text-xs font-semibold">{w.name}</div>
-              <div className="mb-1 text-[10px] text-muted">📍 {w.area}</div>
-              <div className="mb-1.5 text-[11px] text-brand-amber">{stars(w.rating)} {w.rating} ({w.jobs})</div>
-              <span className="mb-1.5 inline-flex rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase" style={{ color: w.levelColor, borderColor: `${w.levelColor}44` }}>{w.levelName}</span>
-              <div className="mt-1.5 text-[11px] font-semibold text-[#25d366]">💬 Chat on WhatsApp</div>
-            </div>
+        {/* tabs */}
+        <div className="flex border-b border-line px-3.5">
+          {(["overview", "pros", "areas"] as const).map((t) => (
+            <button key={t} onClick={() => setTab(t)}
+              className={`mr-6 border-b-2 py-2.5 text-[13px] font-semibold capitalize transition ${tab === t ? "border-brand-cyan text-brand-cyan" : "border-transparent text-muted hover:text-fg"}`}>
+              {t}
+            </button>
           ))}
         </div>
-        <div className="mt-4 rounded-2xl border border-brand-green/20 bg-gradient-to-br from-brand-green/[0.08] to-brand-amber/[0.04] p-4 text-center">
-          <h4 className="text-[15px] font-bold">Are you a {d.label}?</h4>
-          <p className="mx-auto mb-3 mt-1 max-w-sm text-xs text-muted">Join KaziHub — upload your work samples and get found by customers near you. No CV needed.</p>
-          <button className="btn-primary px-4 py-2 text-[13px]">📲 List Yourself Free</button>
+
+        <div className="overflow-y-auto p-3.5">
+          {tab === "overview" && (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,300px)_1fr]">
+              {/* left */}
+              <div>
+                <div className="mb-3 flex items-center gap-2">
+                  <div className="flex flex-1 items-center justify-between rounded-lg border border-line px-3 py-2.5"><span className="text-[11px] text-muted">1 job</span><span className="font-mono text-[13px] font-semibold">1</span></div>
+                  <span className="text-[13px] text-muted">=</span>
+                  <div className="flex flex-1 items-center justify-between rounded-lg border border-line px-3 py-2.5"><span className="text-[11px] text-muted">KES</span><span className="font-mono text-[13px] font-semibold">{rate.toLocaleString()}</span></div>
+                </div>
+                <div className="mb-3 flex gap-1.5">
+                  {pr.map((p, i) => {
+                    const pc = p.v >= 0 ? "#00ffb3" : "#ff3d5a";
+                    return (
+                      <button key={p.k} onClick={() => setTf(i)}
+                        className="flex-1 rounded-lg border bg-white/[0.02] px-1 py-1.5 text-center"
+                        style={{ borderColor: tf === i ? pc : "transparent" }}>
+                        <div className="text-[11px] text-muted">{p.k}</div>
+                        <div className="mt-0.5 text-[12px] font-bold" style={{ color: pc }}>{fmtPct(p.v)}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="mb-1.5 flex cursor-pointer items-center gap-2.5 rounded-xl border border-line bg-gradient-to-r from-brand-cyan/[0.06] to-transparent px-3 py-2.5">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-brand-cyan/10 text-sm">📣</span>
+                  <div><div className="text-[12px] font-bold">List your service free</div><div className="text-[10px] text-muted">Get found by customers near you →</div></div>
+                  <span className="ml-auto text-muted">›</span>
+                </div>
+                <StatRow l="Rank" v={`#${rank}`} />
+                <StatRow l="Community XP" v={d.communityXP.toLocaleString()} />
+                <StatRow l="Jobs done" v={d.jobs.toLocaleString()} />
+                <StatRow l="Category share" v={`${share.toFixed(1)}%`} />
+                <StatRow l="Rating" v={`⭐ ${d.rating}`} vColor="#ffbe00" />
+                <div className="flex items-center justify-between border-t border-line py-2.5 text-[13px]">
+                  <span className="text-muted">Reach</span>
+                  <span className="flex gap-1.5">{["💬", "📞", "📍"].map((x) => <span key={x} className="flex h-[22px] w-[22px] items-center justify-center rounded-md border border-line bg-white/[0.03] text-[11px]">{x}</span>)}</span>
+                </div>
+              </div>
+              {/* right: chart */}
+              <div className="flex flex-col rounded-xl border border-line bg-black/30 px-3 py-2.5">
+                <div className="text-right font-mono text-[10px]" style={{ color: up ? "#00ffb3" : "#ff3d5a" }}>{fmtPct(sel.v)} · {sel.k}</div>
+                <svg viewBox="0 0 300 200" preserveAspectRatio="none" className="h-[210px] w-full">
+                  <defs><linearGradient id={gid} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={up ? "#00ffb3" : "#ff3d5a"} stopOpacity="0.28" /><stop offset="1" stopColor={up ? "#00ffb3" : "#ff3d5a"} stopOpacity="0" /></linearGradient></defs>
+                  <path d={cp.area} fill={`url(#${gid})`} />
+                  <path d={cp.line} fill="none" stroke={up ? "#00ffb3" : "#ff3d5a"} strokeWidth="2" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+                  <circle cx={cp.endX} cy={cp.endY} r="3" fill={up ? "#00ffb3" : "#ff3d5a"} />
+                </svg>
+                <div className="mt-1 flex justify-between font-mono text-[9px] text-faint">{TF_XL[tf].map((x, i) => <span key={i}>{x}</span>)}</div>
+              </div>
+            </div>
+          )}
+
+          {tab === "pros" && (
+            <>
+              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                {pros.map((w, i) => (
+                  <div key={i} className="rounded-xl border border-line bg-white/[0.03] p-3">
+                    <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-full text-xs font-extrabold text-ink-950" style={{ background: d.color }}>{w.init}</div>
+                    <div className="text-xs font-semibold">{w.name}</div>
+                    <div className="mb-1 text-[10px] text-muted">📍 {w.area}</div>
+                    <div className="mb-1.5 text-[11px] text-brand-amber">{stars(w.rating)} {w.rating} ({w.jobs})</div>
+                    <span className="mb-1.5 inline-flex rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase" style={{ color: w.levelColor, borderColor: `${w.levelColor}44` }}>{w.levelName}</span>
+                    <div className="mt-1.5 text-[11px] font-semibold text-[#25d366]">💬 Chat on WhatsApp</div>
+                  </div>
+                ))}
+              </div>
+              <JoinBox label={d.label} />
+            </>
+          )}
+
+          {tab === "areas" && (
+            <>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {areaRows.map((x) => {
+                  const mx = areaRows[0].n;
+                  return (
+                    <div key={x.a} className="flex items-center gap-2 rounded-lg border border-line px-3 py-2.5 text-[12px]">
+                      📍<span className="min-w-[78px]">{x.a}</span>
+                      <span className="h-[5px] flex-1 overflow-hidden rounded-full bg-white/10"><span className="block h-full rounded-full" style={{ width: `${(x.n / mx) * 100}%`, background: d.color }} /></span>
+                      <span className="font-mono text-[11px] text-muted">{x.n} pros</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <JoinBox label={d.label} />
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function Stat({ label, value, color, last }: { label: string; value: string; color: string; last?: boolean }) {
+function StatRow({ l, v, vColor }: { l: string; v: string; vColor?: string }) {
   return (
-    <div className={`flex-1 p-3 text-center ${last ? "" : "border-r border-line"}`}>
-      <div className="font-mono text-lg font-bold" style={{ color }}>{value}</div>
-      <div className="mt-0.5 text-[9px] uppercase tracking-wide text-muted">{label}</div>
+    <div className="flex items-center justify-between border-t border-line py-2.5 text-[13px]">
+      <span className="text-muted">{l}</span>
+      <span className="font-mono font-semibold" style={{ color: vColor }}>{v}</span>
     </div>
   );
 }
