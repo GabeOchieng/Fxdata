@@ -1,34 +1,62 @@
 # KaziHub — Kenya's Gig Economy Platform
 
-KaziHub is a marketplace for Kenya's **informal sector** — connecting fundis, mama
-fuas, chefs, drivers, tutors, artisans (jua kali), caregivers and hundreds of other
-skilled hustlers with the people and businesses who need them. The interface is a
-fully self-contained static site: canvas-rendered visualisations, inline SVG, emoji
-and web fonts, with no build step and no local image assets.
+KaziHub is a multi-sided marketplace for Kenya's **informal sector** — connecting
+fundis, mama fuas, chefs, drivers, tutors, artisans (jua kali), caregivers and
+hundreds of other skilled hustlers with the people and businesses who need them.
 
-## Pages
+It spans four marketplace modules under one identity, shared auth, and a
+**WhatsApp-native** checkout with **M-Pesa** payments:
+
+- 🗺 **Market** — browse 250+ service categories on an interactive map
+- 👔 **Hire a Pro** — professional portfolios & storefronts
+- 🏠 **Rentals** — rooms, apartments and spaces across Nairobi
+- 👟 **Footwear / Merch** — commerce with size/colour variants
+
+## Repository layout
+
+```
+frontend/        Static HTML/JS frontend (current site — see note below)
+backend/         FastAPI + PostgreSQL + Redis + Celery API (M-Pesa, WhatsApp)
+docs/            blueprint.html — the system architecture & technical brief
+docker-compose.yml   Runs the whole stack (api, worker, postgres, redis, elasticsearch)
+```
+
+> **Frontend note:** `docs/blueprint.html` is the technical brief, not a public
+> page, so it is not linked in the site navigation. A production-grade
+> **React** frontend is planned to replace the static pages — see below.
+
+## Run the whole stack
+
+```bash
+cp backend/.env.example backend/.env      # optional: add M-Pesa / WhatsApp creds
+docker compose up --build
+# API + docs:  http://localhost:8000/api/docs
+# Frontend:    http://localhost:8000/
+```
+
+## Backend only (no Docker)
+
+```bash
+cd backend
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python -m app.db.seed          # tables + categories + demo data (SQLite by default)
+uvicorn app.main:app --reload
+pytest                         # 13 tests
+```
+
+The backend is Postgres-first but falls back to SQLite + an in-memory cache when
+no `DATABASE_URL`/`REDIS_URL` is set, so it boots with zero infrastructure.
+See `backend/README.md` for the full API reference and architecture.
+
+## Frontend pages (current static site)
 
 | File | Nav label | What it is |
 |------|-----------|------------|
-| `index.html` | — | Landing entry point (redirects to Home) |
-| `kazihub-home.html` | Home | Marketing / overview landing page |
-| `kazihub.html` | 🗺 Market | Interactive skills-market canvas — browse 250+ service categories |
-| `kazihub-store.html` | 👔 Hire a Pro | Professional portfolios & storefronts |
-| `kazihub-rentals.html` | 🏠 Rentals | Rentals & stays across Nairobi |
-| `kazihub-footwear.html` | 👟 Footwear | "Sole'd Out" footwear storefront |
-| `kazihub-tshirt.html` | 👕 Merch | "Wear Your Hustle" merch store |
-| `kazihub-docs.html` | 📋 Docs | System architecture & technical brief |
-
-Every page shares the same top navigation bar, so any page can be opened directly.
-
-## Running locally
-
-No build tooling is required — the pages are plain HTML/CSS/JS. Open `index.html`
-directly, or serve the folder:
-
-```bash
-python3 -m http.server 8000
-# then visit http://localhost:8000
-```
-
-The pages load Google Fonts over the network; everything else is embedded.
+| `frontend/index.html` | — | Landing entry point (redirects to Home) |
+| `frontend/kazihub-home.html` | Home | Marketing / overview |
+| `frontend/kazihub.html` | 🗺 Market | Interactive skills-market canvas |
+| `frontend/kazihub-store.html` | 👔 Hire a Pro | Professional portfolios & storefronts |
+| `frontend/kazihub-rentals.html` | 🏠 Rentals | Rentals & stays |
+| `frontend/kazihub-footwear.html` | 👟 Footwear | Footwear storefront |
+| `frontend/kazihub-tshirt.html` | 👕 Merch | Merch store |
