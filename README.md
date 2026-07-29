@@ -15,15 +15,33 @@ It spans four marketplace modules under one identity, shared auth, and a
 ## Repository layout
 
 ```
-frontend/        Static HTML/JS frontend (current site — see note below)
+web/             Premium React (Next.js 14 + TS + Tailwind) frontend — new build
+frontend/        Static HTML/JS prototype (original site; kept until web/ reaches parity)
 backend/         FastAPI + PostgreSQL + Redis + Celery API (M-Pesa, WhatsApp)
 docs/            blueprint.html — the system architecture & technical brief
-docker-compose.yml   Runs the whole stack (api, worker, postgres, redis, elasticsearch)
+docker-compose.yml   Runs the API stack (api, worker, postgres, redis, elasticsearch)
 ```
 
 > **Frontend note:** `docs/blueprint.html` is the technical brief, not a public
-> page, so it is not linked in the site navigation. A production-grade
-> **React** frontend is planned to replace the static pages — see below.
+> page, so it is not linked in the site navigation. The production frontend is
+> being rebuilt in **React/Next.js** under `web/` with an Inngest-grade premium
+> look; the static `frontend/` prototype stays until `web/` reaches parity.
+
+## Web frontend (React / Next.js)
+
+```bash
+cd web
+npm install
+cp .env.example .env.local        # point NEXT_PUBLIC_API_URL at the backend
+npm run dev                       # http://localhost:3000
+npm run build                     # production build
+```
+
+Stack: Next.js 14 (App Router) · TypeScript · Tailwind · Framer Motion. The
+design system lives in `web/tailwind.config.ts` + `web/app/globals.css`; shared
+brand data in `web/lib/constants.ts`; the API client in `web/lib/api.ts`. The
+Home page is complete; Market, Hire a Pro, Rentals, Footwear and Merch are
+scaffolded and being migrated from the static prototype.
 
 ## Run the whole stack
 

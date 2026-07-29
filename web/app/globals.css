@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Space Grotesk", var(--font-sans);
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-ink-950 text-fg antialiased;
+  background-image:
+    radial-gradient(ellipse 70% 55% at 50% -10%, rgba(0, 229, 255, 0.08), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 10%, rgba(167, 139, 250, 0.06), transparent 55%),
+    radial-gradient(ellipse 45% 40% at 0% 30%, rgba(245, 166, 35, 0.05), transparent 55%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(0, 229, 255, 0.25);
+  color: #fff;
+}
+
+/* Thin, unobtrusive scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.09);
+  border-radius: 99px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+  background-clip: content-box;
+}
+
+@layer components {
+  .container-content {
+    @apply mx-auto w-full max-w-content px-5 sm:px-8;
+  }
+
+  /* Eyebrow / kicker label */
+  .kicker {
+    @apply inline-flex items-center gap-2 rounded-full border border-line bg-white/[0.03]
+      px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-muted;
+  }
+
+  /* Gradient text used for accent words */
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-cyan via-brand-green to-brand-cyan bg-clip-text text-transparent;
+  }
+
+  /* Premium surface card */
+  .surface {
+    @apply rounded-2xl border border-line bg-white/[0.025] backdrop-blur-sm;
+  }
+  .surface-hover {
+    @apply transition duration-200 hover:border-line2 hover:bg-white/[0.05];
+  }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl px-5 py-3
+      text-sm font-semibold transition duration-200;
+  }
+  .btn-primary {
+    @apply btn bg-brand-cyan text-ink-950 hover:shadow-[0_0_28px_rgba(0,229,255,.45)] hover:brightness-105;
+  }
+  .btn-ghost {
+    @apply btn border border-line2 text-fg hover:border-brand-cyan/60 hover:bg-white/[0.04];
+  }
+
+  /* Faint grid backdrop for hero / sections */
+  .grid-backdrop {
+    background-image: var(--tw-bg-grid, none);
+    -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 40%, #000 40%, transparent 100%);
+    mask-image: radial-gradient(ellipse 60% 60% at 50% 40%, #000 40%, transparent 100%);
+  }
+}
