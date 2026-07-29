@@ -15,10 +15,10 @@ export default function MarketPage() {
         kicker="🗺 Skills Market"
         title={
           <>
-            Every trade in Kenya, <span className="text-gradient">mapped live</span>
+            Every hustle in Kenya, <span className="text-gradient">mapped live</span>
           </>
         }
-        subtitle="250+ categories sized by real activity — pros, jobs done and community XP. Search a trade or tap a category to find talent near you."
+        subtitle="259 hustles across 21 categories, each bubble sized by community XP. Search, filter, drag a bubble around, or click one to meet the pros."
         accent="#00e5ff"
       />
       <MarketExplorer />
