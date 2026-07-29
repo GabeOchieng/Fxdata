@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { api, type BubbleDatum } from "@/lib/api";
 import { CATEGORIES } from "@/lib/constants";
+import { BubbleField } from "./bubble-field";
 
 type Cell = {
   slug: string;
@@ -68,6 +69,7 @@ export function MarketExplorer() {
   const [cells, setCells] = useState<Cell[]>(fallbackCells);
   const [live, setLive] = useState(false);
   const [q, setQ] = useState("");
+  const [view, setView] = useState<"bubbles" | "grid">("bubbles");
 
   useEffect(() => {
     let cancelled = false;
@@ -117,10 +119,10 @@ export function MarketExplorer() {
           />
         </div>
         <div className="flex items-center gap-4 text-xs text-muted">
-          <span>
+          <span className="hidden sm:inline">
             <b className="font-mono text-fg">{cells.length}</b> categories
           </span>
-          <span>
+          <span className="hidden sm:inline">
             <b className="font-mono text-fg">{totals.workers.toLocaleString()}</b> pros
           </span>
           <span
@@ -135,10 +137,45 @@ export function MarketExplorer() {
             />
             {live ? "Live API" : "Sample data"}
           </span>
+          {/* view toggle */}
+          <div className="inline-flex rounded-lg border border-line bg-white/[0.02] p-0.5">
+            {(["bubbles", "grid"] as const).map((v) => (
+              <button
+                key={v}
+                onClick={() => setView(v)}
+                className={`rounded-md px-2.5 py-1 text-[11px] font-semibold capitalize transition ${
+                  view === v ? "bg-brand-cyan text-ink-950" : "text-muted hover:text-fg"
+                }`}
+              >
+                {v === "bubbles" ? "◍ Bubbles" : "▦ Grid"}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* bubble grid */}
+      {/* BUBBLE MAP — the keystone interaction */}
+      {view === "bubbles" && (
+        <div className="mt-6">
+          <BubbleField
+            cells={cells}
+            query={q}
+            onSelect={(slug) => {
+              const c = cells.find((x) => x.slug === slug);
+              if (c) {
+                setQ(c.name);
+                setView("grid");
+              }
+            }}
+          />
+          <p className="mt-3 text-center text-xs text-faint">
+            Bubble size = community XP · hover for detail · tap a bubble to drill in
+          </p>
+        </div>
+      )}
+
+      {/* grid list view */}
+      {view === "grid" && (
       <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {filtered.map((c, i) => {
           const intensity = 0.35 + (c.xp / maxXp) * 0.65;
@@ -184,8 +221,9 @@ export function MarketExplorer() {
           );
         })}
       </div>
+      )}
 
-      {filtered.length === 0 && (
+      {view === "grid" && filtered.length === 0 && (
         <p className="mt-16 text-center text-sm text-muted">
           No categories match “{q}”. Try another trade.
         </p>
