@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-ink-950 text-fg antialiased;
+  margin: 0;
+  font-family: "Inter", system-ui, sans-serif;
+  background-image:
+    radial-gradient(ellipse 70% 55% at 50% -10%, rgba(0, 229, 255, 0.08), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 100% 10%, rgba(167, 139, 250, 0.06), transparent 55%),
+    radial-gradient(ellipse 45% 40% at 0% 30%, rgba(245, 166, 35, 0.05), transparent 55%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgba(0, 229, 255, 0.25);
+  color: #fff;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.09);
+  border-radius: 99px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+@layer components {
+  .container-content {
+    @apply mx-auto w-full max-w-content px-5 sm:px-8;
+  }
+  .kicker {
+    @apply inline-flex items-center gap-2 rounded-full border border-line bg-white/[0.03] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-muted;
+  }
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-cyan via-brand-green to-brand-cyan bg-clip-text text-transparent;
+  }
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition duration-200;
+  }
+  .btn-primary {
+    @apply btn bg-brand-cyan text-ink-950 hover:brightness-105;
+  }
+  .btn-ghost {
+    @apply btn border border-line2 text-fg hover:border-brand-cyan/60 hover:bg-white/[0.04];
+  }
+  .wa-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-[#25d366]/40 bg-[#25d366]/10 px-4 py-2.5 text-sm font-semibold text-[#25d366] transition hover:bg-[#25d366]/20;
+  }
+}

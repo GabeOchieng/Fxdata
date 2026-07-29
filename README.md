@@ -15,7 +15,8 @@ It spans four marketplace modules under one identity, shared auth, and a
 ## Repository layout
 
 ```
-web/             Premium React (Next.js 14 + TS + Tailwind) frontend — new build
+web/             Premium React (Next.js 14 + TS + Tailwind) frontend — primary build
+web-angular/     Angular 18 build of the same slices (framework comparison)
 frontend/        Static HTML/JS prototype (original site; kept until web/ reaches parity)
 backend/         FastAPI + PostgreSQL + Redis + Celery API (M-Pesa, WhatsApp)
 docs/            blueprint.html — the system architecture & technical brief
@@ -39,9 +40,21 @@ npm run build                     # production build
 
 Stack: Next.js 14 (App Router) · TypeScript · Tailwind · Framer Motion. The
 design system lives in `web/tailwind.config.ts` + `web/app/globals.css`; shared
-brand data in `web/lib/constants.ts`; the API client in `web/lib/api.ts`. The
-Home page is complete; Market, Hire a Pro, Rentals, Footwear and Merch are
-scaffolded and being migrated from the static prototype.
+brand data in `web/lib/constants.ts`; the API client in `web/lib/api.ts`. All six
+pages are built: **Home, Market, Hire a Pro, Rentals, Footwear and Merch**.
+
+## Angular frontend (comparison build)
+
+`web-angular/` implements the same six slices in **Angular 18** (standalone
+components, signals, `@for`/`@if` control flow) on the identical Tailwind design
+system, so the two stacks can be compared directly.
+
+```bash
+cd web-angular
+npm install
+npm start                         # http://localhost:4200
+npm run build                     # → dist/web-angular/browser
+```
 
 ## Run the whole stack
 
