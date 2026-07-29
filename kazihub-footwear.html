@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sole'd Out — Footwear by KaziHub</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060810;
+  --bg2:#0c0f1c;
+  --bg3:#111528;
+  --surface:rgba(255,255,255,.04);
+  --border:rgba(255,255,255,.08);
+  --border2:rgba(255,255,255,.15);
+  --text:#f0eee8;
+  --muted:#4a4f6a;
+  --text2:#9a99b0;
+  --accent:#00e5ff;
+  /* category colors */
+  --sneaker:#00e5ff;
+  --loafer:#ffbe00;
+  --heel:#ff2d87;
+  --boot:#ff6b2b;
+  --sandal:#00ffb3;
+  --formal:#a78bfa;
+  --kids:#ff80ab;
+  --casual:#7dd3fc;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Outfit',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  cursor:none;
+}
+/* custom cursor */
+.cur{
+  position:fixed;width:16px;height:16px;
+  border:2px solid var(--accent);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .12s,height .12s,border-color .12s;
+  mix-blend-mode:screen;
+}
+.cur.big{width:40px;height:40px;border-color:rgba(0,229,255,.4);}
+.cur-dot{
+  position:fixed;width:5px;height:5px;
+  background:var(--accent);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+}
+
+/* atmospheric bg */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 10%,rgba(0,229,255,.05) 0%,transparent 65%),
+    radial-gradient(ellipse 50% 40% at 20% 90%,rgba(255,45,135,.04) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 30% at 50% 50%,rgba(167,139,250,.03) 0%,transparent 70%);
+}
+/* noise texture overlay */
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  opacity:.018;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size:200px;
+}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:200;
+  display:flex;align-items:center;gap:14px;
+  padding:12px 28px;
+  background:rgba(6,8,16,.94);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(20px);
+}
+.brand{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:26px;letter-spacing:2px;color:var(--text);
+  text-decoration:none;display:flex;align-items:center;gap:8px;
+}
+.brand-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:blink 2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.brand em{color:var(--accent);font-style:normal;}
+.nav-sep{width:1px;height:20px;background:var(--border);}
+.nav-sub{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+.nav-mid{flex:1;display:flex;justify-content:center;}
+.nav-search{position:relative;width:340px;}
+.nav-search input{
+  width:100%;padding:8px 14px 8px 36px;
+  background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:10px;color:var(--text);font-family:'Outfit',sans-serif;
+  font-size:13px;outline:none;transition:border-color .15s;
+}
+.nav-search input:focus{border-color:var(--accent);}
+.nav-search input::placeholder{color:var(--muted);}
+.ns-ic{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;opacity:.5;}
+.nav-r{display:flex;align-items:center;gap:10px;}
+.btn{padding:8px 18px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .15s;letter-spacing:.3px;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-accent{background:var(--accent);color:#060810;font-weight:800;}
+.btn-accent:hover{box-shadow:0 0 20px rgba(0,229,255,.4);transform:translateY(-1px);}
+.cart-btn{
+  position:relative;
+  background:rgba(255,255,255,.06);border:1px solid var(--border);
+  border-radius:9px;padding:8px 14px;cursor:pointer;
+  display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;
+  transition:all .15s;color:var(--text);
+}
+.cart-btn:hover{border-color:var(--accent);color:var(--accent);}
+.cart-count{
+  background:var(--accent);color:#060810;
+  border-radius:99px;font-size:10px;font-weight:800;
+  padding:1px 6px;min-width:18px;text-align:center;
+  font-family:'JetBrains Mono',monospace;
+}
+
+/* ── HERO ── */
+.hero{
+  position:relative;z-index:1;
+  padding:56px 28px 44px;
+  overflow:hidden;
+}
+.hero-bg-text{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(100px,18vw,260px);
+  letter-spacing:-4px;
+  color:rgba(255,255,255,.022);
+  white-space:nowrap;pointer-events:none;
+  user-select:none;
+}
+.hero-content{
+  position:relative;z-index:2;
+  display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between;
+  max-width:1200px;margin:auto;
+}
+.hero-left{}
+.hero-eyebrow{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;
+  color:var(--accent);margin-bottom:12px;
+  display:flex;align-items:center;gap:10px;
+}
+.hero-eyebrow::before{content:'';width:28px;height:2px;background:var(--accent);}
+.hero-h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(48px,8vw,100px);
+  letter-spacing:1px;line-height:.95;
+  margin-bottom:16px;
+}
+.hero-h1 span{
+  display:block;
+  background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.5) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-h1 span.accent{
+  background:linear-gradient(135deg,var(--accent),#ff2d87);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{font-size:14px;color:var(--text2);max-width:400px;line-height:1.7;}
+.hero-ctas{display:flex;gap:10px;margin-top:24px;}
+
+/* hero stats */
+.hero-stats{
+  display:flex;flex-direction:column;gap:10px;
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:18px;padding:20px 24px;
+}
+.hstat{display:flex;align-items:center;gap:12px;}
+.hstat-val{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:1px;}
+.hstat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;line-height:1.4;}
+
+/* ── CATEGORY TABS ── */
+.cat-row{
+  position:relative;z-index:1;
+  padding:16px 28px;
+  border-bottom:1px solid var(--border);
+  display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;
+  background:rgba(6,8,16,.6);backdrop-filter:blur(12px);
+  position:sticky;top:57px;z-index:190;
+}
+.cat-row::-webkit-scrollbar{display:none;}
+.cat-tab{
+  flex-shrink:0;
+  padding:8px 20px;border-radius:99px;font-size:12px;font-weight:700;
+  cursor:pointer;border:1px solid var(--border);background:transparent;
+  color:var(--muted);transition:all .15s;letter-spacing:.3px;
+  display:flex;align-items:center;gap:6px;
+}
+.cat-tab:hover{color:var(--text);}
+.cat-tab.on{color:#060810;border-color:transparent;}
+
+/* ── PRODUCT GRID ── */
+.catalog{
+  padding:28px;
+  position:relative;z-index:1;
+  max-width:1400px;margin:auto;
+}
+.catalog-toolbar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:22px;flex-wrap:wrap;gap:10px;
+}
+.ct-count{font-size:13px;color:var(--text2);}
+.ct-count b{color:var(--text);}
+.sort-grp{display:flex;gap:6px;}
+.sp{padding:6px 14px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .13s;letter-spacing:.3px;}
+.sp:hover{color:var(--text);}
+.sp.on{background:rgba(255,255,255,.07);color:var(--text);border-color:var(--border2);}
+
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:20px;
+}
+
+/* ── PRODUCT CARD ── */
+.pcard{
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;
+  cursor:pointer;
+  transition:all .25s cubic-bezier(.23,1,.32,1);
+  position:relative;
+  animation:fadeup .4s ease both;
+}
+@keyframes fadeup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.pcard:hover{
+  transform:translateY(-6px);
+  border-color:rgba(255,255,255,.15);
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+}
+
+/* visual stage */
+.pcard-stage{
+  position:relative;height:200px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.pcard-bg{
+  position:absolute;inset:0;
+  transition:transform .4s ease;
+}
+.pcard:hover .pcard-bg{transform:scale(1.05);}
+/* diagonal slash */
+.pcard-slash{
+  position:absolute;inset:0;
+  clip-path:polygon(0 0,100% 0,100% 65%,0 85%);
+  opacity:.7;
+}
+.pcard-shoe{
+  font-size:80px;
+  position:relative;z-index:2;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  filter:drop-shadow(0 12px 24px rgba(0,0,0,.6));
+  transform:rotate(-12deg);
+}
+.pcard:hover .pcard-shoe{transform:rotate(-6deg) scale(1.12) translateY(-4px);}
+
+.pcard-badge{
+  position:absolute;top:12px;left:12px;z-index:3;
+  padding:3px 9px;border-radius:99px;
+  font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+  backdrop-filter:blur(8px);
+}
+.pcard-fav{
+  position:absolute;top:12px;right:12px;z-index:3;
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(6,8,16,.7);border:1px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  cursor:pointer;transition:all .15s;backdrop-filter:blur(8px);
+}
+.pcard-fav:hover,.pcard-fav.on{background:rgba(255,45,135,.15);border-color:rgba(255,45,135,.4);}
+
+/* card body */
+.pcard-body{padding:16px 18px 18px;}
+.pcard-cat{
+  font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+  margin-bottom:5px;
+}
+.pcard-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:22px;letter-spacing:.5px;margin-bottom:3px;line-height:1.1;
+}
+.pcard-tagline{font-size:11px;color:var(--text2);margin-bottom:12px;}
+
+/* color swatches */
+.pcard-colors{display:flex;gap:5px;margin-bottom:12px;}
+.swatch{
+  width:18px;height:18px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent;transition:all .13s;
+}
+.swatch.on{border-color:rgba(255,255,255,.7);transform:scale(1.2);}
+
+/* sizes row */
+.pcard-sizes{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;}
+.sz{
+  padding:4px 9px;border-radius:7px;
+  font-size:11px;font-weight:700;cursor:pointer;
+  border:1px solid var(--border);background:transparent;
+  color:var(--muted);transition:all .13s;
+  font-family:'JetBrains Mono',monospace;
+}
+.sz:hover{color:var(--text);border-color:var(--border2);}
+.sz.on{background:var(--accent);color:#060810;border-color:transparent;}
+.sz.out{opacity:.3;pointer-events:none;text-decoration:line-through;}
+
+/* price + action */
+.pcard-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.pcard-price{
+  font-family:'JetBrains Mono',monospace;
+  font-size:20px;font-weight:600;
+}
+.pcard-price .was{
+  font-size:12px;color:var(--muted);text-decoration:line-through;
+  display:block;font-weight:400;font-size:11px;
+}
+.add-btn{
+  padding:10px 16px;border-radius:10px;border:none;
+  font-family:'Outfit',sans-serif;font-size:12px;font-weight:800;
+  cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;gap:6px;letter-spacing:.3px;
+}
+.add-btn:hover{transform:scale(1.05);}
+.add-btn:active{transform:scale(.97);}
+
+/* flying emoji animation */
+@keyframes fly-to-cart{
+  0%{transform:translate(0,0) scale(1);opacity:1;}
+  80%{opacity:.6;}
+  100%{transform:translate(var(--tx),var(--ty)) scale(.2);opacity:0;}
+}
+.flying-shoe{
+  position:fixed;z-index:9998;font-size:32px;pointer-events:none;
+  animation:fly-to-cart .65s cubic-bezier(.55,0,1,.45) forwards;
+}
+
+/* ── CART DRAWER ── */
+.cart-overlay{
+  position:fixed;inset:0;z-index:400;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;transition:opacity .22s;
+}
+.cart-overlay.open{opacity:1;pointer-events:all;}
+.cart-drawer{
+  position:fixed;top:0;right:0;bottom:0;z-index:401;
+  width:min(420px,100vw);
+  background:var(--bg2);
+  border-left:1px solid var(--border);
+  transform:translateX(100%);transition:transform .28s cubic-bezier(.23,1,.32,1);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.cart-overlay.open .cart-drawer{transform:translateX(0);}
+.cart-head{
+  padding:20px 22px 16px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.cart-head h2{
+  font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;
+  display:flex;align-items:center;gap:10px;
+}
+.cart-close{
+  background:rgba(255,255,255,.06);border:1px solid var(--border);
+  color:var(--muted);width:32px;height:32px;border-radius:50%;
+  cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;
+  transition:color .13s;
+}
+.cart-close:hover{color:var(--text);}
+.cart-items{flex:1;overflow-y:auto;padding:14px 22px;}
+.cart-items::-webkit-scrollbar{width:3px;}
+.cart-items::-webkit-scrollbar-thumb{background:var(--border);}
+.cart-empty{
+  text-align:center;padding:60px 20px;
+  font-size:14px;color:var(--muted);
+}
+.cart-empty .ce-icon{font-size:48px;margin-bottom:16px;}
+
+/* cart item */
+.ci{
+  display:flex;gap:12px;align-items:center;
+  padding:12px 0;border-bottom:1px solid var(--border);
+  animation:fadeup .2s ease;
+}
+.ci:last-child{border-bottom:none;}
+.ci-img{
+  width:60px;height:60px;border-radius:12px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:28px;
+  border:1px solid var(--border);
+}
+.ci-info{flex:1;min-width:0;}
+.ci-name{font-size:13px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ci-meta{font-size:11px;color:var(--muted);margin-bottom:6px;}
+.ci-qty{display:flex;align-items:center;gap:8px;}
+.qbtn{
+  width:24px;height:24px;border-radius:50%;border:1px solid var(--border);
+  background:transparent;color:var(--text);font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .12s;
+}
+.qbtn:hover{border-color:var(--accent);color:var(--accent);}
+.qnum{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;min-width:20px;text-align:center;}
+.ci-price{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;flex-shrink:0;}
+.ci-remove{color:var(--muted);cursor:pointer;font-size:16px;padding:4px;transition:color .12s;flex-shrink:0;}
+.ci-remove:hover{color:var(--red, #ff4a5a);}
+
+/* delivery section */
+.delivery-section{
+  padding:16px 22px;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+.ds-title{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;
+}
+.del-options{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.del-opt{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 12px;border-radius:10px;border:1px solid var(--border);
+  cursor:pointer;transition:all .13s;
+}
+.del-opt:hover,.del-opt.on{border-color:rgba(0,229,255,.35);background:rgba(0,229,255,.05);}
+.del-opt .dot{
+  width:9px;height:9px;border-radius:50%;border:2px solid var(--muted);
+  flex-shrink:0;transition:all .12s;
+}
+.del-opt.on .dot{border-color:var(--accent);background:var(--accent);}
+.del-opt-info{flex:1;margin-left:10px;}
+.del-opt-name{font-size:12px;font-weight:600;}
+.del-opt-sub{font-size:10px;color:var(--muted);}
+.del-opt-price{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--accent);}
+.del-address input{
+  width:100%;padding:9px 12px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:9px;color:var(--text);font-family:'Outfit',sans-serif;
+  font-size:12px;outline:none;transition:border-color .15s;
+}
+.del-address input:focus{border-color:var(--accent);}
+.del-address input::placeholder{color:var(--muted);}
+
+/* cart summary */
+.cart-summary{padding:14px 22px;}
+.cs-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;}
+.cs-row.total{
+  font-size:16px;font-weight:800;margin-top:8px;padding-top:10px;
+  border-top:1px solid var(--border);
+}
+.cs-row .val{font-family:'JetBrains Mono',monospace;font-weight:600;}
+.cs-row.total .val{color:var(--accent);font-size:18px;}
+
+.wa-checkout{
+  width:100%;padding:14px;border-radius:12px;border:none;
+  background:#25d366;color:#fff;
+  font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;
+  transition:all .15s;margin-top:10px;letter-spacing:.3px;
+}
+.wa-checkout:hover{background:#1ebe5b;box-shadow:0 6px 20px rgba(37,211,102,.4);}
+.wa-checkout:active{transform:scale(.98);}
+.wa-preview{
+  font-size:10px;color:var(--muted);text-align:center;
+  margin-top:8px;line-height:1.5;
+}
+
+/* ── PRODUCT DETAIL MODAL ── */
+.pdmodal-bg{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.9);backdrop-filter:blur(16px);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:20px;overflow-y:auto;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.pdmodal-bg.open{opacity:1;pointer-events:all;}
+.pdmodal{
+  background:var(--bg2);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:24px;
+  width:min(820px,100%);margin:auto;
+  overflow:hidden;
+  transform:translateY(20px);transition:transform .22s;
+}
+.pdmodal-bg.open .pdmodal{transform:translateY(0);}
+
+.pdm-layout{display:grid;grid-template-columns:1fr 1fr;}
+@media(max-width:640px){.pdm-layout{grid-template-columns:1fr;}}
+
+/* visual side */
+.pdm-visual{
+  min-height:380px;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:10px;padding:32px;
+  overflow:hidden;
+}
+.pdm-visual-bg{position:absolute;inset:0;}
+.pdm-shoe{
+  font-size:120px;position:relative;z-index:1;
+  filter:drop-shadow(0 20px 40px rgba(0,0,0,.7));
+  transform:rotate(-15deg);
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:rotate(-15deg) translateY(0)}50%{transform:rotate(-15deg) translateY(-10px)}}
+.pdm-thumb-row{display:flex;gap:8px;position:relative;z-index:1;}
+.pdm-thumb{
+  width:48px;height:48px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;background:rgba(255,255,255,.08);
+  border:2px solid transparent;cursor:pointer;transition:all .13s;
+}
+.pdm-thumb.on{border-color:rgba(255,255,255,.5);}
+.pdm-thumb:hover{background:rgba(255,255,255,.12);}
+.pdm-close{
+  position:absolute;top:14px;right:14px;z-index:10;
+  background:rgba(6,8,16,.75);border:1px solid rgba(255,255,255,.15);
+  color:var(--muted);width:32px;height:32px;border-radius:50%;
+  cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);transition:color .13s;
+}
+.pdm-close:hover{color:var(--text);}
+
+/* info side */
+.pdm-info{padding:28px;overflow-y:auto;max-height:600px;}
+.pdm-info::-webkit-scrollbar{width:3px;}
+.pdm-info::-webkit-scrollbar-thumb{background:var(--border);}
+.pdm-cat{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;}
+.pdm-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:34px;letter-spacing:.5px;line-height:1;margin-bottom:4px;
+}
+.pdm-tagline{font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6;}
+.pdm-price-row{display:flex;align-items:baseline;gap:10px;margin-bottom:20px;}
+.pdm-price{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:600;}
+.pdm-was{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--muted);text-decoration:line-through;}
+.pdm-save{
+  font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;
+  background:rgba(0,255,179,.12);color:var(--sandal);
+  border:1px solid rgba(0,255,179,.2);
+}
+
+/* color picker */
+.pdm-sec-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;}
+.pdm-colors{display:flex;gap:8px;margin-bottom:20px;align-items:center;}
+.pdm-swatch{
+  width:24px;height:24px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent;transition:all .15s;
+}
+.pdm-swatch.on{border-color:rgba(255,255,255,.8);transform:scale(1.2);box-shadow:0 0 0 3px rgba(255,255,255,.1);}
+.pdm-color-label{font-size:12px;color:var(--text2);margin-left:4px;}
+
+/* size grid */
+.pdm-sizes{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:6px;margin-bottom:20px;
+}
+.pdm-sz{
+  padding:9px 4px;border-radius:9px;text-align:center;
+  font-size:12px;font-weight:700;cursor:pointer;
+  border:1px solid var(--border);background:transparent;
+  color:var(--muted);transition:all .13s;
+  font-family:'JetBrains Mono',monospace;
+}
+.pdm-sz:hover{color:var(--text);border-color:var(--border2);}
+.pdm-sz.on{background:var(--accent);color:#060810;border-color:transparent;}
+.pdm-sz.out{opacity:.3;pointer-events:none;text-decoration:line-through;}
+.size-guide{font-size:10px;color:var(--accent);cursor:pointer;margin-bottom:16px;display:inline-flex;align-items:center;gap:4px;}
+
+/* qty + add */
+.pdm-qty-row{display:flex;gap:10px;align-items:center;margin-bottom:16px;}
+.pdm-qty-ctrl{display:flex;align-items:center;gap:0;border:1px solid var(--border);border-radius:9px;overflow:hidden;}
+.pdm-qty-ctrl button{
+  width:36px;height:40px;background:transparent;border:none;
+  color:var(--text);font-size:16px;cursor:pointer;transition:background .12s;
+}
+.pdm-qty-ctrl button:hover{background:rgba(255,255,255,.06);}
+.pdm-qty-ctrl span{
+  width:40px;text-align:center;font-family:'JetBrains Mono',monospace;
+  font-size:14px;font-weight:600;border-left:1px solid var(--border);border-right:1px solid var(--border);
+  line-height:40px;
+}
+.pdm-add-big{
+  flex:1;padding:12px;border-radius:10px;border:none;
+  font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;
+  cursor:pointer;transition:all .15s;letter-spacing:.3px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.pdm-add-big:hover{transform:scale(1.02);}
+.pdm-wa{
+  width:100%;padding:11px;border-radius:10px;
+  border:1px solid rgba(37,211,102,.3);background:rgba(37,211,102,.07);
+  color:#25d366;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;
+  transition:all .15s;
+}
+.pdm-wa:hover{background:rgba(37,211,102,.14);}
+
+/* product description */
+.pdm-desc{font-size:12px;color:var(--text2);line-height:1.7;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.pdm-features{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.pdm-feat{
+  padding:4px 11px;border-radius:99px;font-size:10px;font-weight:600;
+  background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text2);
+}
+
+/* ── EMPTY ── */
+.empty-state{
+  grid-column:1/-1;text-align:center;padding:72px 20px;
+}
+.empty-state .es-icon{font-size:56px;margin-bottom:18px;}
+.empty-state h3{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;margin-bottom:8px;}
+.empty-state p{font-size:13px;color:var(--muted);}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+  z-index:9000;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:12px;padding:12px 20px;
+  font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:10px;
+  opacity:0;transition:all .25s;
+  pointer-events:none;white-space:nowrap;
+  box-shadow:0 16px 40px rgba(0,0,0,.5);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── WHATSAPP PREVIEW MODAL ── */
+.wpreview-bg{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(0,0,0,.9);backdrop-filter:blur(16px);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.wpreview-bg.open{opacity:1;pointer-events:all;}
+.wpreview{
+  background:var(--bg2);border:1px solid rgba(37,211,102,.2);
+  border-radius:20px;padding:28px;width:min(480px,100%);
+  transform:translateY(16px);transition:transform .2s;
+  max-height:90vh;overflow-y:auto;
+}
+.wpreview-bg.open .wpreview{transform:translateY(0);}
+.wpreview h3{
+  font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.wa-msg-box{
+  background:#0d1117;border:1px solid var(--border);
+  border-radius:12px;padding:14px;font-size:12px;
+  color:#dcf8c6;line-height:1.8;
+  font-family:'JetBrains Mono',monospace;
+  white-space:pre-wrap;word-break:break-word;
+  max-height:320px;overflow-y:auto;margin-bottom:16px;
+}
+.wpreview-actions{display:flex;gap:8px;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+@media(max-width:700px){
+  nav{padding:10px 16px;}
+  .catalog{padding:16px;}
+  .hero{padding:32px 16px 28px;}
+  .products{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+  .hero-bg-text{display:none;}
+  .hero-stats{display:none;}
+}
+
+/* ── KAZIHUB CHATBOT ──────────────────────────────────────── */
+#kh-chat-btn{
+  position:fixed;bottom:22px;right:22px;z-index:200;
+  width:52px;height:52px;border-radius:50%;
+  background:var(--accent,#00ffb3);
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 24px rgba(0,255,179,.35);
+  transition:transform .2s, box-shadow .2s;
+  font-size:22px;
+}
+#kh-chat-btn:hover{transform:scale(1.08);box-shadow:0 6px 32px rgba(0,255,179,.5);}
+#kh-chat-btn .kh-chat-unread{
+  position:absolute;top:-2px;right:-2px;
+  width:16px;height:16px;border-radius:50%;
+  background:#ff3d5a;color:#fff;
+  font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;
+}
+#kh-chat-btn .kh-chat-unread.show{opacity:1;}
+#kh-chat-panel{
+  position:fixed;bottom:86px;right:22px;z-index:200;
+  width:340px;max-height:520px;
+  background:rgba(6,10,22,.97);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  display:flex;flex-direction:column;
+  box-shadow:0 16px 60px rgba(0,0,0,.7);
+  backdrop-filter:blur(24px);
+  transform:scale(.9) translateY(12px);
+  opacity:0;pointer-events:none;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), opacity .18s;
+  overflow:hidden;
+}
+#kh-chat-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
+.kh-chat-head{
+  padding:14px 16px 12px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.kh-chat-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#00ffb3,#00d4ff);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+}
+.kh-chat-title{font-size:13px;font-weight:700;color:#f0eee8;}
+.kh-chat-sub{font-size:10px;color:rgba(0,255,179,.8);margin-top:1px;}
+.kh-chat-close{
+  margin-left:auto;background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.35);font-size:16px;padding:2px 4px;transition:color .15s;
+}
+.kh-chat-close:hover{color:rgba(255,255,255,.7);}
+.kh-chat-msgs{
+  flex:1;overflow-y:auto;padding:12px;
+  display:flex;flex-direction:column;gap:8px;min-height:0;
+}
+.kh-chat-msgs::-webkit-scrollbar{width:3px;}
+.kh-chat-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+.kh-msg{max-width:86%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.55;}
+.kh-msg.bot{background:rgba(255,255,255,.06);color:#dde3f0;border-bottom-left-radius:4px;align-self:flex-start;}
+.kh-msg.user{background:#00ffb3;color:#04070f;font-weight:600;border-bottom-right-radius:4px;align-self:flex-end;}
+.kh-msg.thinking{background:rgba(255,255,255,.04);color:rgba(221,227,240,.45);font-style:italic;align-self:flex-start;}
+.kh-chips{display:flex;flex-wrap:wrap;gap:5px;padding:0 12px 10px;flex-shrink:0;}
+.kh-chip{
+  padding:4px 11px;border-radius:99px;font-size:10px;font-weight:700;cursor:pointer;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:rgba(221,227,240,.8);transition:all .15s;white-space:nowrap;
+}
+.kh-chip:hover{background:rgba(0,255,179,.12);border-color:rgba(0,255,179,.4);color:#00ffb3;}
+.kh-chat-foot{
+  padding:10px 12px;border-top:1px solid rgba(255,255,255,.06);
+  display:flex;gap:8px;align-items:center;flex-shrink:0;
+}
+.kh-chat-input{
+  flex:1;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);border-radius:10px;
+  padding:8px 12px;color:#dde3f0;font-size:12px;
+  font-family:inherit;outline:none;transition:border-color .15s;
+  resize:none;max-height:80px;
+}
+.kh-chat-input:focus{border-color:rgba(0,255,179,.5);}
+.kh-chat-input::placeholder{color:rgba(255,255,255,.25);}
+.kh-chat-send{
+  width:34px;height:34px;border-radius:10px;
+  background:#00ffb3;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .15s;color:#04070f;font-size:14px;
+}
+.kh-chat-send:hover{box-shadow:0 0 14px rgba(0,255,179,.4);}
+.kh-chat-send:disabled{opacity:.35;cursor:not-allowed;}
+.kh-wa-cta{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:8px;padding:7px 13px;border-radius:9px;
+  background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.35);
+  color:#25d366;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;
+  transition:all .15s;
+}
+.kh-wa-cta:hover{background:rgba(37,211,102,.25);}
+@media(max-width:400px){#kh-chat-panel{width:calc(100vw - 20px);right:10px;}}
+</style>
+
+<style id="kh-topbar-css">
+#kh-topbar{
+  position:fixed;top:0;left:0;right:0;z-index:9999;
+  background:rgba(4,6,14,.97);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(20px);
+  display:flex;align-items:center;height:40px;padding:0 20px;gap:0;
+  font-family:'Outfit','DM Sans',sans-serif;
+}
+#kh-topbar a.kh-logo{
+  font-size:16px;font-weight:800;
+  color:#f0eee8;text-decoration:none;
+  display:flex;align-items:center;gap:6px;margin-right:14px;
+  font-family:'Bebas Neue','Outfit',sans-serif;font-size:20px;
+}
+#kh-topbar a.kh-logo em{color:#00e5ff;font-style:normal;}
+.kh-tb-dot{width:6px;height:6px;border-radius:50%;background:#00e5ff;box-shadow:0 0 6px #00e5ff;animation:kh_pulse 2s ease-in-out infinite;}
+@keyframes kh_pulse{0%,100%{opacity:1}50%{opacity:.3}}
+#kh-topbar .kh-sep{width:1px;height:16px;background:rgba(255,255,255,.08);margin:0 12px;}
+#kh-topbar .kh-nav{display:flex;align-items:center;gap:2px;flex:1;}
+#kh-topbar .kh-link{
+  padding:4px 11px;border-radius:7px;font-size:11px;font-weight:600;
+  text-decoration:none;color:rgba(154,152,181,.85);
+  transition:all .13s;border:1px solid transparent;
+}
+#kh-topbar .kh-link:hover{color:#f0eee8;background:rgba(255,255,255,.05);}
+#kh-topbar .kh-link.kh-active{color:#f0eee8;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.1);}
+#kh-topbar .kh-link.kh-docs{color:#f5a623 !important;}
+#kh-topbar .kh-link.kh-docs:hover{background:rgba(245,166,35,.06);}
+#kh-topbar .kh-link.kh-docs.kh-active{border-color:rgba(245,166,35,.2);background:rgba(245,166,35,.07);}
+#kh-topbar .kh-link.kh-merch{color:#c8ff00 !important;}
+#kh-topbar .kh-link.kh-merch:hover{background:rgba(200,255,0,.06);}
+#kh-topbar .kh-link.kh-merch.kh-active{border-color:rgba(200,255,0,.2);background:rgba(200,255,0,.07);}
+body{padding-top:40px;}
+</style>
+
+</head>
+<body>
+<div id="kh-topbar">
+  <a class="kh-logo" href="kazihub-home.html"><div class="kh-tb-dot"></div>Kazi<em>Hub</em></a>
+  <div class="kh-sep"></div>
+  <div class="kh-nav">
+    <a class="kh-link" href="kazihub-home.html">Home</a>
+    <a class="kh-link" href="kazihub.html">🗺 Market</a>
+    <a class="kh-link" href="kazihub-store.html">👔 Hire a Pro</a>
+    <a class="kh-link" href="kazihub-rentals.html">🏠 Rentals</a>
+    <a class="kh-link kh-active" href="kazihub-footwear.html">👟 Footwear</a>
+    <a class="kh-link kh-merch" href="kazihub-tshirt.html">👕 Merch</a>
+    <a class="kh-link kh-docs" href="kazihub-docs.html">📋 Docs</a>
+  </div>
+</div>
+<!-- NAV -->
+<nav>
+  <a class="brand" href="kazihub.html">
+    <div class="brand-dot"></div>
+    Sole<em>'d</em>&nbsp;Out
+  </a>
+  <div class="nav-sep"></div>
+  <span class="nav-sub">by KaziHub</span>
+  <div class="nav-mid">
+    <div class="nav-search">
+      <span class="ns-ic">🔍</span>
+      <input type="text" id="gsearch" placeholder="Nike, loafers, size 42…" oninput="handleSearch(this.value)">
+    </div>
+  </div>
+  <div class="nav-r">
+    <a href="kazihub-rentals.html" style="text-decoration:none"><button class="btn btn-ghost" style="font-size:11px;">🏠 Rentals</button></a>
+    <a href="kazihub-store.html" style="text-decoration:none"><button class="btn btn-ghost" style="font-size:11px;">👔 Hire a Pro</button></a>
+    <button class="cart-btn" onclick="openCart()">
+      <span>🛒</span>
+      <span id="cart-label">Cart</span>
+      <span class="cart-count" id="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg-text">FOOTWEAR</div>
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Nairobi's Finest — Direct from the Seller</div>
+      <h1 class="hero-h1">
+        <span>Step into</span>
+        <span class="accent">Fresh.</span>
+      </h1>
+      <p class="hero-sub">Sneakers, loafers, heels, boots and sandals. Every pair picked with care. Order directly, delivered to your door. No broker. No overcharge.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-accent" onclick="scrollToCatalog()">Shop Now</button>
+        <button class="btn btn-ghost" onclick="openCart()">View Cart</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hstat"><span class="hstat-val" style="color:var(--accent)" id="h-count">0</span><div class="hstat-label">Pairs<br>In Stock</div></div>
+      <div class="hstat"><span class="hstat-val" style="color:var(--heel)">24h</span><div class="hstat-label">Nairobi<br>Delivery</div></div>
+      <div class="hstat"><span class="hstat-val" style="color:var(--sandal)">0%</span><div class="hstat-label">Agent<br>Fee</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORY TABS -->
+<div class="cat-row" id="cat-row"></div>
+
+<!-- CATALOG -->
+<div class="catalog" id="catalog-section">
+  <div class="catalog-toolbar">
+    <span class="ct-count" id="ct-count"></span>
+    <div class="sort-grp">
+      <button class="sp on" onclick="setSort('newest',this)">Newest</button>
+      <button class="sp" onclick="setSort('price-asc',this)">Price ↑</button>
+      <button class="sp" onclick="setSort('price-desc',this)">Price ↓</button>
+      <button class="sp" onclick="setSort('popular',this)">Popular</button>
+    </div>
+  </div>
+  <div class="products" id="products-grid"></div>
+  <div id="load-more-wrap" style="text-align:center;margin-top:32px;"></div>
+</div>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cart-overlay" onclick="maybeCloseCart(event)">
+  <div class="cart-drawer">
+    <div class="cart-head">
+      <h2>🛒 Your Bag <span class="cart-count" id="cart-count2">0</span></h2>
+      <button class="cart-close" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items-el"></div>
+    <div class="delivery-section">
+      <div class="ds-title">🚚 Delivery Options</div>
+      <div class="del-options" id="del-options"></div>
+      <div class="del-address" id="del-address-wrap" style="display:none">
+        <input type="text" id="del-address" placeholder="Enter your area / estate in Nairobi…">
+      </div>
+    </div>
+    <div class="cart-summary">
+      <div class="cs-row"><span>Subtotal</span><span class="val" id="cs-sub">KES 0</span></div>
+      <div class="cs-row"><span>Delivery</span><span class="val" id="cs-del">KES 0</span></div>
+      <div class="cs-row total"><span>Total</span><span class="val" id="cs-total">KES 0</span></div>
+      <button class="wa-checkout" id="wa-checkout-btn" onclick="generateWAOrder()">
+        <span style="font-size:18px">💬</span> Order via WhatsApp
+      </button>
+      <div class="wa-preview">Your order details will be formatted into a WhatsApp message ready to send</div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="pdmodal-bg" id="pdmodal-bg" onclick="maybePDClose(event)">
+  <div class="pdmodal">
+    <div class="pdm-layout">
+      <div class="pdm-visual" id="pdm-visual">
+        <button class="pdm-close" onclick="closePDModal()">✕</button>
+      </div>
+      <div class="pdm-info" id="pdm-info"></div>
+    </div>
+  </div>
+</div>
+
+<!-- WHATSAPP PREVIEW -->
+<div class="wpreview-bg" id="wpbg" onclick="maybeCloseWP(event)">
+  <div class="wpreview">
+    <h3>💬 WhatsApp Order</h3>
+    <div class="wa-msg-box" id="wa-msg-box"></div>
+    <div class="wpreview-actions">
+      <button class="btn btn-accent" style="flex:1;padding:12px;font-size:14px;border-radius:10px;" onclick="sendToWA()">Open WhatsApp →</button>
+      <button class="btn btn-ghost" onclick="closeWP()">Edit Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ================================================================
+// DATA
+// ================================================================
+var CATS=[
+  {id:'all',     label:'All Styles',  emoji:'👟', color:'#00e5ff'},
+  {id:'sneaker', label:'Sneakers',    emoji:'👟', color:'#00e5ff'},
+  {id:'loafer',  label:'Loafers',     emoji:'👞', color:'#ffbe00'},
+  {id:'heel',    label:'Heels',       emoji:'👠', color:'#ff2d87'},
+  {id:'boot',    label:'Boots',       emoji:'👢', color:'#ff6b2b'},
+  {id:'sandal',  label:'Sandals',     emoji:'🩴', color:'#00ffb3'},
+  {id:'formal',  label:'Formal',      emoji:'👞', color:'#a78bfa'},
+  {id:'kids',    label:'Kids',        emoji:'👟', color:'#ff80ab'},
+  {id:'casual',  label:'Casual',      emoji:'👟', color:'#7dd3fc'},
+];
+
+var COLOR_MAP={
+  'White':'#f5f5f5','Black':'#1a1a1a','Red':'#e53935',
+  'Navy':'#1a237e','Grey':'#9e9e9e','Brown':'#6d4c41',
+  'Nude':'#d4a574','Camel':'#c19a6b','Tan':'#b8874e',
+  'Olive':'#827717','Cream':'#fffde7','Pink':'#f48fb1',
+  'Gold':'#ffd700','Silver':'#bdbdbd','Cobalt':'#1565c0',
+  'Orange':'#ef6c00','Green':'#2e7d32','Burgundy':'#6a0020',
+  'Khaki':'#c8b560','Sky Blue':'#4fc3f7',
+};
+
+var FEATURES={
+  sneaker:['Breathable Mesh','Rubber Sole','Shock Absorb','Lace-Up','Anti-Slip'],
+  loafer:['Slip-On','Leather Upper','Cushioned Insole','Flexible Sole','Classic Cut'],
+  heel:['Block Heel','Ankle Strap','Pointed Toe','Padded Footbed','Elegant Design'],
+  boot:['Side Zip','Leather Upper','Lug Sole','Water-Resistant','Ankle Support'],
+  sandal:['Open Toe','Buckle Strap','Flat Sole','Comfortable Fit','Summer Ready'],
+  formal:['Oxford Style','Genuine Leather','Burnished Finish','Goodyear Welt','Lace-Up'],
+  kids:['Velcro Strap','Non-Slip','Lightweight','Breathable','Cushioned'],
+  casual:['Canvas Upper','Flat Sole','Slip-On','Casual Fit','Versatile'],
+};
+
+var DESCRIPTIONS={
+  sneaker:'Premium quality sneakers built for the streets of Nairobi. Comfortable all-day wear, stylish enough for the office on a Friday, tough enough for Karura Forest on Sunday.',
+  loafer:'Timeless loafers that transition from boardroom to brunch. Crafted for the professional who refuses to compromise on style.',
+  heel:'Turn heads at every event. These heels bring the drama without sacrificing comfort — because you\'ll be on your feet all night.',
+  boot:'Bold, durable boots for the Nairobi winter or that upcountry trip. Built to last, styled to impress.',
+  sandal:'Light, airy and effortlessly stylish. Perfect for the Kenyan heat. Your feet will thank you.',
+  formal:'Classic formal footwear for interviews, weddings and everything that matters. Quality that speaks before you do.',
+  kids:'Tough enough for school, cute enough for church. Made to keep up with the boundless energy of your little ones.',
+  casual:'Easy everyday comfort. Throw these on and go — whether it\'s the supermarket, a date, or a quick errand.',
+};
+
+var PRODUCTS_RAW=[
+  // SNEAKERS
+  {name:'Nairobi Runner Pro',      cat:'sneaker', price:3200,  was:4500,  colors:['White','Black','Navy','Red'],       sizes:[38,39,40,41,42,43,44,45], outSizes:[43]},
+  {name:'CBD Street Kick',         cat:'sneaker', price:2800,  was:null,  colors:['White','Grey','Black'],              sizes:[38,39,40,41,42,43,44],    outSizes:[]},
+  {name:'Westlands Wave',          cat:'sneaker', price:4500,  was:5500,  colors:['Sky Blue','White','Orange'],         sizes:[39,40,41,42,43,44,45],    outSizes:[45]},
+  {name:'Kilimani Classic Air',    cat:'sneaker', price:3800,  was:null,  colors:['Black','White','Cobalt'],            sizes:[38,39,40,41,42,43],       outSizes:[]},
+  {name:'Jua Kali Boost',          cat:'sneaker', price:2200,  was:2900,  colors:['Black','Red','Navy'],                sizes:[38,39,40,41,42,43,44,45], outSizes:[44]},
+
+  // LOAFERS
+  {name:'Karen Penny Loafer',      cat:'loafer',  price:4200,  was:5000,  colors:['Brown','Black','Tan','Camel'],       sizes:[36,37,38,39,40,41,42,43], outSizes:[]},
+  {name:'Parklands Slip-On',       cat:'loafer',  price:3500,  was:null,  colors:['Black','Navy','Brown'],              sizes:[37,38,39,40,41,42,43],    outSizes:[38]},
+  {name:'Executive Moccasin',      cat:'loafer',  price:5200,  was:6500,  colors:['Tan','Black','Burgundy'],            sizes:[39,40,41,42,43,44],       outSizes:[]},
+  {name:'Casual Loafer Lite',      cat:'loafer',  price:2800,  was:null,  colors:['Khaki','Olive','Grey'],              sizes:[36,37,38,39,40,41,42],    outSizes:[36]},
+
+  // HEELS
+  {name:'Lavington Block Heel',    cat:'heel',    price:3800,  was:4800,  colors:['Nude','Black','Red','Gold'],         sizes:[35,36,37,38,39,40,41],    outSizes:[]},
+  {name:'Event Night Stiletto',    cat:'heel',    price:4500,  was:null,  colors:['Black','Silver','Nude'],             sizes:[35,36,37,38,39,40],       outSizes:[40]},
+  {name:'Kiambu Kitten Heel',      cat:'heel',    price:3200,  was:4000,  colors:['Cream','Pink','Black'],              sizes:[35,36,37,38,39,40,41],    outSizes:[]},
+  {name:'Office Queen Pump',       cat:'heel',    price:4200,  was:5200,  colors:['Black','Nude','Burgundy'],           sizes:[36,37,38,39,40,41],       outSizes:[37]},
+
+  // BOOTS
+  {name:'Karen Combat Boot',       cat:'boot',    price:6500,  was:8000,  colors:['Black','Brown','Tan'],               sizes:[36,37,38,39,40,41,42,43], outSizes:[]},
+  {name:'Ngong Rd Chelsea',        cat:'boot',    price:5800,  was:7000,  colors:['Black','Tan','Brown'],               sizes:[37,38,39,40,41,42,43],    outSizes:[38,42]},
+  {name:'Safari Ankle Boot',       cat:'boot',    price:4800,  was:null,  colors:['Tan','Camel','Brown'],               sizes:[36,37,38,39,40,41,42],    outSizes:[]},
+  {name:'Rugged Trek Boot',        cat:'boot',    price:5500,  was:6500,  colors:['Black','Olive','Brown'],             sizes:[39,40,41,42,43,44,45],    outSizes:[43]},
+
+  // SANDALS
+  {name:'Diani Beach Slide',       cat:'sandal',  price:1800,  was:2400,  colors:['White','Black','Nude','Pink'],       sizes:[35,36,37,38,39,40,41,42], outSizes:[]},
+  {name:'Mombasa Flat Sandal',     cat:'sandal',  price:2200,  was:null,  colors:['Brown','Tan','Black'],               sizes:[36,37,38,39,40,41],       outSizes:[41]},
+  {name:'Naivasha Strap',          cat:'sandal',  price:2800,  was:3500,  colors:['Gold','Silver','Black'],             sizes:[35,36,37,38,39,40],       outSizes:[]},
+  {name:'Office Comfort Mule',     cat:'sandal',  price:2500,  was:null,  colors:['Nude','Black','White'],              sizes:[36,37,38,39,40,41,42],    outSizes:[36]},
+
+  // FORMAL
+  {name:'CBD Oxford Classic',      cat:'formal',  price:5500,  was:7000,  colors:['Black','Brown','Tan'],               sizes:[39,40,41,42,43,44,45],    outSizes:[]},
+  {name:'Interview Derby',         cat:'formal',  price:4800,  was:null,  colors:['Black','Brown'],                     sizes:[40,41,42,43,44,45],       outSizes:[40]},
+  {name:'Brogued Up',              cat:'formal',  price:6200,  was:7800,  colors:['Tan','Brown','Burgundy'],            sizes:[39,40,41,42,43,44],       outSizes:[]},
+  {name:'Slim Cap-Toe',            cat:'formal',  price:5200,  was:6200,  colors:['Black','Dark Brown'],                sizes:[39,40,41,42,43,44,45],    outSizes:[44]},
+
+  // KIDS
+  {name:'Little Kicks Sneaker',    cat:'kids',    price:1500,  was:2000,  colors:['White','Blue','Pink','Red'],         sizes:[26,27,28,29,30,31,32,33], outSizes:[]},
+  {name:'School Run',              cat:'kids',    price:1800,  was:null,  colors:['Black','White'],                     sizes:[28,29,30,31,32,33,34,35], outSizes:[28]},
+  {name:'Velcro Flyer',            cat:'kids',    price:1600,  was:2200,  colors:['Blue','Pink','Orange'],              sizes:[26,27,28,29,30,31,32],    outSizes:[]},
+
+  // CASUAL
+  {name:'Umoja Canvas Slip',       cat:'casual',  price:1900,  was:2500,  colors:['White','Black','Navy','Olive'],      sizes:[36,37,38,39,40,41,42,43], outSizes:[]},
+  {name:'Langata Lace Pump',       cat:'casual',  price:2400,  was:null,  colors:['Black','White','Nude'],              sizes:[36,37,38,39,40,41],       outSizes:[39]},
+  {name:'Easy Weekend',            cat:'casual',  price:2100,  was:2800,  colors:['Grey','Khaki','Navy'],               sizes:[37,38,39,40,41,42,43],    outSizes:[]},
+];
+
+var DELIVERY_OPTIONS=[
+  {id:'pickup', label:'Pickup in Town',       sub:'Meet at agreed CBD point',  fee:0,    icon:'🏙️'},
+  {id:'cbd',    label:'Nairobi CBD / Westlands', sub:'Next day delivery',      fee:150,  icon:'🏍️'},
+  {id:'nairobi',label:'Greater Nairobi',      sub:'Kasarani, Embakasi, Karen etc.',fee:250, icon:'📦'},
+  {id:'outside',label:'Outside Nairobi',      sub:'Thika, Kiambu, Ruiru, etc.', fee:400, icon:'🚚'},
+  {id:'upcountry',label:'Upcountry (SGR/Bus)',sub:'1-3 business days',         fee:600,  icon:'🚌'},
+];
+
+// ================================================================
+// STATE
+// ================================================================
+var state={
+  cat:'all', sort:'newest', search:'', page:1, perPage:16,
+};
+var cart=[]; // [{product, size, color, qty}]
+var selDelivery='pickup';
+var favs=new Set();
+// per-card selected state
+var cardState={}; // id->{size, color, qty}
+var pdmState={size:null,color:null,qty:1,productId:null};
+
+// enrich products
+var PRODUCTS = PRODUCTS_RAW.map(function(p,i){
+  var cat=CATS.find(function(c){return c.id===p.cat;})||CATS[1];
+  return Object.assign({},p,{
+    id:i+1,
+    catData:cat,
+    emoji:cat.emoji,
+    accentColor:cat.color,
+    features:FEATURES[p.cat]||FEATURES.casual,
+    description:DESCRIPTIONS[p.cat]||DESCRIPTIONS.casual,
+    isNew:i<6,
+    isSale:!!p.was,
+    isHot:Math.random()<.2,
+    stock:Math.floor(Math.random()*20)+3,
+    sold:Math.floor(Math.random()*180)+10,
+  });
+});
+
+// ================================================================
+// CURSOR
+// ================================================================
+// cursor elements — null-guarded (DOM removed by topbar injection)
+var _cur    = document.getElementById('cur');
+var _curDot = document.getElementById('cur-dot');
+document.addEventListener('mousemove',function(e){
+  if(_cur){_cur.style.left=e.clientX+'px';_cur.style.top=e.clientY+'px';}
+  if(_curDot){_curDot.style.left=e.clientX+'px';_curDot.style.top=e.clientY+'px';}
+});
+document.addEventListener('mouseover',function(e){
+  if(_cur&&(e.target.closest('button')||e.target.closest('.pcard')||e.target.closest('a')||e.target.closest('.swatch'))){
+    _cur.classList.add('big');
+  }
+});
+document.addEventListener('mouseout',function(){
+  if(_cur) _cur.classList.remove('big');
+});
+
+// ================================================================
+// BUILD CAT TABS
+// ================================================================
+function buildCatTabs(){
+  var row=document.getElementById('cat-row');
+  row.innerHTML=CATS.map(function(c){
+    var cnt=c.id==='all'?PRODUCTS.length:PRODUCTS.filter(function(p){return p.cat===c.id;}).length;
+    return '<button class="cat-tab'+(c.id==='all'?' on':'')+'" data-cat="'+c.id+'" onclick="setCat(\''+c.id+'\',this)" style="'+(c.id==='all'?'background:'+c.color+';border-color:'+c.color+';':'')+'">'+c.emoji+' '+c.label+' <span style="font-size:10px;opacity:.7;">('+cnt+')</span></button>';
+  }).join('');
+}
+
+function setCat(id,btn){
+  document.querySelectorAll('.cat-tab').forEach(function(b){
+    b.classList.remove('on');b.style.background='';b.style.borderColor='';b.style.color='';
+  });
+  btn.classList.add('on');
+  var c=CATS.find(function(x){return x.id===id;});
+  if(c&&id!=='all'){btn.style.background=c.color;btn.style.borderColor=c.color;btn.style.color='#060810';}
+  else if(id==='all'&&c){btn.style.background=c.color;btn.style.borderColor=c.color;btn.style.color='#060810';}
+  state.cat=id;state.page=1;renderProducts();
+}
+
+function setSort(s,btn){
+  document.querySelectorAll('.sp').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');state.sort=s;state.page=1;renderProducts();
+}
+
+function handleSearch(q){state.search=q.toLowerCase();state.page=1;renderProducts();}
+function scrollToCatalog(){document.getElementById('catalog-section').scrollIntoView({behavior:'smooth'});}
+
+// ================================================================
+// FILTER + SORT
+// ================================================================
+function getFiltered(){
+  var list=PRODUCTS.slice();
+  if(state.cat!=='all') list=list.filter(function(p){return p.cat===state.cat;});
+  if(state.search) list=list.filter(function(p){
+    return p.name.toLowerCase().indexOf(state.search)>-1||
+           p.cat.toLowerCase().indexOf(state.search)>-1||
+           p.colors.some(function(c){return c.toLowerCase().indexOf(state.search)>-1;})||
+           p.sizes.some(function(s){return String(s).indexOf(state.search)>-1;});
+  });
+  if(state.sort==='newest') list.sort(function(a,b){return a.id-b.id;});
+  else if(state.sort==='price-asc') list.sort(function(a,b){return a.price-b.price;});
+  else if(state.sort==='price-desc') list.sort(function(a,b){return b.price-a.price;});
+  else if(state.sort==='popular') list.sort(function(a,b){return b.sold-a.sold;});
+  return list;
+}
+
+// ================================================================
+// RENDER
+// ================================================================
+function initCardState(p){
+  if(!cardState[p.id]){
+    cardState[p.id]={
+      color:p.colors[0],
+      size:null,qty:1
+    };
+  }
+}
+
+function cardHTML(p){
+  initCardState(p);
+  var cs=cardState[p.id];
+  var col=cs.color||p.colors[0];
+  var colHex=COLOR_MAP[col]||'#888';
+  var bg='background:linear-gradient(135deg,'+p.accentColor+'22,'+p.accentColor+'06 60%,rgba(6,8,16,0))';
+  var slash='background:linear-gradient(160deg,'+p.accentColor+'18 0%,transparent 55%)';
+  var isFav=favs.has(p.id);
+
+  var badge='';
+  if(p.isSale) badge='<span class="pcard-badge" style="background:rgba(255,45,135,.15);color:#ff2d87;border:1px solid rgba(255,45,135,.3);">SALE</span>';
+  else if(p.isNew) badge='<span class="pcard-badge" style="background:rgba(0,229,255,.12);color:var(--accent);border:1px solid rgba(0,229,255,.25);">NEW</span>';
+  else if(p.isHot) badge='<span class="pcard-badge" style="background:rgba(255,107,43,.12);color:#ff6b2b;border:1px solid rgba(255,107,43,.25);">🔥 HOT</span>';
+
+  var swatches=p.colors.slice(0,5).map(function(c){
+    return '<div class="swatch'+(c===col?' on':'')+'" style="background:'+COLOR_MAP[c]+'" title="'+c+'" onclick="event.stopPropagation();selectColor('+p.id+',\''+c+'\')"></div>';
+  }).join('');
+
+  var szs=p.sizes.slice(0,8).map(function(s){
+    var isOut=p.outSizes.indexOf(s)>-1;
+    var isSel=cs.size===s;
+    return '<div class="sz'+(isOut?' out':isSel?' on':'')+'" onclick="event.stopPropagation();selectSize('+p.id+','+s+')">'+s+'</div>';
+  }).join('');
+
+  var hasSize=!!cs.size;
+
+  return '<div class="pcard" id="pcard-'+p.id+'" onclick="openProduct('+p.id+')" style="animation-delay:'+Math.random()*.25+'s">'+
+    '<div class="pcard-stage">'+
+      '<div class="pcard-bg" style="'+bg+'"></div>'+
+      '<div class="pcard-slash" style="'+slash+'"></div>'+
+      '<div class="pcard-shoe">'+p.emoji+'</div>'+
+      badge+
+      '<div class="pcard-fav'+(isFav?' on':'')+'" onclick="event.stopPropagation();toggleFav('+p.id+')" title="Wishlist">'+( isFav?'❤️':'🤍')+'</div>'+
+    '</div>'+
+    '<div class="pcard-body">'+
+      '<div class="pcard-cat" style="color:'+p.accentColor+'">'+p.catData.label+'</div>'+
+      '<div class="pcard-name">'+p.name+'</div>'+
+      '<div class="pcard-tagline">'+p.features.slice(0,2).join(' · ')+'</div>'+
+      '<div class="pcard-colors">'+swatches+'</div>'+
+      '<div class="pcard-sizes">'+szs+'</div>'+
+      '<div class="pcard-bottom">'+
+        '<div class="pcard-price" style="color:'+p.accentColor+'">'+
+          (p.was?'<span class="was">KES '+p.was.toLocaleString()+'</span>':'')+
+          'KES '+p.price.toLocaleString()+
+        '</div>'+
+        '<button class="add-btn" id="addbtn-'+p.id+'" style="background:'+p.accentColor+';color:#060810;" onclick="event.stopPropagation();quickAdd('+p.id+',event)">'+
+          (hasSize?'🛒 Add':'Pick Size')+
+        '</button>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+}
+
+function renderProducts(){
+  var filtered=getFiltered();
+  var end=state.page*state.perPage;
+  var slice=filtered.slice(0,end);
+  var grid=document.getElementById('products-grid');
+
+  if(slice.length===0){
+    grid.innerHTML='<div class="empty-state"><div class="es-icon">👟</div><h3>No Pairs Found</h3><p>Try a different search or category.</p></div>';
+  } else {
+    grid.innerHTML=slice.map(cardHTML).join('');
+  }
+
+  document.getElementById('ct-count').innerHTML='<b>'+filtered.length+'</b> pairs available';
+  document.getElementById('h-count').textContent=PRODUCTS.length;
+
+  var lmw=document.getElementById('load-more-wrap');
+  lmw.innerHTML=filtered.length>end?
+    '<button class="btn btn-ghost" onclick="loadMore()" style="padding:12px 32px;font-size:13px;">Load More Styles</button>':'';
+}
+
+function loadMore(){state.page++;renderProducts();}
+
+// ================================================================
+// SIZE + COLOR SELECTION ON CARD
+// ================================================================
+function selectColor(id,color){
+  initCardState(PRODUCTS.find(function(p){return p.id===id;}));
+  cardState[id].color=color;
+  refreshCard(id);
+}
+
+function selectSize(id,size){
+  initCardState(PRODUCTS.find(function(p){return p.id===id;}));
+  cardState[id].size=size;
+  refreshCard(id);
+}
+
+function refreshCard(id){
+  var p=PRODUCTS.find(function(x){return x.id===id;});
+  if(!p) return;
+  var card=document.getElementById('pcard-'+id);
+  if(!card) return;
+  var newHtml=cardHTML(p);
+  var temp=document.createElement('div');
+  temp.innerHTML=newHtml;
+  var newCard=temp.firstChild;
+  // preserve animation state — don't re-animate
+  newCard.style.animationDelay='0s';
+  card.parentNode.replaceChild(newCard,card);
+}
+
+function toggleFav(id){
+  if(favs.has(id)) favs.delete(id);
+  else favs.add(id);
+  refreshCard(id);
+  showToast(favs.has(id)?'❤️ Added to wishlist':'🤍 Removed from wishlist');
+}
+
+// ================================================================
+// QUICK ADD
+// ================================================================
+function quickAdd(id,e){
+  var p=PRODUCTS.find(function(x){return x.id===id;});
+  if(!p) return;
+  var cs=cardState[id];
+  if(!cs||!cs.size){
+    showToast('👆 Pick a size first!');return;
+  }
+  addToCart(p,cs.size,cs.color||p.colors[0],1,e);
+}
+
+function addToCart(p,size,color,qty,e){
+  // check if already in cart (same product+size+color)
+  var existing=cart.find(function(ci){return ci.productId===p.id&&ci.size===size&&ci.color===color;});
+  if(existing){
+    existing.qty+=qty;
+  } else {
+    cart.push({productId:p.id,product:p,size:size,color:color,qty:qty||1});
+  }
+  updateCartCount();
+
+  // fly animation
+  if(e){
+    var cartBtn=document.querySelector('.cart-btn');
+    var br=cartBtn.getBoundingClientRect();
+    var fly=document.createElement('div');
+    fly.className='flying-shoe';
+    fly.textContent=p.emoji;
+    fly.style.left=e.clientX+'px';
+    fly.style.top=e.clientY+'px';
+    var tx=(br.left+br.width/2)-e.clientX;
+    var ty=(br.top+br.height/2)-e.clientY;
+    fly.style.setProperty('--tx',tx+'px');
+    fly.style.setProperty('--ty',ty+'px');
+    document.body.appendChild(fly);
+    setTimeout(function(){fly.remove();},700);
+  }
+
+  showToast('✅ '+p.name+' (Sz '+size+') added to bag!');
+  renderCartItems();
+}
+
+function updateCartCount(){
+  var total=cart.reduce(function(s,ci){return s+ci.qty;},0);
+  document.getElementById('cart-count').textContent=total;
+  document.getElementById('cart-count2').textContent=total;
+}
+
+// ================================================================
+// CART DRAWER
+// ================================================================
+function openCart(){document.getElementById('cart-overlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeCart(){document.getElementById('cart-overlay').classList.remove('open');document.body.style.overflow='';}
+function maybeCloseCart(e){if(e.target===document.getElementById('cart-overlay'))closeCart();}
+
+function renderCartItems(){
+  var el=document.getElementById('cart-items-el');
+  if(cart.length===0){
+    el.innerHTML='<div class="cart-empty"><div class="ce-icon">👟</div><div>Your bag is empty</div><div style="font-size:11px;margin-top:6px;color:var(--muted)">Browse the catalog and add some heat</div></div>';
+    updateCartTotals();
+    return;
+  }
+  el.innerHTML=cart.map(function(ci,i){
+    var p=ci.product;
+    return '<div class="ci">'+
+      '<div class="ci-img" style="background:linear-gradient(135deg,'+p.accentColor+'20,transparent)">'+p.emoji+'</div>'+
+      '<div class="ci-info">'+
+        '<div class="ci-name">'+p.name+'</div>'+
+        '<div class="ci-meta">Size: <b>'+ci.size+'</b>  ·  Colour: <b>'+ci.color+'</b></div>'+
+        '<div class="ci-qty">'+
+          '<button class="qbtn" onclick="changeQty('+i+',-1)">−</button>'+
+          '<span class="qnum">'+ci.qty+'</span>'+
+          '<button class="qbtn" onclick="changeQty('+i+',1)">+</button>'+
+          '<span style="font-size:11px;color:var(--muted);margin-left:4px;">× KES '+p.price.toLocaleString()+'</span>'+
+        '</div>'+
+      '</div>'+
+      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">'+
+        '<span class="ci-price" style="color:'+p.accentColor+'">KES '+(p.price*ci.qty).toLocaleString()+'</span>'+
+        '<span class="ci-remove" onclick="removeItem('+i+')" title="Remove">✕</span>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  updateCartTotals();
+}
+
+function changeQty(i,delta){
+  if(!cart[i]) return;
+  cart[i].qty+=delta;
+  if(cart[i].qty<=0) cart.splice(i,1);
+  updateCartCount();
+  renderCartItems();
+}
+
+function removeItem(i){
+  cart.splice(i,1);
+  updateCartCount();
+  renderCartItems();
+}
+
+function updateCartTotals(){
+  var subtotal=cart.reduce(function(s,ci){return s+ci.product.price*ci.qty;},0);
+  var delOpt=DELIVERY_OPTIONS.find(function(d){return d.id===selDelivery;})||DELIVERY_OPTIONS[0];
+  var delFee=cart.length>0?delOpt.fee:0;
+  var total=subtotal+delFee;
+  document.getElementById('cs-sub').textContent='KES '+subtotal.toLocaleString();
+  document.getElementById('cs-del').textContent='KES '+delFee.toLocaleString();
+  document.getElementById('cs-total').textContent='KES '+total.toLocaleString();
+}
+
+// ================================================================
+// DELIVERY OPTIONS
+// ================================================================
+function buildDeliveryOptions(){
+  var el=document.getElementById('del-options');
+  el.innerHTML=DELIVERY_OPTIONS.map(function(d){
+    var isSel=d.id===selDelivery;
+    return '<div class="del-opt'+(isSel?' on':'')+'" onclick="selectDelivery(\''+d.id+'\')" id="delopt-'+d.id+'">'+
+      '<div class="dot"></div>'+
+      '<div class="del-opt-info">'+
+        '<div class="del-opt-name">'+d.icon+' '+d.label+'</div>'+
+        '<div class="del-opt-sub">'+d.sub+'</div>'+
+      '</div>'+
+      '<div class="del-opt-price">'+(d.fee===0?'FREE':'KES '+d.fee)+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+function selectDelivery(id){
+  selDelivery=id;
+  document.querySelectorAll('.del-opt').forEach(function(el){el.classList.remove('on');});
+  var el=document.getElementById('delopt-'+id);
+  if(el) el.classList.add('on');
+  var addrWrap=document.getElementById('del-address-wrap');
+  addrWrap.style.display=(id==='nairobi'||id==='outside'||id==='upcountry')?'block':'none';
+  updateCartTotals();
+}
+
+// ================================================================
+// PRODUCT DETAIL MODAL
+// ================================================================
+function openProduct(id){
+  var p=PRODUCTS.find(function(x){return x.id===id;});
+  if(!p) return;
+  pdmState.productId=id;
+  pdmState.size=null;
+  pdmState.color=p.colors[0];
+  pdmState.qty=1;
+  renderPDModal(p);
+  document.getElementById('pdmodal-bg').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function renderPDModal(p){
+  var col=pdmState.color||p.colors[0];
+  var colHex=COLOR_MAP[col]||'#888';
+  var bg='background:linear-gradient(135deg,'+p.accentColor+'35,'+p.accentColor+'10,rgba(12,15,28,0))';
+
+  // visual
+  document.getElementById('pdm-visual').innerHTML=
+    '<button class="pdm-close" onclick="closePDModal()">✕</button>'+
+    '<div class="pdm-visual-bg" style="'+bg+'"></div>'+
+    '<div class="pdm-shoe">'+p.emoji+'</div>'+
+    '<div class="pdm-thumb-row">'+
+      ['🔍','📐','✨','🎯'].map(function(e,i){
+        return '<div class="pdm-thumb'+(i===0?' on':'')+'">'+p.emoji+'</div>';
+      }).join('')+
+    '</div>';
+
+  // calc save
+  var saveHtml='';
+  if(p.was){
+    var saveAmt=p.was-p.price;
+    var savePct=Math.round(saveAmt/p.was*100);
+    saveHtml='<span class="pdm-save">Save '+savePct+'%</span>';
+  }
+
+  // color swatches
+  var swatchHtml=p.colors.map(function(c){
+    var hex=COLOR_MAP[c]||'#888';
+    var isSel=c===pdmState.color;
+    return '<div class="pdm-swatch'+(isSel?' on':'')+'" style="background:'+hex+'" title="'+c+'" onclick="pdmSelectColor(\''+c+'\')"></div>';
+  }).join('');
+  swatchHtml+='<span class="pdm-color-label" id="pdm-col-label">'+pdmState.color+'</span>';
+
+  // size grid
+  var szHtml=p.sizes.map(function(s){
+    var isOut=p.outSizes.indexOf(s)>-1;
+    var isSel=pdmState.size===s;
+    return '<div class="pdm-sz'+(isOut?' out':isSel?' on':'')+'" onclick="pdmSelectSize('+s+')">'+s+'</div>';
+  }).join('');
+
+  document.getElementById('pdm-info').innerHTML=
+    '<div class="pdm-cat" style="color:'+p.accentColor+'">'+p.catData.emoji+' '+p.catData.label+'</div>'+
+    '<div class="pdm-name">'+p.name+'</div>'+
+    '<div class="pdm-tagline">'+p.description+'</div>'+
+    '<div class="pdm-price-row">'+
+      '<span class="pdm-price" style="color:'+p.accentColor+'">KES '+p.price.toLocaleString()+'</span>'+
+      (p.was?'<span class="pdm-was">KES '+p.was.toLocaleString()+'</span>':'')+
+      saveHtml+
+    '</div>'+
+
+    '<div class="pdm-sec-title">Colour</div>'+
+    '<div class="pdm-colors" id="pdm-colors">'+swatchHtml+'</div>'+
+
+    '<div class="pdm-sec-title">Select Size</div>'+
+    '<div class="pdm-sizes" id="pdm-sizes">'+szHtml+'</div>'+
+    '<div class="size-guide" onclick="showToast(\'📏 Size guide: Add 1 Euro size if between sizes. Standard EU sizing.\')">📏 Size Guide</div>'+
+
+    '<div class="pdm-qty-row">'+
+      '<div class="pdm-qty-ctrl">'+
+        '<button onclick="pdmChangeQty(-1)">−</button>'+
+        '<span id="pdm-qty-val">'+pdmState.qty+'</span>'+
+        '<button onclick="pdmChangeQty(1)">+</button>'+
+      '</div>'+
+      '<button class="pdm-add-big" style="background:'+p.accentColor+';color:#060810;" onclick="pdmAddToCart(event)">'+
+        '🛒 Add to Bag — KES '+(p.price*pdmState.qty).toLocaleString()+
+      '</button>'+
+    '</div>'+
+
+    '<button class="pdm-wa" onclick="pdmDirectWA()">💬 Ask About This Pair on WhatsApp</button>'+
+
+    '<div class="pdm-desc">'+p.description+'<div class="pdm-features">'+
+      p.features.map(function(f){return '<span class="pdm-feat">✓ '+f+'</span>';}).join('')+
+      '<span class="pdm-feat">📦 '+p.stock+' in stock</span>'+
+      '<span class="pdm-feat">🏆 '+p.sold+' sold</span>'+
+    '</div></div>';
+}
+
+function pdmSelectColor(c){
+  pdmState.color=c;
+  var p=PRODUCTS.find(function(x){return x.id===pdmState.productId;});
+  if(p) renderPDModal(p);
+}
+
+function pdmSelectSize(s){
+  pdmState.size=s;
+  var p=PRODUCTS.find(function(x){return x.id===pdmState.productId;});
+  if(p) renderPDModal(p);
+}
+
+function pdmChangeQty(delta){
+  pdmState.qty=Math.max(1,pdmState.qty+delta);
+  var p=PRODUCTS.find(function(x){return x.id===pdmState.productId;});
+  if(p) renderPDModal(p);
+}
+
+function pdmAddToCart(e){
+  if(!pdmState.size){showToast('👆 Please select a size first!');return;}
+  var p=PRODUCTS.find(function(x){return x.id===pdmState.productId;});
+  if(!p) return;
+  addToCart(p,pdmState.size,pdmState.color||p.colors[0],pdmState.qty,e);
+  closePDModal();
+  setTimeout(openCart,200);
+}
+
+function pdmDirectWA(){
+  var p=PRODUCTS.find(function(x){return x.id===pdmState.productId;});
+  if(!p) return;
+  var msg='Hi! I\'m interested in the *'+p.name+'* ('+p.catData.label+') at KES '+p.price.toLocaleString()+
+    (pdmState.size?'\nSize: *'+pdmState.size+'*':'')+
+    (pdmState.color?'\nColour: *'+pdmState.color+'*':'')+
+    '\n\nIs this available?';
+  alert('Opening WhatsApp with message:\n\n'+msg+'\n\n(In production: wa.me/+254XXXXXXXXX)');
+}
+
+function closePDModal(){
+  document.getElementById('pdmodal-bg').classList.remove('open');
+  document.body.style.overflow='';
+}
+function maybePDClose(e){if(e.target===document.getElementById('pdmodal-bg'))closePDModal();}
+
+// ================================================================
+// WHATSAPP ORDER GENERATOR
+// ================================================================
+function generateWAOrder(){
+  if(cart.length===0){showToast('🛒 Your bag is empty!');return;}
+  var delOpt=DELIVERY_OPTIONS.find(function(d){return d.id===selDelivery;})||DELIVERY_OPTIONS[0];
+  var subtotal=cart.reduce(function(s,ci){return s+ci.product.price*ci.qty;},0);
+  var total=subtotal+delOpt.fee;
+  var address=document.getElementById('del-address')?document.getElementById('del-address').value:'';
+
+  var lines=['🛍️ *NEW ORDER — Sole\'d Out by KaziHub*','─────────────────'];
+  cart.forEach(function(ci,i){
+    lines.push((i+1)+'. *'+ci.product.name+'*');
+    lines.push('   Size: '+ci.size+' | Colour: '+ci.color+' | Qty: '+ci.qty);
+    lines.push('   → KES '+( ci.product.price*ci.qty).toLocaleString());
+  });
+  lines.push('─────────────────');
+  lines.push('Subtotal: KES '+subtotal.toLocaleString());
+  lines.push('Delivery ('+delOpt.label+'): '+(delOpt.fee===0?'FREE':'KES '+delOpt.fee.toLocaleString()));
+  lines.push('*TOTAL: KES '+total.toLocaleString()+'*');
+  if(address) lines.push('📍 Delivery to: '+address);
+  lines.push('─────────────────');
+  lines.push('✅ Please confirm availability & M-Pesa details.');
+  lines.push('Thank you! 🙏');
+
+  var msg=lines.join('\n');
+  document.getElementById('wa-msg-box').textContent=msg;
+  document.getElementById('wpbg').classList.add('open');
+}
+
+function sendToWA(){
+  var msg=document.getElementById('wa-msg-box').textContent;
+  var enc=encodeURIComponent(msg);
+  window.open('https://wa.me/254700000000?text='+enc,'_blank');
+  closeWP();
+  closeCart();
+  showToast('🎉 Opening WhatsApp — send your order!');
+}
+
+function closeWP(){document.getElementById('wpbg').classList.remove('open');}
+function maybeCloseWP(e){if(e.target===document.getElementById('wpbg'))closeWP();}
+
+// ================================================================
+// TOAST
+// ================================================================
+var toastTimer=null;
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){t.classList.remove('show');},2400);
+}
+
+// ================================================================
+// BOOT
+// ================================================================
+buildCatTabs();
+buildDeliveryOptions();
+renderProducts();
+</script>
+<!-- KAZIHUB CHATBOT -->
+<button id="kh-chat-btn" onclick="khChatToggle()" title="Chat with KaziHub">
+  🤖
+  <div class="kh-chat-unread" id="kh-unread">1</div>
+</button>
+<div id="kh-chat-panel">
+  <div class="kh-chat-head">
+    <div class="kh-chat-avatar">🤖</div>
+    <div>
+      <div class="kh-chat-title">KaziHub Assistant</div>
+      <div class="kh-chat-sub">● Online · Nairobi</div>
+    </div>
+    <button class="kh-chat-close" onclick="khChatToggle()">✕</button>
+  </div>
+  <div class="kh-chat-msgs" id="kh-msgs"></div>
+  <div class="kh-chips" id="kh-chips"></div>
+  <div class="kh-chat-foot">
+    <textarea class="kh-chat-input" id="kh-input" rows="1"
+      placeholder="Find a plumber, electrician…"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();khSend();}"></textarea>
+    <button class="kh-chat-send" id="kh-send-btn" onclick="khSend()">➤</button>
+  </div>
+</div>
+<script>
+(function(){
+var KH_PANEL,KH_MSGS,KH_INPUT,KH_SEND,KH_CHIPS,KH_UNREAD;
+var khOpen=false,khHistory=[],khBusy=false;
+
+function khServiceList(){
+  if(typeof DATA!=='undefined'){
+    return DATA.slice(0,100).map(function(d){return d.emoji+' '+d.label;}).join(', ');
+  }
+  return 'Electricians, Plumbers, Carpenters, House Cleaners, Photographers, Web Designers, Tailors, Event Caterers, Drivers, Security Guards, Fitness Trainers, Lawyers, Accountants, Nannies, Barbers, DJs, Plumbers, Masons, Solar Installers, and 240+ more';
+}
+
+var KH_SYS='You are KaziHub Assistant — a sharp, friendly AI for KaziHub, Kenya\'s gig economy marketplace in Nairobi.\nKaziHub connects customers with verified local professionals across 259 service categories.\nServices available: '+khServiceList()+'\n\nRules:\n- Keep replies SHORT (2-4 sentences max). No walls of text.\n- When a user describes a need, identify the best matching service and recommend it directly.\n- Always end service recommendations with a WhatsApp CTA on a new line in this exact format: [WA:ServiceName:Neighbourhood]\n  Example: [WA:Electrician:Westlands]\n- Typical prices in KES: small jobs 500-2000, medium 2000-8000, large 8000-50000+.\n- Payment is via M-Pesa STK Push after booking on WhatsApp.\n- If you need more info, ask ONE question only (area or urgency).\n- Never make up specific pro names or phone numbers.\n- If user writes in Swahili, respond in Swahili.';
+
+var STARTERS=['Find me a plumber 🪠','I need an electrician ⚡','House cleaning today 🧹','Event photographer 📸','Graphic designer 🎨'];
+
+function khInit(){
+  KH_PANEL=document.getElementById('kh-chat-panel');
+  KH_MSGS=document.getElementById('kh-msgs');
+  KH_INPUT=document.getElementById('kh-input');
+  KH_SEND=document.getElementById('kh-send-btn');
+  KH_CHIPS=document.getElementById('kh-chips');
+  KH_UNREAD=document.getElementById('kh-unread');
+  if(!KH_PANEL)return;
+  khAddMsg('bot','Hey! 👋 I\'m your KaziHub assistant. Tell me what service you need and I\'ll match you with a verified pro in Nairobi.');
+  STARTERS.forEach(function(s){
+    var c=document.createElement('button');
+    c.className='kh-chip';c.textContent=s;
+    c.onclick=function(){KH_INPUT.value=s;khSend();};
+    KH_CHIPS.appendChild(c);
+  });
+  setTimeout(function(){if(KH_UNREAD)KH_UNREAD.classList.add('show');},2000);
+  var inp=document.getElementById('kh-input');
+  if(inp){inp.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px';});}
+}
+
+function khChatToggle(){
+  if(!KH_PANEL)return;
+  khOpen=!khOpen;
+  KH_PANEL.classList.toggle('open',khOpen);
+  if(khOpen){
+    if(KH_UNREAD)KH_UNREAD.classList.remove('show');
+    setTimeout(function(){if(KH_INPUT)KH_INPUT.focus();},250);
+  }
+}
+
+function khAddMsg(role,content){
+  if(!KH_MSGS)return null;
+  var div=document.createElement('div');
+  div.className='kh-msg '+role;
+  var html=content.replace(/\[WA:([^\]]+)\]/g,function(_,p){
+    var pts=p.split(':'),svc=pts[0]||'service',loc=pts[1]||'Nairobi';
+    var msg=encodeURIComponent('Hi, I found you on KaziHub. I need '+svc+' in '+loc+'. Are you available?');
+    return '<br><a class="kh-wa-cta" href="https://wa.me/254700000000?text='+msg+'" target="_blank">💬 Book via WhatsApp — '+svc+'</a>';
+  });
+  html=html.replace(/\n/g,'<br>');
+  div.innerHTML=html;
+  KH_MSGS.appendChild(div);
+  KH_MSGS.scrollTop=KH_MSGS.scrollHeight;
+  return div;
+}
+
+function khRemove(el){if(el&&el.parentNode)el.parentNode.removeChild(el);}
+
+async function khSend(){
+  if(khBusy||!KH_INPUT)return;
+  var text=(KH_INPUT.value||'').trim();if(!text)return;
+  KH_INPUT.value='';KH_INPUT.style.height='';
+  if(KH_CHIPS)KH_CHIPS.innerHTML='';
+  khAddMsg('user',text);
+  khHistory.push({role:'user',content:text});
+  khBusy=true;if(KH_SEND)KH_SEND.disabled=true;
+  var thinking=khAddMsg('thinking','● thinking…');
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:300,
+        system:KH_SYS,
+        messages:khHistory
+      })
+    });
+    var data=await res.json();
+    var reply=(data.content&&data.content[0]&&data.content[0].text)||'Sorry, something went wrong. Try again.';
+    khRemove(thinking);
+    khAddMsg('bot',reply);
+    khHistory.push({role:'assistant',content:reply});
+    if(khHistory.length>20)khHistory=khHistory.slice(-20);
+  }catch(e){
+    khRemove(thinking);
+    khAddMsg('bot','Connection issue — please try again in a moment.');
+  }
+  khBusy=false;if(KH_SEND)KH_SEND.disabled=false;if(KH_INPUT)KH_INPUT.focus();
+}
+
+window.khChatToggle=khChatToggle;
+window.khSend=khSend;
+document.addEventListener('DOMContentLoaded',khInit);
+})();
+</script>
+</body>
+</html>

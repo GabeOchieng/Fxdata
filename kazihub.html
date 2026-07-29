@@ -1,0 +1,2298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KaziHub — Kenya Skills Market</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04070f;
+  --bg2:#080d1a;
+  --surface:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.08);
+  --text:#dde3f0;
+  --muted:#4a5470;
+  --accent:#00ffb3;
+  --gold:#ffbe00;
+
+  /* industry palette — saturated, distinct */
+  --tech:#00d4ff;
+  --beauty:#ff3d9a;
+  --food:#ff6b2b;
+  --home:#7c5cff;
+  --edu:#00ffb3;
+  --events:#ffd000;
+  --transport:#2b8fff;
+  --health:#ff3d5a;
+  --construction:#ff8c00;
+  --creative:#c94dff;
+  --finance:#00d26a;
+  --security:#6a8aaa;
+  --wellness:#ff5fa0;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Space Grotesk',sans-serif;
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
+/* starfield */
+body::before{
+  content:'';
+  position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(1px 1px at 15% 20%,rgba(255,255,255,.5) 0%,transparent 100%),
+    radial-gradient(1px 1px at 42% 8%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 73% 15%,rgba(255,255,255,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 88% 45%,rgba(255,255,255,.25) 0%,transparent 100%),
+    radial-gradient(1px 1px at 28% 72%,rgba(255,255,255,.35) 0%,transparent 100%),
+    radial-gradient(1px 1px at 62% 88%,rgba(255,255,255,.2) 0%,transparent 100%),
+    radial-gradient(1px 1px at 5% 55%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 95% 75%,rgba(255,255,255,.25) 0%,transparent 100%),
+    radial-gradient(2px 2px at 50% 50%,rgba(0,212,255,.08) 0%,transparent 70%),
+    radial-gradient(2px 2px at 80% 20%,rgba(124,92,255,.06) 0%,transparent 60%);
+  pointer-events:none;
+}
+
+/* ── NAV ── */
+nav{
+  position:relative;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 20px;
+  background:rgba(4,7,15,.9);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(20px);
+  flex-shrink:0;
+}
+.logo{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:18px;font-weight:700;letter-spacing:-.3px;
+  display:flex;align-items:center;gap:8px;
+}
+.logo-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 8px var(--accent);
+  animation:pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)}}
+.logo em{color:var(--accent);font-style:normal;}
+
+.nav-stats{display:flex;gap:16px;font-size:11px;}
+.ns{color:var(--muted);}
+.ns b{color:var(--text);font-weight:600;}
+.ns .live{color:#00ff88;}
+
+.nav-r{display:flex;gap:8px;}
+.btn{
+  padding:7px 16px;border-radius:8px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:12px;font-weight:600;cursor:pointer;border:none;
+  transition:all .15s;
+}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-prime{background:var(--accent);color:#04070f;font-weight:700;}
+.btn-prime:hover{box-shadow:0 0 16px rgba(0,255,179,.4);transform:translateY(-1px);}
+
+/* ── TICKER ── */
+.ticker-wrap{
+  flex-shrink:0;
+  overflow:hidden;
+  background:rgba(8,13,26,.8);
+  border-bottom:1px solid var(--border);
+  padding:6px 0;
+}
+.ticker-inner{
+  display:flex;gap:36px;white-space:nowrap;
+  animation:ticker 60s linear infinite;
+}
+.ti{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.ti b{color:var(--text);}
+.up{color:#00ffb3;} .dn{color:#ff3d5a;}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── MAIN LAYOUT ── */
+.main{
+  flex:1;display:flex;overflow:hidden;position:relative;z-index:1;
+}
+
+/* ── CANVAS ── */
+.canvas-shell{
+  flex:1;position:relative;overflow:hidden;
+  background:rgba(2,5,12,0.7);
+}
+#kc{display:block;width:100%;height:100%;cursor:default;touch-action:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
+
+/* cursor: drawn on canvas only — no DOM bleed */
+
+/* ── CONTROLS (float over canvas) ── */
+.float-controls{
+  position:absolute;top:14px;left:14px;z-index:20;
+  display:flex;flex-direction:column;gap:8px;
+}
+.search-box{
+  position:relative;
+}
+.search-box input{
+  width:260px;padding:8px 12px 8px 32px;
+  background:rgba(8,13,26,.88);
+  border:1px solid var(--border);
+  border-radius:9px;color:var(--text);
+  font-size:12px;font-family:'Space Grotesk',sans-serif;
+  outline:none;backdrop-filter:blur(12px);
+  transition:border-color .18s;
+}
+.search-box input:focus{border-color:var(--accent);}
+.search-box input::placeholder{color:var(--muted);}
+.si{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;opacity:.5;}
+
+.cat-filters{display:flex;gap:5px;flex-wrap:wrap;max-width:340px;}
+.cf{
+  padding:4px 10px 4px 8px;border-radius:99px;font-size:10px;font-weight:600;
+  cursor:pointer;border:1px solid var(--border);
+  background:rgba(8,13,26,.85);color:var(--muted);
+  transition:all .15s;white-space:nowrap;backdrop-filter:blur(8px);
+  display:inline-flex;align-items:center;gap:5px;
+}
+.cf:hover{color:var(--text);border-color:rgba(255,255,255,.18);}
+.cf.on{border-color:transparent;color:#04070f;}
+.cf-dot{
+  width:7px;height:7px;border-radius:50%;flex-shrink:0;
+  opacity:0.65;transition:opacity .15s, transform .15s;
+}
+.cf:hover .cf-dot{opacity:1;}
+.cf.on .cf-dot{opacity:1;transform:scale(1.2);}
+.cf[data-cat="all"] .cf-dot{display:none;}
+
+/* ── SIDE PANEL ── */
+.side{
+  width:300px;flex-shrink:0;
+  border-left:1px solid var(--border);
+  background:rgba(4,7,15,.92);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  backdrop-filter:blur(20px);
+}
+
+.side-head{
+  padding:12px 14px 0;
+  border-bottom:1px solid var(--border);
+  display:flex;flex-direction:column;gap:0;
+}
+.side-tabs{display:flex;gap:0;}
+.stab{
+  flex:1;padding:10px 6px;text-align:center;
+  font-size:11px;font-weight:600;cursor:pointer;
+  color:var(--muted);border-bottom:2px solid transparent;
+  transition:all .15s;
+}
+.stab.on{color:var(--accent);border-bottom-color:var(--accent);}
+
+.side-body{flex:1;overflow-y:auto;padding:12px;}
+.side-body::-webkit-scrollbar{width:3px;}
+.side-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* leaderboard row */
+.lr{
+  display:flex;align-items:center;gap:9px;
+  padding:7px 8px;border-radius:8px;cursor:pointer;
+  transition:background .12s;margin-bottom:2px;
+}
+.lr:hover{background:rgba(255,255,255,.04);}
+.lrk{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--muted);width:18px;flex-shrink:0;}
+.lrk.g{color:var(--gold);}
+.lav{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:#04070f;font-weight:700;
+}
+.li{flex:1;min-width:0;}
+.ln{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ls{font-size:10px;color:var(--muted);}
+.lval{font-size:11px;font-weight:700;}
+
+/* ── SLIDERS PANEL ── */
+.sliders-section{padding:10px 14px;}
+.sl-title{
+  font-size:9px;text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted);margin-bottom:10px;
+}
+.sl-row{
+  display:flex;align-items:center;gap:8px;margin-bottom:9px;
+}
+.sl-emoji{font-size:13px;width:18px;flex-shrink:0;}
+.sl-label{font-size:10px;font-weight:600;flex:1;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sl-val{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;font-weight:600;
+  width:28px;text-align:right;flex-shrink:0;
+}
+input[type=range]{
+  flex:1;height:3px;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+  background:var(--border);border-radius:2px;outline:none;
+  max-width:80px;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:12px;height:12px;border-radius:50%;
+  cursor:pointer;transition:transform .1s;
+}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.3);}
+
+/* ── TOOLTIP ── */
+.tt{
+  position:fixed;pointer-events:none;z-index:500;
+  background:rgba(8,13,26,.95);
+  border:1px solid var(--border);
+  border-radius:14px;padding:14px 16px;
+  box-shadow:0 16px 48px rgba(0,0,0,.8);
+  opacity:0;transition:opacity .1s;
+  min-width:200px;max-width:240px;
+  backdrop-filter:blur(20px);
+}
+.tt.show{opacity:1;}
+.tt-name{font-size:14px;font-weight:700;margin-bottom:3px;}
+.tt-cat{font-size:10px;color:var(--muted);margin-bottom:10px;}
+.tt-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;}
+.tt-row span:last-child{font-weight:600;font-family:'JetBrains Mono',monospace;}
+.tt-prog{margin-top:10px;}
+.tt-prog-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px;}
+.tt-bar{height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;}
+.tt-fill{height:100%;border-radius:2px;}
+.tt-lvl{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:99px;
+  font-size:9px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.5px;margin-top:8px;border:1px solid;
+}
+
+/* ── MODAL ── */
+.modal-bg{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(0,0,0,.82);backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.modal-bg.open{opacity:1;pointer-events:all;}
+.modal-box{
+  background:var(--bg2);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;padding:28px;
+  width:min(540px,92vw);max-height:86vh;
+  overflow-y:auto;
+  transform:translateY(16px);transition:transform .2s;
+}
+.modal-bg.open .modal-box{transform:translateY(0);}
+.modal-box::-webkit-scrollbar{width:3px;}
+.modal-box::-webkit-scrollbar-thumb{background:var(--border);}
+.mhead{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;}
+.mtitle{font-size:22px;font-weight:700;}
+.mclose{
+  background:rgba(255,255,255,.06);border:1px solid var(--border);
+  color:var(--muted);width:30px;height:30px;border-radius:50%;
+  cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+}
+.mclose:hover{color:var(--text);}
+.mstats{
+  display:flex;border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;margin-bottom:18px;
+}
+.mst{flex:1;padding:14px;text-align:center;border-right:1px solid var(--border);}
+.mst:last-child{border-right:none;}
+.mst .mv{font-size:20px;font-weight:700;font-family:'JetBrains Mono',monospace;}
+.mst .ml{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+
+.wcards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.wcard{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);border-radius:12px;padding:12px;
+  cursor:pointer;transition:all .15s;
+}
+.wcard:hover{border-color:var(--accent);background:rgba(0,255,179,.04);transform:translateY(-2px);}
+.wc-av{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:13px;color:#04070f;margin-bottom:8px;
+}
+.wc-name{font-size:12px;font-weight:600;margin-bottom:2px;}
+.wc-loc{font-size:10px;color:var(--muted);margin-bottom:6px;}
+.wc-stars{font-size:11px;color:var(--gold);margin-bottom:5px;}
+.wc-chip{
+  display:inline-flex;padding:2px 8px;border-radius:99px;
+  font-size:9px;font-weight:700;border:1px solid;
+  text-transform:uppercase;letter-spacing:.3px;margin-bottom:5px;
+}
+.xpbar{height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;margin-bottom:2px;}
+.xpfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:2px;}
+.wc-xplbl{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:4px;}
+.wc-wa{font-size:11px;font-weight:600;color:#25d366;display:flex;align-items:center;gap:4px;margin-top:5px;}
+
+.join-box{
+  background:linear-gradient(135deg,rgba(0,255,179,.08),rgba(255,190,0,.04));
+  border:1px solid rgba(0,255,179,.15);border-radius:14px;
+  padding:20px;text-align:center;
+}
+.join-box h4{font-size:15px;font-weight:700;margin-bottom:8px;}
+.join-box p{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;}
+.jfield{margin-bottom:12px;}
+.jfield label{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.jfield input,.jfield select{
+  width:100%;padding:10px 12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);border-radius:9px;
+  color:var(--text);font-family:'Space Grotesk',sans-serif;
+  font-size:13px;outline:none;transition:border-color .15s;
+}
+.jfield input:focus,.jfield select:focus{border-color:var(--accent);}
+.jfield select option{background:var(--bg2);}
+.udrop{
+  border:2px dashed var(--border);border-radius:12px;
+  padding:22px;text-align:center;cursor:pointer;transition:all .18s;
+}
+.udrop:hover{border-color:var(--accent);background:rgba(0,255,179,.04);}
+.udrop .ui{font-size:26px;margin-bottom:8px;}
+.udrop p{font-size:11px;color:var(--muted);line-height:1.5;}
+
+/* ── LEGEND BAR ── */
+/* legend removed — colour key lives in filter pills */
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ── COLLAPSIBLE TOP CHROME ──────────────────────────────── */
+#top-chrome{
+  flex-shrink:0;
+  overflow:hidden;
+  max-height:200px;
+  transition:max-height .38s cubic-bezier(.4,0,.2,1),
+             opacity .25s ease;
+  opacity:1;
+}
+#top-chrome.collapsed{
+  max-height:0;
+  opacity:0;
+}
+
+/* reveal tab — sits at very top of canvas, hidden until chrome collapses */
+.top-reveal-tab{
+  position:absolute;top:0;left:50%;transform:translateX(-50%) translateY(-100%);
+  z-index:30;
+  background:rgba(4,7,15,.9);
+  border:1px solid var(--border);
+  border-top:none;
+  border-radius:0 0 10px 10px;
+  padding:3px 18px 5px;
+  cursor:pointer;
+  color:var(--muted);
+  transition:transform .38s cubic-bezier(.4,0,.2,1), color .15s;
+  backdrop-filter:blur(12px);
+  display:flex;align-items:center;
+}
+.top-reveal-tab:hover{ color:var(--text); }
+/* slide into view when chrome collapses — .main is sibling of #top-chrome */
+#top-chrome.collapsed ~ .main .top-reveal-tab{
+  transform:translateX(-50%) translateY(0);
+}
+
+/* ── COLLAPSIBLE SIDE PANEL ──────────────────────────────── */
+#side-panel{
+  position:relative;
+  width:300px;
+  transition:width .38s cubic-bezier(.4,0,.2,1);
+  overflow:hidden;   /* clips content during slide */
+  flex-shrink:0;
+}
+#side-panel.collapsed{
+  width:0;
+}
+
+/* toggle button — rides the left edge */
+.side-toggle{
+  /* sits in .main (position:relative), rides the right edge of canvas / left edge of side */
+  position:absolute;
+  top:50%;
+  right:0;                          /* will be overridden by JS based on side width */
+  transform:translateY(-50%);
+  z-index:40;
+  background:rgba(4,7,15,.92);
+  border:1px solid var(--border);
+  border-right:none;
+  border-radius:10px 0 0 10px;
+  width:18px;height:42px;
+  cursor:pointer;
+  color:var(--muted);
+  display:flex;align-items:center;justify-content:center;
+  transition:color .15s, background .15s;
+  padding:0;
+  backdrop-filter:blur(14px);
+  outline:none;
+}
+.side-toggle:hover{ color:var(--text); background:rgba(8,13,26,.99); }
+#side-toggle-icon{
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+}
+/* arrow flips when side is collapsed */
+#side-panel.collapsed ~ .side-toggle #side-toggle-icon,
+.side-toggle.flipped #side-toggle-icon{
+  transform:rotate(180deg);
+}
+
+/* ── THEME SWITCHER ──────────────────────────────────────── */
+.theme-bar{
+  position:absolute;bottom:44px;right:14px;z-index:25;
+  display:flex;flex-direction:column;align-items:flex-end;gap:6px;
+}
+.theme-pill{
+  display:flex;align-items:center;
+  background:rgba(4,7,15,.88);
+  border:1px solid var(--border);
+  border-radius:99px;
+  backdrop-filter:blur(14px);
+  overflow:hidden;
+  font-size:10px;font-weight:700;
+  box-shadow:0 4px 20px rgba(0,0,0,.5);
+}
+.tpill-opt{
+  padding:5px 13px;cursor:pointer;
+  color:var(--muted);letter-spacing:.3px;
+  transition:all .18s;user-select:none;
+}
+.tpill-opt.active{
+  background:var(--accent);color:#04070f;
+  border-radius:99px;margin:2px;
+}
+.tpill-opt:hover:not(.active){ color:var(--text); }
+
+/* icon style picker */
+.icon-pill{
+  display:flex;align-items:center;gap:0;
+  background:rgba(4,7,15,.88);
+  border:1px solid var(--border);
+  border-radius:99px;
+  backdrop-filter:blur(14px);
+  overflow:hidden;
+  font-size:10px;font-weight:700;
+  box-shadow:0 4px 20px rgba(0,0,0,.5);
+}
+.icon-pill span{
+  padding:4px 11px;cursor:pointer;
+  color:var(--muted);
+  transition:all .18s;user-select:none;
+}
+.icon-pill span.active{
+  background:rgba(255,255,255,.1);color:var(--text);
+  border-radius:99px;margin:2px;
+}
+.icon-pill span:hover:not(.active){ color:var(--text); }
+
+/* heatmap mode body tint */
+body.heatmap-mode .canvas-shell{
+  background:rgba(1,3,8,0.82);
+}
+
+
+/* ── KAZIHUB CHATBOT ──────────────────────────────────────── */
+#kh-chat-btn{
+  position:fixed;bottom:22px;right:22px;z-index:200;
+  width:52px;height:52px;border-radius:50%;
+  background:var(--accent,#00ffb3);
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 24px rgba(0,255,179,.35);
+  transition:transform .2s, box-shadow .2s;
+  font-size:22px;
+}
+#kh-chat-btn:hover{transform:scale(1.08);box-shadow:0 6px 32px rgba(0,255,179,.5);}
+#kh-chat-btn .kh-chat-unread{
+  position:absolute;top:-2px;right:-2px;
+  width:16px;height:16px;border-radius:50%;
+  background:#ff3d5a;color:#fff;
+  font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;
+}
+#kh-chat-btn .kh-chat-unread.show{opacity:1;}
+#kh-chat-panel{
+  position:fixed;bottom:86px;right:22px;z-index:200;
+  width:340px;max-height:520px;
+  background:rgba(6,10,22,.97);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  display:flex;flex-direction:column;
+  box-shadow:0 16px 60px rgba(0,0,0,.7);
+  backdrop-filter:blur(24px);
+  transform:scale(.9) translateY(12px);
+  opacity:0;pointer-events:none;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), opacity .18s;
+  overflow:hidden;
+}
+#kh-chat-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
+.kh-chat-head{
+  padding:14px 16px 12px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.kh-chat-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#00ffb3,#00d4ff);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+}
+.kh-chat-title{font-size:13px;font-weight:700;color:#f0eee8;}
+.kh-chat-sub{font-size:10px;color:rgba(0,255,179,.8);margin-top:1px;}
+.kh-chat-close{
+  margin-left:auto;background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.35);font-size:16px;padding:2px 4px;transition:color .15s;
+}
+.kh-chat-close:hover{color:rgba(255,255,255,.7);}
+.kh-chat-msgs{
+  flex:1;overflow-y:auto;padding:12px;
+  display:flex;flex-direction:column;gap:8px;min-height:0;
+}
+.kh-chat-msgs::-webkit-scrollbar{width:3px;}
+.kh-chat-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+.kh-msg{max-width:86%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.55;}
+.kh-msg.bot{background:rgba(255,255,255,.06);color:#dde3f0;border-bottom-left-radius:4px;align-self:flex-start;}
+.kh-msg.user{background:#00ffb3;color:#04070f;font-weight:600;border-bottom-right-radius:4px;align-self:flex-end;}
+.kh-msg.thinking{background:rgba(255,255,255,.04);color:rgba(221,227,240,.45);font-style:italic;align-self:flex-start;}
+.kh-chips{display:flex;flex-wrap:wrap;gap:5px;padding:0 12px 10px;flex-shrink:0;}
+.kh-chip{
+  padding:4px 11px;border-radius:99px;font-size:10px;font-weight:700;cursor:pointer;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:rgba(221,227,240,.8);transition:all .15s;white-space:nowrap;
+}
+.kh-chip:hover{background:rgba(0,255,179,.12);border-color:rgba(0,255,179,.4);color:#00ffb3;}
+.kh-chat-foot{
+  padding:10px 12px;border-top:1px solid rgba(255,255,255,.06);
+  display:flex;gap:8px;align-items:center;flex-shrink:0;
+}
+.kh-chat-input{
+  flex:1;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);border-radius:10px;
+  padding:8px 12px;color:#dde3f0;font-size:12px;
+  font-family:inherit;outline:none;transition:border-color .15s;
+  resize:none;max-height:80px;
+}
+.kh-chat-input:focus{border-color:rgba(0,255,179,.5);}
+.kh-chat-input::placeholder{color:rgba(255,255,255,.25);}
+.kh-chat-send{
+  width:34px;height:34px;border-radius:10px;
+  background:#00ffb3;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .15s;color:#04070f;font-size:14px;
+}
+.kh-chat-send:hover{box-shadow:0 0 14px rgba(0,255,179,.4);}
+.kh-chat-send:disabled{opacity:.35;cursor:not-allowed;}
+.kh-wa-cta{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:8px;padding:7px 13px;border-radius:9px;
+  background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.35);
+  color:#25d366;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;
+  transition:all .15s;
+}
+.kh-wa-cta:hover{background:rgba(37,211,102,.25);}
+@media(max-width:400px){#kh-chat-panel{width:calc(100vw - 20px);right:10px;}}
+
+body.crisp-mode .canvas-shell{
+  background:rgba(1,2,6,0.90);  /* deeper bg so vivid spheres pop */
+}
+</style>
+
+<style id="kh-topbar-css">
+#kh-topbar{
+  position:fixed;top:0;left:0;right:0;z-index:9999;
+  background:rgba(4,6,14,.97);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(20px);
+  display:flex;align-items:center;height:40px;padding:0 20px;gap:0;
+  font-family:'Space Grotesk',sans-serif;
+}
+#kh-topbar a.kh-logo{
+  font-size:16px;font-weight:800;
+  color:#f0eee8;text-decoration:none;
+  display:flex;align-items:center;gap:6px;margin-right:14px;
+  font-family:'Bebas Neue','Space Grotesk',sans-serif;font-size:20px;
+}
+#kh-topbar a.kh-logo em{color:var(--accent);font-style:normal;}
+.kh-tb-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:kh_pulse 2s ease-in-out infinite;}
+@keyframes kh_pulse{0%,100%{opacity:1}50%{opacity:.3}}
+#kh-topbar .kh-sep{width:1px;height:16px;background:rgba(255,255,255,.08);margin:0 12px;}
+#kh-topbar .kh-nav{display:flex;align-items:center;gap:2px;flex:1;}
+#kh-topbar .kh-link{
+  padding:4px 11px;border-radius:7px;font-size:11px;font-weight:600;
+  text-decoration:none;color:rgba(154,152,181,.85);
+  transition:all .13s;border:1px solid transparent;
+}
+#kh-topbar .kh-link:hover{color:#f0eee8;background:rgba(255,255,255,.05);}
+#kh-topbar .kh-link.kh-active{color:#f0eee8;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.1);}
+#kh-topbar .kh-link.kh-docs{color:#f5a623 !important;}
+#kh-topbar .kh-link.kh-docs:hover{background:rgba(245,166,35,.06);}
+#kh-topbar .kh-link.kh-docs.kh-active{border-color:rgba(245,166,35,.2);background:rgba(245,166,35,.07);}
+#kh-topbar .kh-link.kh-merch{color:#c8ff00 !important;}
+#kh-topbar .kh-link.kh-merch:hover{background:rgba(200,255,0,.06);}
+#kh-topbar .kh-link.kh-merch.kh-active{border-color:rgba(200,255,0,.2);background:rgba(200,255,0,.07);}
+body{padding-top:40px;}
+</style>
+
+</head>
+<body>
+<div id="kh-topbar">
+  <a class="kh-logo" href="kazihub-home.html"><div class="kh-tb-dot"></div>Kazi<em>Hub</em></a>
+  <div class="kh-sep"></div>
+  <div class="kh-nav">
+    <a class="kh-link" href="kazihub-home.html">Home</a>
+    <a class="kh-link kh-active" href="kazihub.html">🗺 Market</a>
+    <a class="kh-link" href="kazihub-store.html">👔 Hire a Pro</a>
+    <a class="kh-link" href="kazihub-rentals.html">🏠 Rentals</a>
+    <a class="kh-link" href="kazihub-footwear.html">👟 Footwear</a>
+    <a class="kh-link kh-merch" href="kazihub-tshirt.html">👕 Merch</a>
+    <a class="kh-link kh-docs" href="kazihub-docs.html">📋 Docs</a>
+  </div>
+</div>
+<div id="top-chrome">
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Kazi<em>Hub</em>
+  </div>
+  <div class="nav-stats">
+    <span class="ns"><span class="live">●</span> <b id="n-online">184</b> online</span>
+    <span class="ns">Jobs: <b>14,392</b></span>
+    <span class="ns">Pros: <b>2,847</b></span>
+    <span class="ns">Categories: <b>259</b></span>
+  </div>
+  <div class="nav-r">
+    <a href="kazihub-store.html" style="text-decoration:none;"><button class="btn btn-ghost">🏪 Portfolios</button></a>
+    <a href="kazihub-rentals.html" style="text-decoration:none;"><button class="btn btn-ghost">🏠 Rentals</button></a>
+    <button class="btn btn-ghost" onclick="openJoin()">List Service</button>
+    <button class="btn btn-prime" onclick="openJoin()">📲 Join Free</button>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner" id="ticker"></div>
+</div>
+</div><!-- /top-chrome -->
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- CANVAS -->
+  <div class="canvas-shell" id="cshell">
+    <!-- TOP REVEAL TAB -->
+    <div class="top-reveal-tab" id="top-reveal" onclick="toggleTopChrome()" title="Show header">
+      <svg width="12" height="7" viewBox="0 0 12 7" fill="none"><path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    <!-- FLOAT CONTROLS -->
+    <div class="float-controls">
+      <div class="search-box">
+        <span class="si">🔍</span>
+        <input type="text" id="search" placeholder="Search electrician, chef…">
+      </div>
+      <div class="cat-filters" id="frow"></div>
+    </div>
+
+    <!-- THEME / ICON BAR -->
+    <div class="theme-bar">
+      <div class="theme-pill">
+        <div class="tpill-opt active" data-theme="minimal" onclick="setTheme('minimal')">✦ Minimal</div>
+        <div class="tpill-opt" data-theme="crisp"   onclick="setTheme('crisp')">◉ Crisp</div>
+      </div>
+      <div class="icon-pill">
+        <span class="active" data-icon="emoji" onclick="setIconStyle('emoji')">😀 Emoji</span>
+        <span data-icon="text" onclick="setIconStyle('text')">Aa Text</span>
+        <span data-icon="none" onclick="setIconStyle('none')">— None</span>
+      </div>
+      </div>
+
+    <canvas id="kc"></canvas>
+  </div>
+
+  <!-- SIDE PANEL -->
+  <div class="side" id="side-panel">
+    <div class="side-head">
+      <div class="side-tabs">
+        <div class="stab on" data-tab="top">🏆 Top</div>
+        <div class="stab" data-tab="rising">🚀 Rising</div>
+        <div class="stab" data-tab="sliders">🎛 Scale</div>
+      </div>
+    </div>
+    <div class="side-body" id="sbody"></div>
+  </div>
+  <!-- SIDE TOGGLE — outside overflow:hidden panel -->
+  <button class="side-toggle" id="side-toggle" onclick="toggleSide()" title="Toggle panel">
+    <svg id="side-toggle-icon" width="7" height="12" viewBox="0 0 7 12" fill="none"><path d="M6 1L1 6L6 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+  </button>
+</div>
+
+<!-- TOOLTIP -->
+<div class="tt" id="tt">
+  <div class="tt-name" id="tt-n"></div>
+  <div class="tt-cat" id="tt-c"></div>
+  <div class="tt-row"><span>Professionals</span><span id="tt-w"></span></div>
+  <div class="tt-row"><span>Rating</span><span id="tt-r"></span></div>
+  <div class="tt-row"><span>Jobs</span><span id="tt-j"></span></div>
+  <div class="tt-row"><span>Growth</span><span id="tt-g"></span></div>
+  <div class="tt-prog">
+    <div class="tt-prog-lbl">Community Level</div>
+    <div class="tt-bar"><div class="tt-fill" id="tt-f"></div></div>
+    <div class="tt-lvl" id="tt-lv"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="mbg" onclick="maybeClose(event)">
+  <div class="modal-box">
+    <div class="mhead">
+      <div class="mtitle" id="mtitle"></div>
+      <button class="mclose" onclick="closeModal()">✕</button>
+    </div>
+    <div id="mbody"></div>
+  </div>
+</div>
+
+<script>
+// ================================================================
+// DATA
+// ================================================================
+var CATS = {
+  tech:         {label:'Tech & Devices',    icon:'💻', color:'#00d4ff'},
+  beauty:       {label:'Beauty',             icon:'💅', color:'#ff3d9a'},
+  food:         {label:'Food & Catering',    icon:'🍽',  color:'#ff6b2b'},
+  home:         {label:'Home Services',      icon:'🏠', color:'#7c5cff'},
+  education:    {label:'Education',          icon:'📚', color:'#00ffb3'},
+  events:       {label:'Events',             icon:'🎉', color:'#ffd000'},
+  transport:    {label:'Transport',          icon:'🚗', color:'#2b8fff'},
+  health:       {label:'Health & Care',      icon:'❤️',  color:'#ff3d5a'},
+  construction: {label:'Construction',       icon:'🔨', color:'#ff8c00'},
+  creative:     {label:'Creative & Media',   icon:'🎨', color:'#c94dff'},
+  finance:      {label:'Finance & Legal',    icon:'💰', color:'#00d26a'},
+  security:     {label:'Security',           icon:'🔒', color:'#6a8aaa'},
+  wellness:     {label:'Wellness & Sport',   icon:'🧘', color:'#ff5fa0'},
+  rental:       {label:'Rentals & Stays',    icon:'🏡', color:'#00e5ff'},
+  artisan:      {label:'Artisan & Jua Kali', icon:'🪚', color:'#ff7043'},
+  digital:      {label:'Digital Hustle',     icon:'📲', color:'#7c4dff'},
+  legal:        {label:'Legal & Admin',      icon:'⚖️',  color:'#546e7a'},
+  farm:         {label:'Agri & Farm',        icon:'🌾', color:'#66bb6a'},
+  kids:         {label:'Kids & Family',      icon:'👧', color:'#ff80ab'},
+  culture:      {label:'Culture & Talent',   icon:'🎭', color:'#ffa726'},
+  civil:        {label:'Civil & Community',  icon:'🏛️',  color:'#78909c'}
+};
+
+var LEVELS = [
+  {name:'Rookie',   xp:0,     color:'#4a5470'},
+  {name:'Skilled',  xp:1500,  color:'#00d26a'},
+  {name:'Expert',   xp:3500,  color:'#00d4ff'},
+  {name:'Master',   xp:6500,  color:'#ffd000'},
+  {name:'Legend',   xp:9000,  color:'#ff3d9a'}
+];
+
+function getLevel(xp){
+  var l=LEVELS[0];
+  for(var i=0;i<LEVELS.length;i++){if(xp>=LEVELS[i].xp)l=LEVELS[i];}
+  return l;
+}
+
+var RAW=[
+  /* ── TECH & DEVICES ── */
+  {id:'computer-repair',     label:'Computer Repair',          cat:'tech',         emoji:'💻'},
+  {id:'phone-repairs',       label:'Phone Repair (iPhone/Tecno/Infinix)', cat:'tech', emoji:'📲'},
+  {id:'laptop-recovery',     label:'Laptop Repair & Data Recovery', cat:'tech',     emoji:'💾'},
+  {id:'tv-mounting',         label:'TV & Home Theatre Setup',   cat:'tech',         emoji:'📺'},
+  {id:'tv-repair',           label:'TV Repair',                 cat:'tech',         emoji:'📡'},
+  {id:'cad-design',          label:'CAD Design',                cat:'tech',         emoji:'🖥️'},
+  {id:'computer-networking', label:'Computer Networking',       cat:'tech',         emoji:'🌐'},
+  {id:'dstv',                label:'DSTV Installers',           cat:'tech',         emoji:'📡'},
+  {id:'smart-home',          label:'Smart Home Installs',       cat:'tech',         emoji:'🏠'},
+  {id:'cctv-tech',           label:'CCTV & Security Systems',   cat:'tech',         emoji:'📷'},
+  {id:'audio-repair',        label:'Audio System Repair',       cat:'tech',         emoji:'🔊'},
+  {id:'mobile-app-dev',      label:'Mobile App Developer',      cat:'tech',         emoji:'📱'},
+  {id:'software-dev',        label:'Software Developer',        cat:'tech',         emoji:'⌨️'},
+  {id:'web-designer',        label:'Web Designer',              cat:'tech',         emoji:'🌐'},
+  {id:'it-specialist',       label:'IT Specialist',             cat:'tech',         emoji:'🖧'},
+  {id:'wifi-setup',          label:'Wi-Fi & Router Setup',      cat:'tech',         emoji:'📶'},
+  {id:'battery-charger-tech',label:'Battery & Charger Technician', cat:'tech',      emoji:'🔋'},
+  {id:'smart-lock',          label:'Smart Lock Installs',       cat:'tech',         emoji:'🔐'},
+  {id:'game-console-repair', label:'Game Console Repair (PS/Xbox)', cat:'tech',     emoji:'🎮'},
+
+  /* ── BEAUTY ── */
+  {id:'beauty-salons',       label:'Beauty Salons',             cat:'beauty',       emoji:'💅'},
+  {id:'hair-braiding',       label:'Hair Braiding & Locs',      cat:'beauty',       emoji:'💇'},
+  {id:'hair-cut',            label:'Barber & Kinyozi',          cat:'beauty',       emoji:'✂️'},
+  {id:'mobile-barber',       label:'Mobile Barber',             cat:'beauty',       emoji:'💈'},
+  {id:'bridal-hair',         label:'Bridal Hair Stylist',       cat:'beauty',       emoji:'👰'},
+  {id:'makeup',              label:'Makeup Artist',             cat:'beauty',       emoji:'💋'},
+  {id:'manicure',            label:'Nail Technician',           cat:'beauty',       emoji:'💅'},
+  {id:'wig-install',         label:'Wig Installation',          cat:'beauty',       emoji:'💁'},
+  {id:'salons-spas',         label:'Salons & Spas',             cat:'beauty',       emoji:'💆'},
+  {id:'lash-tech',           label:'Lash Technician',           cat:'beauty',       emoji:'👁️'},
+  {id:'beauty-classes',      label:'Beauty Salon Classes',      cat:'beauty',       emoji:'💄'},
+  {id:'massage-therapy',     label:'Massage Therapist (Home)', cat:'beauty',       emoji:'🛁'},
+  {id:'natural-hair',        label:'Natural Hair Specialist',   cat:'beauty',       emoji:'🌿'},
+
+  /* ── FOOD & CATERING ── */
+  {id:'cooks-chefs',         label:'Cooks & Private Chefs',     cat:'food',         emoji:'👨‍🍳'},
+  {id:'event-catering',      label:'Event Caterer',             cat:'food',         emoji:'🍴'},
+  {id:'corporate-catering',  label:'Corporate Catering',        cat:'food',         emoji:'🍱'},
+  {id:'buffet-caterers',     label:'Buffet Caterers',           cat:'food',         emoji:'🍽️'},
+  {id:'nyama-choma',         label:'Nyama Choma Grill',         cat:'food',         emoji:'🍖'},
+  {id:'baking',              label:'Baking & Pastries',         cat:'food',         emoji:'🍰'},
+  {id:'wedding-cake',        label:'Wedding Cake Artist',       cat:'food',         emoji:'🎂'},
+  {id:'barista',             label:'Barista',                   cat:'food',         emoji:'☕'},
+  {id:'meal-prep',           label:'Meal Prep for Busy Homes',  cat:'food',         emoji:'🥘'},
+  {id:'street-food',         label:'Street Food (Smokie-Mayai/Chips)', cat:'food',  emoji:'🌭'},
+  {id:'office-catering',     label:'Office Catering',           cat:'food',         emoji:'🧆'},
+
+  /* ── HOME SERVICES ── */
+  {id:'house-cleaning',      label:'House Cleaning Pro',        cat:'home',         emoji:'🧹'},
+  {id:'deep-cleaning',       label:'Deep Cleaning',             cat:'home',         emoji:'🧴'},
+  {id:'airbnb-cleaning',     label:'Airbnb Cleaning & Turnover',cat:'home',         emoji:'🏨'},
+  {id:'carpet-cleaning',     label:'Carpet Cleaning',           cat:'home',         emoji:'🧽'},
+  {id:'sofa-cleaning',       label:'Sofa & Steam Cleaning',     cat:'home',         emoji:'🛋️'},
+  {id:'mama-fua',            label:'Mama Fua / Laundry',        cat:'home',         emoji:'👕'},
+  {id:'laundry-pickup',      label:'Laundry & Ironing Pick-Up', cat:'home',         emoji:'👔'},
+  {id:'window-cleaning',     label:'Window Cleaning',           cat:'home',         emoji:'🪟'},
+  {id:'pest-fumigation',     label:'Pest Fumigation',           cat:'home',         emoji:'🪲'},
+  {id:'handyman',            label:'Handyman',                  cat:'home',         emoji:'🔨'},
+  {id:'appliance-repair',    label:'Appliance Repair',          cat:'home',         emoji:'🔧'},
+  {id:'fridge-repairs',      label:'Fridge Repairs',            cat:'home',         emoji:'🧊'},
+  {id:'furniture-repairs',   label:'Furniture Repairs',         cat:'home',         emoji:'🛋️'},
+  {id:'curtain-install',     label:'Curtain Installation',      cat:'home',         emoji:'🪟'},
+  {id:'cabinet-install',     label:'Cabinet Installation',      cat:'home',         emoji:'🚪'},
+  {id:'wallpaper',           label:'Wallpaper Installs',        cat:'home',         emoji:'🖼️'},
+  {id:'gas-supplier',        label:'Gas Supplier & Delivery',   cat:'home',         emoji:'🔥'},
+  {id:'water-delivery',      label:'Water Delivery',            cat:'home',         emoji:'💧'},
+  {id:'water-tank-cleaning', label:'Water Tank Cleaning',       cat:'home',         emoji:'🚿'},
+  {id:'garbage-collection',  label:'Garbage Collection',        cat:'home',         emoji:'🗑️'},
+  {id:'errand-runner',       label:'Errand Runners',            cat:'home',         emoji:'🏃'},
+  {id:'air-conditioner',     label:'Air Conditioner Service',   cat:'home',         emoji:'❄️'},
+
+  /* ── EDUCATION ── */
+  {id:'math-tutor',          label:'Math Tutoring',             cat:'education',    emoji:'➗'},
+  {id:'english-classes',     label:'English Classes',           cat:'education',    emoji:'📖'},
+  {id:'coding-tutor',        label:'Coding Tutor',              cat:'education',    emoji:'👨‍💻'},
+  {id:'biology-tutor',       label:'Biology Tutoring',          cat:'education',    emoji:'🔬'},
+  {id:'chemistry-tutor',     label:'Chemistry Tutoring',        cat:'education',    emoji:'⚗️'},
+  {id:'physics-tutor',       label:'Physics Tutoring',          cat:'education',    emoji:'⚛️'},
+  {id:'baking-classes',      label:'Baking Classes',            cat:'education',    emoji:'🧁'},
+  {id:'beauty-training',     label:'Beauty School Classes',     cat:'education',    emoji:'💄'},
+  {id:'kids-dance',          label:'Kids Dance Classes',        cat:'education',    emoji:'🩰'},
+  {id:'adult-literacy',      label:'Adult Literacy Tutor',      cat:'education',    emoji:'📝'},
+  {id:'music-teacher',       label:'Music Teacher',             cat:'education',    emoji:'🎵'},
+  {id:'canva-photoshop',     label:'Digital Skills Coach (Canva/Photoshop)', cat:'education', emoji:'🖌️'},
+  {id:'mobile-photo-coach',  label:'Mobile Photography Coach',  cat:'education',    emoji:'📸'},
+  {id:'learning-aid',        label:'Learning Aid (Dyslexia/ADHD)', cat:'education', emoji:'🧩'},
+  {id:'chinese-classes',     label:'Chinese Classes',           cat:'education',    emoji:'🈵'},
+
+  /* ── EVENTS ── */
+  {id:'event-dj',            label:'Events DJ',                 cat:'events',       emoji:'🎧'},
+  {id:'emcees',              label:'MC / Emcee',                cat:'events',       emoji:'🎤'},
+  {id:'wedding-planner',     label:'Wedding Planner',           cat:'events',       emoji:'💍'},
+  {id:'party-decorators',    label:'Party Decorators',          cat:'events',       emoji:'🎊'},
+  {id:'florist',             label:'Florist & Floral Arch',     cat:'events',       emoji:'💐'},
+  {id:'children-entertainer',label:'Kids Party Entertainer',    cat:'events',       emoji:'🎪'},
+  {id:'bands',               label:'Bands For Hire',            cat:'events',       emoji:'🎸'},
+  {id:'dance-classes',       label:'Dance Classes',             cat:'events',       emoji:'💃'},
+  {id:'balloon-artist',      label:'Balloon Artist & Cake Table', cat:'events',     emoji:'🎈'},
+  {id:'chair-table-rentals', label:'Chairs, Tables & Canopy Rental', cat:'events',  emoji:'⛺'},
+  {id:'stage-decorator',     label:'Stage Decorator & Event Stylist', cat:'events', emoji:'🎆'},
+  {id:'photo-booth',         label:'Photo Booth Hire',          cat:'events',       emoji:'📷'},
+  {id:'sound-system',        label:'Sound Equipment Rental',    cat:'events',       emoji:'🔈'},
+  {id:'tent-rental',         label:'Tent & Mobile Toilet Rentals', cat:'events',    emoji:'🏕️'},
+
+  /* ── TRANSPORT ── */
+  {id:'drivers',             label:'Drivers For Hire',          cat:'transport',    emoji:'🚘'},
+  {id:'personal-driver',     label:'Personal Driver',           cat:'transport',    emoji:'🚖'},
+  {id:'taxi-driver',         label:'Taxi Driver',               cat:'transport',    emoji:'🚕'},
+  {id:'executive-cars',      label:'Executive Cars & Chauffeur',cat:'transport',    emoji:'🚙'},
+  {id:'delivery-rider',      label:'Delivery Rider (Boda)',     cat:'transport',    emoji:'📦'},
+  {id:'tuk-tuk',             label:'Tuk Tuk Delivery',          cat:'transport',    emoji:'🛺'},
+  {id:'water-tanker',        label:'Water Tanker',              cat:'transport',    emoji:'🚚'},
+  {id:'help-moving',         label:'Help Moving',               cat:'transport',    emoji:'📦'},
+  {id:'safari-agents',       label:'Safari & Tour Driver',      cat:'transport',    emoji:'🦁'},
+  {id:'tour-guide',         label:'Tour Guide & Local Host',    cat:'transport',    emoji:'🦁'},
+  {id:'airport-transfer',    label:'Airport Transfer',          cat:'transport',    emoji:'✈️'},
+  {id:'truck-hire',          label:'Truck Hire Services',       cat:'transport',    emoji:'🚛'},
+  {id:'auto-locksmith',      label:'Auto Locksmith',            cat:'transport',    emoji:'🔑'},
+  {id:'auto-mechanics',      label:'Auto Mechanics',            cat:'transport',    emoji:'🔩'},
+  {id:'car-cleaner',         label:'Car Cleaner',               cat:'transport',    emoji:'🧹'},
+  {id:'mobile-tyre',         label:'Mobile Tyre Fitters',       cat:'transport',    emoji:'🔧'},
+  {id:'bike-tech',           label:'Bike Technician',           cat:'transport',    emoji:'🚲'},
+  {id:'emergency-towing',    label:'Emergency Jumpstart & Towing', cat:'transport', emoji:'⛽'},
+  {id:'boda-errands',        label:'Boda Boda Errands',         cat:'transport',    emoji:'🏍️'},
+
+  /* ── HEALTH & CARE ── */
+  {id:'caregiver',           label:'Caregiver',                 cat:'health',       emoji:'🩺'},
+  {id:'daycare',             label:'Day Care Services',         cat:'health',       emoji:'🏥'},
+  {id:'elderly-care',        label:'Elderly Care Giver',        cat:'health',       emoji:'👴'},
+  {id:'home-nurse',          label:'Home-Based Nurse',          cat:'health',       emoji:'🏥'},
+  {id:'physio',              label:'Physiotherapist (Home)',    cat:'health',       emoji:'🦽'},
+  {id:'dietitians',          label:'Dietitian & Nutritionist',  cat:'health',       emoji:'🥗'},
+  {id:'ambulance',           label:'Ambulance Services',        cat:'health',       emoji:'🚑'},
+  {id:'psychiatrists',       label:'Psychiatrist',              cat:'health',       emoji:'🧬'},
+  {id:'medication-delivery', label:'Medication Pick-Up Assistant', cat:'health',    emoji:'💊'},
+  {id:'doula',               label:'Doula & Postpartum Support',cat:'health',       emoji:'🤱'},
+  {id:'veterinary',          label:'Veterinary Services',       cat:'health',       emoji:'🐾'},
+
+  /* ── CONSTRUCTION ── */
+  {id:'electricians',        label:'Electricians',              cat:'construction', emoji:'⚡'},
+  {id:'plumber',             label:'Plumber',                   cat:'construction', emoji:'🪠'},
+  {id:'mason',               label:'Mason',                     cat:'construction', emoji:'🧱'},
+  {id:'carpenter',           label:'Carpenter',                 cat:'construction', emoji:'🪚'},
+  {id:'exterior-painter',    label:'Exterior Painter',          cat:'construction', emoji:'🖌️'},
+  {id:'interior-painter',    label:'Interior Painter',          cat:'construction', emoji:'🪣'},
+  {id:'solar',               label:'Solar Installation',        cat:'construction', emoji:'☀️'},
+  {id:'roof-install',        label:'Roof Installation & Repairs', cat:'construction', emoji:'🏘️'},
+  {id:'floor-tiles',         label:'Tilers & Pavers',           cat:'construction', emoji:'🪨'},
+  {id:'gypsum-ceiling',      label:'Gypsum Ceiling',            cat:'construction', emoji:'🏛️'},
+  {id:'fencing',             label:'Fencing & Perimeter Walls', cat:'construction', emoji:'🏚️'},
+  {id:'general-contractors', label:'General Contractors',       cat:'construction', emoji:'🏗️'},
+  {id:'building-contractors',label:'Building Contractors (Fundi)', cat:'construction', emoji:'🏗️'},
+  {id:'architects',          label:'Architects',                cat:'construction', emoji:'📐'},
+  {id:'land-surveyors',      label:'Land Surveyors & Valuers',  cat:'construction', emoji:'📏'},
+  {id:'biodigester',         label:'Biodigester Install',       cat:'construction', emoji:'♻️'},
+  {id:'borehole',            label:'Borehole Drilling',         cat:'construction', emoji:'💧'},
+  {id:'gate-repairs',        label:'Gate & Grill Fabricators',  cat:'construction', emoji:'🚧'},
+  {id:'scaffolding',         label:'Scaffolding & Formwork',    cat:'construction', emoji:'🏗️'},
+  {id:'plastering',          label:'Plastering & Skimming',     cat:'construction', emoji:'🧱'},
+  {id:'site-supervisor',     label:'Site Supervisor / Clerk of Works', cat:'construction', emoji:'📋'},
+  {id:'wiring',              label:'Wiring Installation',       cat:'construction', emoji:'🔌'},
+  {id:'water-tank-install',  label:'Water Tank Install',        cat:'construction', emoji:'🏗️'},
+  {id:'greenhouse',          label:'Greenhouse Installation',   cat:'farm',         emoji:'🌱'},
+  {id:'compound-wall',       label:'Compound & Perimeter Builders', cat:'construction', emoji:'🧱'},
+
+  /* ── CREATIVE & MEDIA ── */
+  {id:'photographer',        label:'Photographer',              cat:'creative',     emoji:'📸'},
+  {id:'videographers',       label:'Videographer',              cat:'creative',     emoji:'🎥'},
+  {id:'drone-operator',      label:'Drone Operator',            cat:'creative',     emoji:'🚁'},
+  {id:'graphic-designer',    label:'Graphic Designer & Logo',   cat:'creative',     emoji:'🎭'},
+  {id:'interior-design',     label:'Interior Designer & Decor', cat:'creative',     emoji:'🛋️'},
+  {id:'fashion-design',      label:'Fashion Designer',          cat:'creative',     emoji:'👘'},
+  {id:'tailor',              label:'Tailor',                    cat:'creative',     emoji:'🧵'},
+  {id:'clothing-alterations',label:'Mobile Tailor (Repairs/Adjustments)', cat:'creative', emoji:'🪡'},
+  {id:'clothing-designers',  label:'Clothing Designers',        cat:'creative',     emoji:'👗'},
+  {id:'voice-over',          label:'Voiceover & Swahili Narrator', cat:'creative',  emoji:'🎙️'},
+  {id:'blog-writers',        label:'Blog & Caption Writers',    cat:'creative',     emoji:'✍️'},
+  {id:'content-creator',     label:'Content Creator (TikTok/Reels)', cat:'creative',emoji:'📱'},
+  {id:'video-editing',       label:'Video Editing Services',    cat:'creative',     emoji:'🎬'},
+  {id:'podcast-production',  label:'Podcast Production',        cat:'creative',     emoji:'🎙️'},
+  {id:'realestate-video',    label:'Real Estate Videography',   cat:'creative',     emoji:'🎬'},
+  {id:'signage-maker',       label:'Signage Makers for Shops',  cat:'creative',     emoji:'🪧'},
+  {id:'mural-artist',        label:'Interior Mural & Wall Art', cat:'creative',     emoji:'🖼️'},
+  {id:'transcriber',         label:'Transcribers & Typists',    cat:'creative',     emoji:'⌨️'},
+  {id:'pitch-deck-writer',   label:'Business Proposal Writer',  cat:'creative',     emoji:'📊'},
+  {id:'art',                 label:'Visual Art',                cat:'creative',     emoji:'🎨'},
+
+  /* ── FINANCE & LEGAL ── */
+  {id:'accountant',          label:'Accountant',                cat:'finance',      emoji:'📊'},
+  {id:'accountant-cpa',      label:'CPA Accountant',            cat:'finance',      emoji:'🧾'},
+  {id:'bookkeeping',         label:'Bookkeeper for Small Biz',  cat:'finance',      emoji:'📒'},
+  {id:'tax-prep',            label:'KRA Filing & Tax Prep',     cat:'finance',      emoji:'📋'},
+  {id:'business-consultant', label:'Business Consultant',       cat:'finance',      emoji:'💼'},
+  {id:'real-estate',         label:'Real Estate Agent',         cat:'finance',      emoji:'🏘️'},
+  {id:'appraisers',          label:'Valuers & Appraisers',      cat:'finance',      emoji:'🏷️'},
+  {id:'business-reg',        label:'Business Registration Agents', cat:'legal',     emoji:'📑'},
+  {id:'mpesa-setup',         label:'M-Pesa Shop Setup Services', cat:'finance',     emoji:'📱'},
+  {id:'social-media-mgr',    label:'Social Media Manager (SMEs)', cat:'digital',    emoji:'📲'},
+  {id:'whatsapp-biz',        label:'WhatsApp Business Page Setup', cat:'digital',   emoji:'💬'},
+
+  /* ── SECURITY ── */
+  {id:'security-guards',     label:'Security Guards',           cat:'security',     emoji:'💂'},
+  {id:'business-security',   label:'Business Security',         cat:'security',     emoji:'🏢'},
+  {id:'event-security',      label:'Bouncers & Event Security', cat:'security',     emoji:'🛡️'},
+  {id:'cctv',                label:'CCTV Installs',             cat:'security',     emoji:'📷'},
+  {id:'investigators',       label:'Private Investigators',     cat:'security',     emoji:'🕵️'},
+  {id:'locksmith',           label:'Locksmith',                 cat:'security',     emoji:'🔓'},
+
+  /* ── WELLNESS & SPORT ── */
+  {id:'fitness-trainer',     label:'Fitness Trainer',           cat:'wellness',     emoji:'🏋️'},
+  {id:'fitness-instructor',  label:'Fitness Instructor',        cat:'wellness',     emoji:'🏃'},
+  {id:'swimming',            label:'Swimming Lessons',          cat:'wellness',     emoji:'🏊'},
+  {id:'counselors',          label:'Counselors & Therapists',   cat:'wellness',     emoji:'🧠'},
+  {id:'life-coaching',       label:'Life Coaching',             cat:'wellness',     emoji:'🌟'},
+  {id:'dog-trainer',         label:'Dog Trainer',               cat:'wellness',     emoji:'🐕'},
+  {id:'dog-walker',          label:'Dog Walker',                cat:'wellness',     emoji:'🦮'},
+  {id:'landscaping',         label:'Landscaping & Lawn Care',   cat:'wellness',     emoji:'🌿'},
+  {id:'nutrition-coach',     label:'Nutrition Coach (Local Diet)', cat:'wellness',  emoji:'🥑'},
+  {id:'therapists',          label:'Mental Health Therapist',   cat:'wellness',     emoji:'🧘'},
+  {id:'urban-garden',        label:'Urban Gardening Expert',    cat:'wellness',     emoji:'🪴'},
+  {id:'tree-cutting',        label:'Tree Cutting & Trimming',   cat:'wellness',     emoji:'🌳'},
+  {id:'compound-maintenance',label:'Compound & Garden Maintenance', cat:'wellness', emoji:'🌱'},
+  {id:'pet-boarding',        label:'Pet Boarding & Walking',    cat:'wellness',     emoji:'🐾'},
+  {id:'family-therapist',    label:'Family Therapist & Parenting Coach', cat:'wellness', emoji:'👨‍👩‍👧'},
+
+  /* ── RENTALS & STAYS ── */
+  {id:'furnished-apartment', label:'Furnished Apartment Host',  cat:'rental',       emoji:'🏢'},
+  {id:'short-stay-rooms',    label:'Short-Stay Room Rentals (SQ/Bedsitter)', cat:'rental', emoji:'🛏️'},
+  {id:'event-stays',         label:'Event-Based Stays (Weddings/Funerals)', cat:'rental', emoji:'🏡'},
+  {id:'caretaker',           label:'Caretakers & Key Handlers', cat:'rental',       emoji:'🗝️'},
+  {id:'airbnb-host',         label:'Airbnb Host Management',    cat:'rental',       emoji:'🏘️'},
+  {id:'luxury-car-rental',   label:'Luxury Car Rentals',        cat:'rental',       emoji:'🚗'},
+  {id:'van-bus-hire',        label:'Vans & Buses Hire',         cat:'rental',       emoji:'🚌'},
+
+  /* ── ARTISAN & JUA KALI ── */
+  {id:'furniture-maker',     label:'Furniture Maker & Refinisher', cat:'artisan',   emoji:'🪑'},
+  {id:'jua-kali-metal',      label:'Jua Kali (Metal & Wood)',   cat:'artisan',      emoji:'⚙️'},
+  {id:'welder',              label:'Welder & Gate Fabricator',  cat:'artisan',      emoji:'⚒️'},
+  {id:'sofa-reupholstery',   label:'Sofa Reupholstery',         cat:'artisan',      emoji:'🛋️'},
+  {id:'shoemaker',           label:'Shoemaker & Leather Repair',cat:'artisan',      emoji:'👟'},
+  {id:'instrument-repair',   label:'Instrument Repair (Guitar/Keyboard)', cat:'artisan', emoji:'🎸'},
+  {id:'mobile-kiosk',        label:'Mobile Kiosk Setup',        cat:'artisan',      emoji:'🏪'},
+  {id:'aluminum-doors',      label:'Aluminum Doors & Partitions', cat:'artisan',    emoji:'🪟'},
+  {id:'glass-repair',        label:'Window Glass Repair',       cat:'artisan',      emoji:'🔲'},
+  {id:'brick-maker',         label:'Brick Makers & Clay Oven Builders', cat:'artisan', emoji:'🧱'},
+
+  /* ── DIGITAL HUSTLE ── */
+  {id:'youtube-coach',       label:'YouTube & TikTok Coach',    cat:'digital',      emoji:'▶️'},
+  {id:'digital-skills',      label:'Digital Skills Coach',      cat:'digital',      emoji:'🖥️'},
+  {id:'app-tester',          label:'Mobile App Tester',         cat:'digital',      emoji:'📱'},
+  {id:'hashtag-pro',         label:'Hashtag & Reach Strategy',  cat:'digital',      emoji:'#️⃣'},
+
+  /* ── LEGAL & ADMIN ── */
+  {id:'commissioner-oaths',  label:'Commissioner for Oaths',    cat:'legal',        emoji:'📜'},
+  {id:'nssf-nhif',           label:'NSSF & NHIF Application Assistant', cat:'legal',emoji:'🏛️'},
+  {id:'property-agreement',  label:'Property Agreement Drafter',cat:'legal',        emoji:'📋'},
+  {id:'birth-death-cert',    label:'Birth/Death Certificate Agent', cat:'civil',    emoji:'📄'},
+  {id:'huduma-assistant',    label:'Huduma Center Assistant',   cat:'civil',        emoji:'🏛️'},
+  {id:'chama-treasurer',     label:'Chama Record-Keeper / Treasurer', cat:'civil',  emoji:'💰'},
+  {id:'chiefs-letter',       label:'Chiefs Letter Runner',      cat:'civil',        emoji:'✉️'},
+  {id:'kra-pin',             label:'KRA Filing & PIN Registration', cat:'legal',    emoji:'📋'},
+
+  /* ── AGRI & FARM ── */
+  {id:'shamba-boy',          label:'Shamba Boy & Farm Laborer', cat:'farm',         emoji:'🌾'},
+  {id:'irrigation-install',  label:'Irrigation System Installation', cat:'farm',    emoji:'💧'},
+  {id:'beekeeping',          label:'Beekeeping Trainer',        cat:'farm',         emoji:'🐝'},
+  {id:'compost-provider',    label:'Organic Compost Provider',  cat:'farm',         emoji:'♻️'},
+  {id:'livestock-vet',       label:'Livestock Vaccination & Care', cat:'farm',      emoji:'🐄'},
+  {id:'poultry-housing',     label:'Poultry Housing Technician',cat:'farm',         emoji:'🐓'},
+  {id:'fish-pond',           label:'Fish Pond Constructor & Tilapia Expert', cat:'farm', emoji:'🐟'},
+  {id:'urban-farming',       label:'Urban Farming Consultant',  cat:'farm',         emoji:'🥬'},
+
+  /* ── KIDS & FAMILY ── */
+  {id:'babysitting',         label:'Babysitting',               cat:'kids',         emoji:'👶'},
+  {id:'nanny',               label:'Nanny & Daycare Helper',    cat:'kids',         emoji:'🧒'},
+  {id:'homework-helper',     label:'Homework Helper & Babysitter', cat:'kids',      emoji:'📚'},
+  {id:'kids-party-planner',  label:'Birthday & Kids Party Planner', cat:'kids',     emoji:'🎂'},
+  {id:'kids-party-decor',    label:'Party Décor for Kids Events',cat:'kids',        emoji:'🎈'},
+  {id:'doula-postpartum',    label:'Doula & Postpartum Support',cat:'kids',         emoji:'🤱'},
+
+  /* ── CULTURE & TALENT ── */
+  {id:'traditional-dancers', label:'Traditional Dancers & Drummers', cat:'culture', emoji:'🥁'},
+  {id:'fashion-stylist',     label:'Fashion Stylist & Wardrobe Planner', cat:'culture', emoji:'👗'},
+  {id:'comedian',            label:'MCs & Comedians',           cat:'culture',      emoji:'🎭'},
+  {id:'choir-trainer',       label:'Choir Trainer & Live Band', cat:'culture',      emoji:'🎶'},
+  {id:'swahili-translator',  label:'Swahili Translator & Scriptwriter', cat:'culture', emoji:'🗣️'},
+  {id:'wedding-dowry-mc',    label:'MC for Wedding & Dowry Ceremony', cat:'culture',emoji:'💍'},
+  {id:'church-mc',           label:'Church Event & Harambee MC',cat:'culture',      emoji:'⛪'},
+  {id:'funeral-support',     label:'Funeral Support (Tents, Transport, Ushers)', cat:'culture', emoji:'🕊️'},
+
+  /* ── CIVIL & COMMUNITY ── */
+  {id:'funeral-organizer',   label:'Funeral Organizer',         cat:'civil',        emoji:'🕯️'},
+  {id:'water-pump-install',  label:'Water Pump Installers',     cat:'civil',        emoji:'🚿'},
+  {id:'fence-install',       label:'Fence Installation (Chainlink/Live/Wooden)', cat:'construction', emoji:'🏗️'},
+  {id:'personal-stylist',    label:'Personal Stylist (Events)', cat:'culture',      emoji:'✨'},
+  {id:'mtumba-stylist',      label:'Thrift (Mtumba) Stylist',   cat:'culture',      emoji:'👔'},
+  {id:'dry-cleaning',        label:'Dry Cleaning Pick-Up & Drop-Off', cat:'home',   emoji:'🧺'},
+  {id:'market-errands',      label:'Market Errand Runner (Gikomba/Toi)', cat:'home',emoji:'🛒'}
+];
+
+var AREAS=['Westlands','Kilimani','Kasarani','Embakasi','Mathare','Langata','Karen','CBD','Parklands','Rongai','Ngong Rd','Thika Rd','Ruiru','Kiambu Rd','South C','Eastleigh','Githurai','Umoja','Donholm','Kitengela','Juja','Kikuyu','Limuru','Athi River','Kayole','Buru Buru','Zimmerman','Roysambu','Mwiki','Kahawa West','Dagoretti','Langata Rd','Kabete','Adams Arcade','South B'];
+var PNAMES=['Wanjiku M.','Otieno J.','Kamau P.','Achieng S.','Muthoni R.','Kipchoge B.','Njoroge K.','Omondi V.','Waweru T.','Chebet A.','Njuguna C.','Adhiambo L.'];
+
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function rndF(a,b){return parseFloat((a+Math.random()*(b-a)).toFixed(1));}
+
+// Industry sliders (multiplier 0.5x to 3x, default 1x)
+var catScale = {};
+Object.keys(CATS).forEach(function(k){ catScale[k]=1.0; });
+
+var DATA = RAW.map(function(r){
+  var workers = rnd(5,400);
+  var jobs    = rnd(30,3200);
+  var reviews = rnd(10,1400);
+  var rating  = rndF(3.5,5.0);
+  var growth  = rndF(-12,60);
+  // Wide XP range — creates genuinely different bubble sizes
+  // Use a power distribution so most are small, a few are huge (like crypto)
+  var rawXP = Math.pow(Math.random(), 1.8) * 10000;
+  var cxp   = Math.min(10000, Math.floor(rawXP + workers*8 + jobs*0.8));
+  var color = CATS[r.cat] ? CATS[r.cat].color : '#888';
+  return {
+    id:r.id, label:r.label, cat:r.cat, emoji:r.emoji,
+    workers:workers, jobs:jobs, reviews:reviews,
+    rating:rating, growth:growth,
+    communityXP:cxp, level:getLevel(cxp), color:color,
+    baseR:0 // calculated below
+  };
+});
+
+// ── VIEWPORT-AWARE AUTO SIZING ─────────────────────────────────
+// Target: bubble circles fill ~68% of canvas area (like Coin360).
+// avg_r = sqrt(canvas_area * 0.68 / N / π)  — recalculated on resize.
+// Each bubble gets a multiplier from 0.52× (smallest) to 2.6× (largest)
+// using a compressed power curve so the spread feels natural, not extreme.
+// Sort ascending XP → assign multiplier → store as baseMultiplier.
+// Actual pixel radius = baseMultiplier * computedAvgR  (see currentR()).
+var FILL_RATIO = 0.52;  // 52% — enough air between solid discs
+var MIN_MULT   = 0.42;  // smallest bubble (emoji-only at these sizes)
+var MAX_MULT   = 2.05;  // largest bubble — capped so no single bubble dominates
+var CURVE      = 1.9;   // steep curve: many smalls, few larges (Coin360 shape)
+
+var sorted4R = DATA.slice().sort(function(a,b){return a.communityXP-b.communityXP;});
+sorted4R.forEach(function(d,i){
+  var pct = i / (sorted4R.length - 1);           // 0 → 1
+  var mult = MIN_MULT + Math.pow(pct, CURVE) * (MAX_MULT - MIN_MULT);
+  d.baseMultiplier = mult;
+  d.baseR = 20; // placeholder — overwritten in initBubbles
+});
+
+
+// ── EMOJI TEXTURE CACHE ──────────────────────────────────────────────────
+// Pre-render each unique emoji once to an offscreen canvas.
+// drawImage() of a cached canvas is a GPU texture blit — ~100× faster
+// than re-rasterizing a color emoji glyph via ctx.fillText() every frame.
+var emojiCache = {};
+var EMOJI_CACHE_SIZE = 64; // px — high-res source, scaled down at draw time
+
+function buildEmojiCache(){
+  var seen = {};
+  DATA.forEach(function(d){
+    if(seen[d.emoji]) return;
+    seen[d.emoji] = true;
+    var oc  = document.createElement('canvas');
+    oc.width = oc.height = EMOJI_CACHE_SIZE;
+    var octx = oc.getContext('2d');
+    // Clear to transparent
+    octx.clearRect(0, 0, EMOJI_CACHE_SIZE, EMOJI_CACHE_SIZE);
+    // Draw emoji centred, at full cache size
+    var fs = Math.round(EMOJI_CACHE_SIZE * 0.72);
+    octx.font = fs + 'px serif';
+    octx.textAlign    = 'center';
+    octx.textBaseline = 'middle';
+    octx.fillText(d.emoji, EMOJI_CACHE_SIZE/2, EMOJI_CACHE_SIZE/2 + fs*0.04);
+    emojiCache[d.emoji] = oc;
+  });
+}
+
+// Helper: draw a cached emoji centred at (cx,cy) with given pixel size
+function drawCachedEmoji(emoji, cx, cy, size, alpha){
+  var bmp = emojiCache[emoji];
+  if(!bmp) return;
+  ctx.globalAlpha = alpha;
+  var half = size / 2;
+  ctx.drawImage(bmp, cx - half, cy - half, size, size);
+}
+
+// Compute the average radius for current canvas dimensions
+function computeAvgR(W, H){
+  var area = W * H * FILL_RATIO;
+  return Math.sqrt(area / DATA.length / Math.PI);
+}
+
+// ================================================================
+// CANVAS ENGINE
+// ================================================================
+var canvas=document.getElementById('kc');
+var ctx=canvas.getContext('2d');
+var shell=document.getElementById('cshell');
+var tt=document.getElementById('tt');
+var BUBBLES=[];
+var hovB=null,dragB=null,dragOX=0,dragOY=0,wasDrag=false;
+var raf, activeFilter='all', searchQ='';
+
+function hexRgba(hex,a){
+  // handle 3 or 6 char hex
+  var h=hex.replace('#','');
+  if(h.length===3) h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  var r=parseInt(h.slice(0,2),16);
+  var g=parseInt(h.slice(2,4),16);
+  var b=parseInt(h.slice(4,6),16);
+  return 'rgba('+r+','+g+','+b+','+a+')';
+}
+
+function currentR(b){
+  var avgR = computeAvgR(canvas.width || shell.clientWidth, canvas.height || shell.clientHeight);
+  var sc   = catScale[b.d.cat] || 1;
+  // clamp so tiny bubbles are still touchable (min 8px) and giant ones don't swallow screen
+  var minR = Math.max(8,  avgR * MIN_MULT * 0.7);
+  var maxR = Math.min(avgR * MAX_MULT * 1.1, Math.min(canvas.width, canvas.height) * 0.22);
+  return Math.min(maxR, Math.max(minR, b.d.baseMultiplier * avgR * sc));
+}
+
+// ── VENT ANIMATION STATE ─────────────────────────────────────
+// Each bubble has a "rising" phase before normal physics takes over
+// rising: true  → bubble is still floating up from the bottom
+// riseTarget: {x, y} → final resting position
+// riseT: 0→1 animation progress
+// riseDelay: frames to wait before this bubble starts rising
+// wobbleAmp / wobbleFreq: sinusoidal horizontal drift during rise
+
+function initBubbles(){
+  var W=shell.clientWidth, H=shell.clientHeight;
+  canvas.width=W; canvas.height=H;
+
+  var avgR = computeAvgR(W, H);
+
+  DATA.forEach(function(d){
+    var sc = catScale[d.cat] || 1;
+    d.baseR = Math.max(8, d.baseMultiplier * avgR * sc);
+  });
+
+  // Pre-compute final resting positions with separation passes
+  var targets = DATA.map(function(d){
+    var r = Math.max(8, d.baseMultiplier * avgR);
+    return { d:d, x: rnd(r+8, W-r-8), y: rnd(r+8, H-r-8), r:r };
+  });
+  for(var pass=0; pass<140; pass++){
+    for(var i=0; i<targets.length; i++){
+      for(var j=i+1; j<targets.length; j++){
+        var a=targets[i], b=targets[j];
+        var dx=b.x-a.x, dy=b.y-a.y;
+        var d2=dx*dx+dy*dy;
+        var minD=a.r+b.r+3;
+        if(d2<minD*minD&&d2>0.001){
+          var dist=Math.sqrt(d2);
+          var nx=dx/dist, ny=dy/dist;
+          var ov=(minD-dist)*0.5;
+          a.x-=nx*ov; a.y-=ny*ov;
+          b.x+=nx*ov; b.y+=ny*ov;
+          // clamp
+          a.x=Math.max(a.r+4,Math.min(W-a.r-4,a.x));
+          a.y=Math.max(a.r+4,Math.min(H-a.r-4,a.y));
+          b.x=Math.max(b.r+4,Math.min(W-b.r-4,b.x));
+          b.y=Math.max(b.r+4,Math.min(H-b.r-4,b.y));
+        }
+      }
+    }
+  }
+
+  // Sort targets by x so vents feel like columns rising
+  targets.sort(function(a,b){ return a.x - b.x; });
+
+  // Build BUBBLES — each starts below canvas and rises
+  BUBBLES = targets.map(function(t, i){
+    var r = currentR({d:t.d});
+    // stagger columns: left→right over 200 frames, plus small jitter
+    var delay = Math.floor(i / targets.length * 200) + Math.floor(Math.random()*30);
+    return {
+      d: t.d,
+      // start below the canvas bottom
+      x: t.x + (Math.random()-0.5)*40,
+      y: H + r + Math.random()*60,
+      vx: 0, vy: 0,
+      pulse: Math.random()*Math.PI*2,
+      filtered: false,
+      r: r,
+      // ── vent fields ──
+      rising:      true,
+      riseTarget:  { x: t.x, y: t.y },
+      riseStartY:  H + r + Math.random()*60,
+      riseT:       0,           // 0→1 eased progress
+      riseDelay:   delay,       // frames before this bubble starts
+      riseFrame:   0,           // internal counter
+      riseSpeed:   0.0055 + Math.random()*0.003, // ~3-4s rise at 60fps
+      wobbleAmp:   (Math.random()*0.6+0.3)*r*0.8, // sway ± fraction of radius
+      wobbleFreq:  0.8 + Math.random()*0.6,       // cycles per unit of riseT
+      wobblePhase: Math.random()*Math.PI*2,
+      scaleT:      0  // scales from 0→1 during rise (pop-in effect)
+    };
+  });
+
+  cancelAnimationFrame(raf);
+  loopFrame=0;
+  loop();
+}
+
+var loopFrame=0;
+
+// Smooth ease-out cubic
+function easeOut(t){ return 1-(1-t)*(1-t)*(1-t); }
+// Ease-in-out for size
+function easeInOut(t){ return t<0.5 ? 2*t*t : -1+(4-2*t)*t; }
+
+function applyFilter(){
+  var q=searchQ.toLowerCase();
+  BUBBLES.forEach(function(b){
+    var catOk=activeFilter==='all'||b.d.cat===activeFilter;
+    var srOk=!q||b.d.label.toLowerCase().indexOf(q)>-1||b.d.cat.toLowerCase().indexOf(q)>-1;
+    b.filtered=!(catOk&&srOk);
+  });
+}
+
+function collide(init){
+  for(var i=0;i<BUBBLES.length;i++){
+    for(var j=i+1;j<BUBBLES.length;j++){
+      var a=BUBBLES[i], b=BUBBLES[j];
+      var ar=currentR(a), br=currentR(b);
+      var dx=b.x-a.x, dy=b.y-a.y;
+      var d2=dx*dx+dy*dy;
+      var gap=4;
+      var minD=ar+br+gap;
+      if(d2<minD*minD && d2>0.001){
+        var dist=Math.sqrt(d2);
+        var nx=dx/dist, ny=dy/dist;
+        // init: strong separation; live: very gentle nudge (no velocity spike)
+        var push = init ? 0.5 : 0.06;
+        var ov=(minD-dist)*push;
+        if(a!==dragB){ a.x-=nx*ov; a.y-=ny*ov; }
+        if(b!==dragB){ b.x+=nx*ov; b.y+=ny*ov; }
+        // no velocity transfer on live — that's what caused the jiggle
+      }
+    }
+  }
+}
+
+function clampToBounds(b){
+  var W=canvas.width, H=canvas.height;
+  var r=currentR(b);
+  if(b.x-r<0){b.x=r;b.vx=Math.abs(b.vx);}
+  if(b.x+r>W){b.x=W-r;b.vx=-Math.abs(b.vx);}
+  if(b.y-r<0){b.y=r;b.vy=Math.abs(b.vy);}
+  if(b.y+r>H){b.y=H-r;b.vy=-Math.abs(b.vy);}
+}
+
+// ── DRAW ONE BUBBLE (crypto-style glass) ──
+function drawB(b, scaleT){
+  var d   = b.d;
+  var r   = currentR(b);
+  var isH = (b === hovB);
+  if(scaleT === undefined) scaleT = 1;
+
+  ctx.save();
+
+  // ── Vent scale-in ──────────────────────────────────────────────────────
+  if(scaleT < 1){
+    ctx.translate(b.x, b.y);
+    ctx.scale(scaleT, scaleT);
+    ctx.translate(-b.x, -b.y);
+  }
+
+  if(b.filtered){
+    ctx.globalAlpha = 0.04;
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, r, 0, Math.PI*2);
+    ctx.fillStyle = hexRgba(d.color, 1);
+    ctx.fill();
+    ctx.restore();
+    return;
+  }
+
+  if(currentTheme === 'crisp'){
+    drawBCrisp(b, d, r, isH, scaleT);
+  } else {
+    drawBMinimal(b, d, r, isH, scaleT);
+  }
+
+  ctx.restore();
+}
+
+// ── HEATMAP DRAW ──────────────────────────────────────────────────────────
+// Colour = growth %: deep red (#c0392b) → neutral (#2c2c3a) → vivid green (#27ae60)
+// Fill: radial gradient for subtle depth (like joshkale.github.io)
+// Label: emoji + name + Δ% stacked
+function heatColor(growth){
+  // clamp to ±50%
+  var g = Math.max(-50, Math.min(50, growth));
+  if(g >= 0){
+    // neutral → green
+    var t = g / 50;
+    var r = Math.round(44  + (30  - 44)  * t);
+    var gC= Math.round(44  + (174 - 44)  * t);
+    var bC= Math.round(58  + (96  - 58)  * t);
+    return 'rgb('+r+','+gC+','+bC+')';
+  } else {
+    // neutral → red
+    var t = (-g) / 50;
+    var r = Math.round(44  + (192 - 44)  * t);
+    var gC= Math.round(44  + (57  - 44)  * t);
+    var bC= Math.round(58  + (43  - 58)  * t);
+    return 'rgb('+r+','+gC+','+bC+')';
+  }
+}
+
+function drawBCrisp(b, d, r, isH, scaleT){
+  // CryptoBubbles-style: vivid full-opacity sphere gradient
+  var cx = Math.round(b.x), cy = Math.round(b.y);
+
+  // Sphere gradient: bright highlight top-left → category colour → dark edge
+  var grad = ctx.createRadialGradient(
+    cx - r*0.30, cy - r*0.30, r*0.02,
+    cx, cy, r
+  );
+  grad.addColorStop(0,    lightenRgb(d.color, 0.50));
+  grad.addColorStop(0.45, d.color);
+  grad.addColorStop(1,    darkenRgb(d.color, 0.28));
+
+  ctx.globalAlpha = 1;
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+  ctx.fillStyle = grad; ctx.fill();
+
+  // Subtle dark inner rim for definition
+  ctx.beginPath(); ctx.arc(cx, cy, r-0.5, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(0,0,0,0.22)'; ctx.lineWidth=1; ctx.stroke();
+
+  // Hover: bright white rim + outer glow
+  if(isH){
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+    ctx.strokeStyle='rgba(255,255,255,0.80)'; ctx.lineWidth=2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, r+2.5, 0, Math.PI*2);
+    ctx.strokeStyle=hexRgba(d.color,0.40); ctx.lineWidth=3.5; ctx.stroke();
+  }
+
+  if(iconStyle==='none') return;
+
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.shadowBlur=0; ctx.lineJoin='round';
+
+  function ct(text,tx,ty,col,fs,w,mono){
+    var fam=mono?'JetBrains Mono,monospace':'Space Grotesk,sans-serif';
+    ctx.font=(w||'700')+' '+fs+'px '+fam;
+    ctx.lineWidth=Math.max(2,fs*0.30); ctx.strokeStyle='rgba(0,0,0,0.70)';
+    ctx.strokeText(text,Math.round(tx),Math.round(ty));
+    ctx.fillStyle=col; ctx.fillText(text,Math.round(tx),Math.round(ty));
+  }
+
+  if(r>=38){
+    var showE=(iconStyle==='emoji');
+    var ey=cy-r*0.25, ny=cy+(showE?r*0.10:0), sy=cy+(showE?r*0.34:r*0.26);
+    if(showE){ var es=Math.max(10,r*0.31); drawCachedEmoji(d.emoji,cx,ey,es*1.3,1); }
+    var fs=Math.max(7,Math.min(12,r*0.185));
+    var mc=Math.max(4,Math.floor(r*1.6/(fs*0.60)));
+    var lb=d.label.length>mc?d.label.slice(0,mc-1)+'…':d.label;
+    ct(lb,cx,ny,'#ffffff',fs,'700',false);
+    if(r>=50) ct(d.workers+' pros',cx,sy,'rgba(255,255,255,0.80)',Math.max(6,fs-2),'600',true);
+  } else if(r>=24){
+    var showE2=(iconStyle==='emoji');
+    if(showE2){ var es2=Math.max(9,r*0.44); drawCachedEmoji(d.emoji,cx,cy-r*0.14,es2*1.3,1); }
+    var fs2=Math.max(6,Math.min(10,r*0.20));
+    var mc2=Math.max(3,Math.floor(r*1.4/(fs2*0.60)));
+    var lb2=d.label.length>mc2?d.label.slice(0,mc2-1)+'…':d.label;
+    ct(lb2,cx,showE2?cy+r*0.24:cy,'#ffffff',fs2,'700',false);
+  } else if(r>=14&&iconStyle==='emoji'){
+    var es3=Math.max(8,r*0.56); drawCachedEmoji(d.emoji,cx,cy,es3*1.3,1);
+  }
+}
+
+// darken rgb() string
+// parse hex or rgb() → [r,g,b]
+function parseColor(col){
+  var h=col.trim();
+  if(h[0]==='#'){
+    h=h.slice(1);
+    if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+    return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];
+  }
+  var m=h.match(/[\d.]+/g);
+  return m?[+m[0],+m[1],+m[2]]:[128,128,128];
+}
+function darkenRgb(col,amt){
+  var c=parseColor(col);
+  return 'rgb('+Math.round(c[0]*(1-amt))+','+Math.round(c[1]*(1-amt))+','+Math.round(c[2]*(1-amt))+')';
+}
+
+function drawBMinimal(b, d, r, isH, scaleT){
+  var xpAlpha = Math.min(0.88, Math.max(0.28, 0.30 + (d.communityXP/10000)*0.58));
+
+  // Solid fill — pixel-snapped
+  var cx=Math.round(b.x),cy=Math.round(b.y);
+  ctx.globalAlpha = xpAlpha;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI*2);
+  ctx.fillStyle = d.color;
+  ctx.fill();
+
+  // Hover lift
+  if(isH){
+    ctx.globalAlpha = 1;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+    ctx.fillStyle = hexRgba('#ffffff', 0.10); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(255,255,255,0.60)';
+    ctx.lineWidth   = 1.5; ctx.stroke();
+  }
+
+  // Labels
+  if(iconStyle === 'none' || r < 16){ return; }
+
+  ctx.textAlign    = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.shadowBlur=0; ctx.lineJoin='round';
+  var tAlpha = isH ? 1 : Math.min(1, xpAlpha * 1.75);
+
+  if(r >= 34){
+    // large: emoji above + name below
+    if(iconStyle === 'emoji'){
+      var es = Math.max(9, r * 0.30);
+      drawCachedEmoji(d.emoji, cx, cy - r*0.20, es * 1.28, tAlpha * 0.95);
+    }
+    // name
+    var fs  = Math.max(6, Math.min(10, r * 0.165));
+    var maxC= Math.max(4, Math.floor(r * 1.55 / (fs * 0.62)));
+    var lbl = d.label.length > maxC ? d.label.slice(0, maxC-1)+'…' : d.label;
+    ctx.globalAlpha = tAlpha;
+    ctx.font      = '600 '+fs+'px Space Grotesk,sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.88)';
+    ctx.fillText(lbl, b.x, iconStyle==='emoji' ? b.y+r*0.20 : b.y);
+
+  } else if(r >= 22){
+    // medium: emoji centred (or text abbreviation)
+    if(iconStyle === 'emoji'){
+      var es2 = Math.max(9, r * 0.50);
+      drawCachedEmoji(d.emoji, b.x, b.y, es2 * 1.28, tAlpha * 0.88);
+    } else {
+      var fs2  = Math.max(6, r * 0.19);
+      var maxC2= Math.max(3, Math.floor(r * 1.3 / (fs2 * 0.62)));
+      var lbl2 = d.label.slice(0, maxC2);
+      ctx.globalAlpha = tAlpha;
+      ctx.font      = '700 '+fs2+'px Space Grotesk,sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.80)';
+      ctx.fillText(lbl2, b.x, b.y);
+    }
+  } else if(r >= 14 && iconStyle === 'emoji'){
+    var es3 = Math.max(8, r * 0.54);
+    drawCachedEmoji(d.emoji, b.x, b.y, es3 * 1.28, tAlpha * 0.75);
+  }
+
+  ctx.shadowBlur = 0;
+}
+
+// Lighten a rgb() string by mixing toward white
+function lightenRgb(col, amt){
+  var c=parseColor(col);
+  return 'rgb('+Math.round(c[0]+(255-c[0])*amt)+','+Math.round(c[1]+(255-c[1])*amt)+','+Math.round(c[2]+(255-c[2])*amt)+')';
+}
+
+// ── CANVAS CURSOR ────────────────────────────────────────────
+// No custom ring — native pointer cursor only. Clean.
+var canvasMX=-999, canvasMY=-999, canvasHover=false;
+
+function loop(){
+  var W=canvas.width, H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  loopFrame++;
+
+  // ── Draw vent glow sources at bottom (only during entry phase) ──────
+  var anyRising = BUBBLES.some(function(b){ return b.rising && b.riseFrame>=b.riseDelay; });
+  if(anyRising){
+    // find bubbles that are currently rising and draw a vent glow at their x, bottom
+    BUBBLES.forEach(function(b){
+      if(!b.rising || b.riseFrame < b.riseDelay || b.riseT <= 0) return;
+      var ventX = b.riseTarget.x;
+      var ventPulse = 0.4 + 0.35*Math.sin(loopFrame*0.08 + b.wobblePhase);
+      var vg = ctx.createRadialGradient(ventX, H, 0, ventX, H, 18+b.r*0.3);
+      vg.addColorStop(0, hexRgba(b.d.color, 0.18*ventPulse));
+      vg.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.beginPath(); ctx.arc(ventX, H, 18+b.r*0.3, 0, Math.PI*2);
+      ctx.fillStyle=vg; ctx.fill();
+    });
+  }
+
+  var cx=W/2, cy=H/2;
+  BUBBLES.forEach(function(b){
+    if(b===dragB) return;
+    b.r = currentR(b);
+
+    if(b.rising){
+      b.riseFrame++;
+      // wait for stagger delay before this bubble starts
+      if(b.riseFrame < b.riseDelay) return;
+
+      // advance progress 0→1 at riseSpeed per frame
+      b.riseT  = Math.min(1, b.riseT  + b.riseSpeed);
+      b.scaleT = Math.min(1, b.scaleT + b.riseSpeed * 1.2);
+
+      var et = easeOut(b.riseT);
+
+      // Y: rise from bottom to target — always moving upward
+      b.y = b.riseStartY - (b.riseStartY - b.riseTarget.y) * et;
+
+      // X: sinusoidal wobble (underwater bubble left-right drift)
+      // amplitude shrinks to zero as it arrives at target
+      var wobbleFade = Math.pow(1 - b.riseT, 1.4);
+      b.x = b.riseTarget.x
+            + Math.sin(b.riseT * 14 * b.wobbleFreq + b.wobblePhase)
+            * b.wobbleAmp * wobbleFade;
+
+      if(b.riseT >= 1){
+        b.rising = false;
+        b.x      = b.riseTarget.x;
+        b.y      = b.riseTarget.y;
+        b.scaleT = 1;
+        b.vx = 0; b.vy = 0;
+      }
+    } else {
+      // Settled drift — Coin360 style nearly-still float
+      b.vx += (cx - b.x) * 0.000006;
+      b.vy += (cy - b.y) * 0.000006;
+      b.vx *= 0.962; b.vy *= 0.962;
+      var spd = Math.sqrt(b.vx*b.vx + b.vy*b.vy);
+      if(spd > 0.9){ var k=0.9/spd; b.vx*=k; b.vy*=k; }
+      b.x += b.vx; b.y += b.vy;
+      clampToBounds(b);
+    }
+  });
+
+  // Collision only on settled bubbles — don't disturb the rising path
+  collideMixed();
+
+  // Draw large-to-small
+  var sorted=BUBBLES.slice().sort(function(a,b2){return currentR(b2)-currentR(a);});
+  sorted.forEach(function(b){ drawB(b, b.scaleT!==undefined ? b.scaleT : 1); });
+
+
+  raf=requestAnimationFrame(loop);
+}
+
+// Collision that works on both rising and settled bubbles (gentler)
+function collideMixed(){
+  for(var i=0;i<BUBBLES.length;i++){
+    for(var j=i+1;j<BUBBLES.length;j++){
+      var a=BUBBLES[i],b=BUBBLES[j];
+      if(a.rising&&b.rising) continue; // both rising: skip, they target separate spots
+      var ar=currentR(a),br=currentR(b);
+      var dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy;
+      var minD=ar+br+4;
+      if(d2<minD*minD&&d2>0.001){
+        var dist=Math.sqrt(d2);
+        var nx=dx/dist,ny=dy/dist;
+        var ov=(minD-dist)*0.04;
+        if(!a.rising&&a!==dragB){a.x-=nx*ov;a.y-=ny*ov;}
+        if(!b.rising&&b!==dragB){b.x+=nx*ov;b.y+=ny*ov;}
+      }
+    }
+  }
+}
+
+// cursor ring removed — native pointer handles UX
+
+// ── HIT TEST ──
+function hitTest(mx,my){
+  // check small-first so tiny ones on top are clickable
+  var sm=BUBBLES.slice().sort(function(a,b){return currentR(a)-currentR(b);});
+  for(var i=0;i<sm.length;i++){
+    var b=sm[i]; if(b.filtered) continue;
+    var r=currentR(b);
+    var dx=mx-b.x, dy=my-b.y;
+    if(dx*dx+dy*dy<r*r) return b;
+  }
+  return null;
+}
+
+// ── MOUSE ──
+// cursor div removed — drawn on canvas
+// global mousemove: cursor handled on canvas only
+
+canvas.addEventListener('mousemove',function(e){
+  var rc=canvas.getBoundingClientRect();
+  var mx=e.clientX-rc.left, my=e.clientY-rc.top;
+  // feed cursor ring
+  canvasMX=mx; canvasMY=my;
+  if(dragB){dragB.x=mx+dragOX;dragB.y=my+dragOY;wasDrag=true;return;}
+  var hit=hitTest(mx,my);
+  hovB=hit;
+  canvasHover=!!hit;
+  if(hit){
+    canvas.style.cursor='pointer';
+    var d=hit.d;
+    document.getElementById('tt-n').textContent=d.emoji+' '+d.label;
+    document.getElementById('tt-c').textContent=(CATS[d.cat]?CATS[d.cat].icon+' '+CATS[d.cat].label:d.cat);
+    document.getElementById('tt-w').textContent=d.workers;
+    document.getElementById('tt-r').textContent='⭐ '+d.rating;
+    document.getElementById('tt-j').textContent=d.jobs.toLocaleString();
+    var gStr=(d.growth>=0?'+':'')+d.growth+'%';
+    document.getElementById('tt-g').textContent=gStr;
+    document.getElementById('tt-g').style.color=d.growth>=0?'#00ffb3':'#ff3d5a';
+    var f=document.getElementById('tt-f');
+    f.style.width=(d.communityXP/10000*100).toFixed(1)+'%';
+    f.style.background='linear-gradient(90deg,'+d.level.color+','+d.color+')';
+    var lvEl=document.getElementById('tt-lv');
+    lvEl.textContent=d.level.name+' · '+d.communityXP.toLocaleString()+' XP';
+    lvEl.style.color=d.level.color;
+    lvEl.style.borderColor=d.level.color+'44';
+    var tx=e.clientX+18, ty=e.clientY-10;
+    if(tx+250>window.innerWidth) tx=e.clientX-258;
+    if(ty+220>window.innerHeight) ty=e.clientY-224;
+    tt.style.left=tx+'px'; tt.style.top=ty+'px';
+    tt.classList.add('show');
+  } else {
+    canvas.style.cursor='default';
+    tt.classList.remove('show');
+  }
+});
+
+canvas.addEventListener('mousedown',function(e){
+  var rc=canvas.getBoundingClientRect();
+  var hit=hitTest(e.clientX-rc.left,e.clientY-rc.top);
+  if(hit){dragB=hit;dragOX=hit.x-(e.clientX-rc.left);dragOY=hit.y-(e.clientY-rc.top);wasDrag=false;}
+});
+
+canvas.addEventListener('mouseup',function(){
+  if(dragB&&!wasDrag) openCategory(dragB.d);
+  if(dragB){dragB.vx=0;dragB.vy=0;dragB=null;}
+  wasDrag=false;
+});
+
+canvas.addEventListener('mouseleave',function(){
+  tt.classList.remove('show'); hovB=null;
+  canvas.style.cursor='default';
+  canvasHover=false; canvasMX=-999; canvasMY=-999;
+});
+
+canvas.addEventListener('touchstart',function(e){
+  e.preventDefault();
+  e.stopPropagation();
+  // auto-collapse chrome on first canvas touch
+  if(!topCollapsed || !sideCollapsed) collapseForCanvas();
+  var t=e.touches[0],rc=canvas.getBoundingClientRect();
+  var mx=t.clientX-rc.left, my=t.clientY-rc.top;
+  var hit=hitTest(mx,my);
+  if(hit){
+    dragB=hit;
+    dragOX=hit.x-mx; dragOY=hit.y-my;
+    wasDrag=false;
+    hovB=hit;
+    // show tooltip on touch
+    var d=hit.d;
+    document.getElementById('tt-n').textContent=d.emoji+' '+d.label;
+    document.getElementById('tt-c').textContent=(CATS[d.cat]?CATS[d.cat].icon+' '+CATS[d.cat].label:d.cat);
+    document.getElementById('tt-w').textContent=d.workers;
+    document.getElementById('tt-r').textContent='⭐ '+d.rating;
+    document.getElementById('tt-j').textContent=d.jobs.toLocaleString();
+    var gStr=(d.growth>=0?'+':'')+d.growth+'%';
+    document.getElementById('tt-g').textContent=gStr;
+    document.getElementById('tt-g').style.color=d.growth>=0?'#00ffb3':'#ff3d5a';
+    var f=document.getElementById('tt-f');
+    f.style.width=(d.communityXP/10000*100).toFixed(1)+'%';
+    f.style.background='linear-gradient(90deg,'+d.level.color+','+d.color+')';
+    var lvEl=document.getElementById('tt-lv');
+    lvEl.textContent=d.level.name+' · '+d.communityXP.toLocaleString()+' XP';
+    lvEl.style.color=d.level.color;
+    lvEl.style.borderColor=d.level.color+'44';
+    var tx=t.clientX+18, ty=t.clientY-10;
+    if(tx+250>window.innerWidth) tx=t.clientX-258;
+    if(ty+220>window.innerHeight) ty=t.clientY-224;
+    var tt=document.getElementById('tt');
+    tt.style.left=tx+'px'; tt.style.top=ty+'px';
+    tt.classList.add('show');
+  }
+},{passive:false});
+
+canvas.addEventListener('touchmove',function(e){
+  e.preventDefault();
+  e.stopPropagation();
+  if(!dragB) return;
+  var t=e.touches[0],rc=canvas.getBoundingClientRect();
+  dragB.x=t.clientX-rc.left+dragOX;
+  dragB.y=t.clientY-rc.top+dragOY;
+  wasDrag=true;
+},{passive:false});
+
+canvas.addEventListener('touchend',function(e){
+  e.preventDefault();
+  e.stopPropagation();
+  var tt=document.getElementById('tt');
+  tt.classList.remove('show');
+  hovB=null;
+  if(dragB&&!wasDrag) openCategory(dragB.d);
+  if(dragB){dragB.vx=0;dragB.vy=0;dragB=null;}
+  wasDrag=false;
+},{passive:false});
+
+canvas.addEventListener('touchcancel',function(e){
+  e.preventDefault();
+  var tt=document.getElementById('tt');
+  tt.classList.remove('show');
+  hovB=null;
+  if(dragB){dragB.vx=0;dragB.vy=0;dragB=null;}
+},{passive:false});
+
+window.addEventListener('resize',function(){cancelAnimationFrame(raf);initBubbles();});
+
+// ================================================================
+// UI BUILDERS
+// ================================================================
+
+// ── FILTER TABS ──
+function buildFilters(){
+  var row=document.getElementById('frow');
+  row.innerHTML='';
+  // "All" pill — no dot
+  var ab=document.createElement('button');
+  ab.className='cf on';ab.dataset.cat='all';
+  ab.innerHTML='All';
+  row.appendChild(ab);
+  // Category pills — coloured dot + icon + label
+  Object.keys(CATS).forEach(function(k){
+    var btn=document.createElement('button');
+    btn.className='cf';
+    btn.dataset.cat=k;
+    var dot='<span class="cf-dot" style="background:'+CATS[k].color+'"></span>';
+    btn.innerHTML=dot+CATS[k].icon+' '+CATS[k].label;
+    row.appendChild(btn);
+  });
+  row.addEventListener('click',function(e){
+    var btn=e.target.closest('.cf'); if(!btn) return;
+    row.querySelectorAll('.cf').forEach(function(x){x.classList.remove('on');x.style.background='';x.style.color='';});
+    btn.classList.add('on');
+    var c=CATS[btn.dataset.cat];
+    if(c){btn.style.background=c.color;btn.style.color='#04070f';}
+    activeFilter=btn.dataset.cat; applyFilter();
+  });
+}
+
+document.getElementById('search').addEventListener('input',function(e){
+  searchQ=e.target.value; applyFilter();
+});
+
+// ── LEGEND ──
+// buildLegend removed — colour key in filter pills
+
+// ── TICKER ──
+function buildTicker(){
+  var s=DATA.slice().sort(function(a,b){return b.growth-a.growth;});
+  var items=s.slice(0,30).map(function(d){
+    var cls=d.growth>=0?'up':'dn',arr=d.growth>=0?'▲':'▼';
+    return '<span class="ti"><b>'+d.emoji+' '+d.label+'</b> <span class="'+cls+'">'+arr+' '+Math.abs(d.growth)+'%</span> '+d.workers+' pros</span>';
+  }).join('');
+  document.getElementById('ticker').innerHTML=items+items;
+}
+
+// ── SIDE: LEADERS ──
+function buildLeaders(){
+  var sorted=DATA.slice().sort(function(a,b){return b.communityXP-a.communityXP;}).slice(0,15);
+  var html='';
+  sorted.forEach(function(d,i){
+    var medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':String(i+1);
+    var gc=i<3?' g':'';
+    html+='<div class="lr" onclick="openCatById(\''+d.id+'\')">'+
+      '<div class="lrk'+gc+'">'+medal+'</div>'+
+      '<div class="lav" style="background:'+d.color+'">'+d.emoji+'</div>'+
+      '<div class="li"><div class="ln">'+d.label+'</div>'+
+      '<div class="ls">'+d.workers+' pros · ⭐'+d.rating+'</div></div>'+
+      '<div class="lval" style="color:'+d.level.color+'">'+d.level.name+'</div>'+
+      '</div>';
+  });
+  document.getElementById('sbody').innerHTML=html;
+}
+
+// ── SIDE: RISING ──
+function buildRising(){
+  var sorted=DATA.slice().sort(function(a,b){return b.growth-a.growth;}).slice(0,15);
+  var html='';
+  sorted.forEach(function(d){
+    var gStr='+'+d.growth+'%';
+    html+='<div class="lr" onclick="openCatById(\''+d.id+'\')">'+
+      '<div class="lav" style="background:'+d.color+'">'+d.emoji+'</div>'+
+      '<div class="li"><div class="ln">'+d.label+'</div>'+
+      '<div class="ls">'+d.workers+' pros · '+d.jobs+' jobs</div></div>'+
+      '<div class="lval" style="color:#00ffb3">'+gStr+'</div>'+
+      '</div>';
+  });
+  document.getElementById('sbody').innerHTML=html;
+}
+
+// ── SIDE: SLIDERS ──
+function buildSliders(){
+  var html='<div class="sliders-section" style="padding:0;">';
+  html+='<div class="sl-title" style="margin-bottom:12px;">Drag to scale each industry\'s bubble size</div>';
+  Object.keys(CATS).forEach(function(k){
+    var c=CATS[k];
+    var slId='sl_'+k;
+    var valId='slv_'+k;
+    html+='<div class="sl-row">'+
+      '<span class="sl-emoji">'+c.icon+'</span>'+
+      '<span class="sl-label" style="color:'+c.color+'">'+c.label+'</span>'+
+      '<input type="range" id="'+slId+'" min="30" max="300" value="100" step="5" '+
+        'style="--thumb-c:'+c.color+'" '+
+        'oninput="onSlider(\''+k+'\',this.value,\''+valId+'\')">'+
+      '<span class="sl-val" id="'+valId+'" style="color:'+c.color+'">1.0×</span>'+
+      '</div>';
+  });
+  html+='<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);">'+
+    '<button class="btn btn-ghost" style="width:100%;font-size:11px;" onclick="resetSliders()">Reset All Scales</button>'+
+    '</div>';
+  html+='</div>';
+  document.getElementById('sbody').innerHTML=html;
+
+  // apply thumb colors via inline style hack
+  Object.keys(CATS).forEach(function(k){
+    var el=document.getElementById('sl_'+k);
+    if(!el) return;
+    el.style.accentColor=CATS[k].color;
+  });
+}
+
+function onSlider(cat, val, valId){
+  var mult=parseFloat(val)/100;
+  catScale[cat]=mult;
+  var el=document.getElementById(valId);
+  if(el) el.textContent=mult.toFixed(1)+'×';
+}
+
+function resetSliders(){
+  Object.keys(CATS).forEach(function(k){
+    catScale[k]=1.0;
+    var el=document.getElementById('sl_'+k);
+    if(el) el.value=100;
+    var vel=document.getElementById('slv_'+k);
+    if(vel) vel.textContent='1.0×';
+  });
+}
+
+document.querySelectorAll('.stab').forEach(function(t){
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.stab').forEach(function(s){s.classList.remove('on');});
+    t.classList.add('on');
+    var tab=t.dataset.tab;
+    if(tab==='top') buildLeaders();
+    else if(tab==='rising') buildRising();
+    else buildSliders();
+  });
+});
+
+// ================================================================
+// MODALS
+// ================================================================
+function openCatById(id){
+  var d=DATA.find(function(x){return x.id===id;}); if(d) openCategory(d);
+}
+
+function starStr(r){var f=Math.round(r);return '★'.repeat(f)+'☆'.repeat(5-f);}
+
+function openCategory(d){
+  document.getElementById('mtitle').textContent=d.emoji+' '+d.label;
+  var workers=[];
+  for(var i=0;i<6;i++){
+    var name=PNAMES[rnd(0,PNAMES.length-1)];
+    var xp=rnd(200,10000);
+    var lv=getLevel(xp);
+    workers.push({
+      name:name,init:name.split(' ').map(function(p){return p[0];}).join(''),
+      area:AREAS[rnd(0,AREAS.length-1)],rating:rndF(3.8,5.0),
+      jobs:rnd(4,220),xp:xp,level:lv
+    });
+  }
+  workers.sort(function(a,b){return b.xp-a.xp;});
+
+  var html='<div class="mstats">'+
+    '<div class="mst"><div class="mv" style="color:'+d.color+'">'+d.workers+'</div><div class="ml">Pros</div></div>'+
+    '<div class="mst"><div class="mv" style="color:var(--gold)">⭐'+d.rating+'</div><div class="ml">Rating</div></div>'+
+    '<div class="mst"><div class="mv" style="color:var(--accent)">'+d.jobs.toLocaleString()+'</div><div class="ml">Jobs</div></div>'+
+    '<div class="mst"><div class="mv" style="color:'+d.level.color+'">'+d.level.name+'</div><div class="ml">Level</div></div>'+
+    '</div>';
+
+  // XP bar
+  html+='<div style="margin-bottom:18px;">'+
+    '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px;">'+
+    '<span>Community XP: '+d.communityXP.toLocaleString()+'</span>'+
+    '<span style="color:'+d.level.color+'">'+d.level.name+'</span></div>'+
+    '<div class="tt-bar" style="height:6px;"><div class="tt-fill" style="width:'+(d.communityXP/10000*100).toFixed(1)+'%;background:linear-gradient(90deg,'+d.level.color+','+d.color+')"></div></div>'+
+    '</div>';
+
+  html+='<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Available Professionals</div>';
+  html+='<div class="wcards">';
+  workers.forEach(function(w){
+    html+='<div class="wcard" onclick="alert(\'Opening WhatsApp for '+w.name+'...\')">'+
+      '<div class="wc-av" style="background:'+d.color+'">'+w.init+'</div>'+
+      '<div class="wc-name">'+w.name+'</div>'+
+      '<div class="wc-loc">📍 '+w.area+'</div>'+
+      '<div class="wc-stars">'+starStr(w.rating)+' '+w.rating+' ('+w.jobs+')</div>'+
+      '<div class="wc-chip" style="color:'+w.level.color+';border-color:'+w.level.color+'44">'+w.level.name+'</div>'+
+      '<div class="wc-xplbl"><span>'+w.xp.toLocaleString()+' XP</span><span>Lv '+(Math.floor(w.xp/2000)+1)+'</span></div>'+
+      '<div class="xpbar"><div class="xpfill" style="width:'+(w.xp/10000*100).toFixed(1)+'%"></div></div>'+
+      '<div class="wc-wa">💬 Chat on WhatsApp</div>'+
+      '</div>';
+  });
+  html+='</div>';
+  html+='<div class="join-box"><h4>Are you a '+d.label+'?</h4>'+
+    '<p>Join KaziHub — upload your work samples and get found by customers near you. No CV needed.</p>'+
+    '<button class="btn btn-prime" onclick="openJoin()">📲 List Yourself Free</button></div>';
+
+  document.getElementById('mbody').innerHTML=html;
+  document.getElementById('mbg').classList.add('open');
+}
+
+function openJoin(){
+  document.getElementById('mtitle').textContent='🚀 Join KaziHub — It\'s Free';
+  var opts=RAW.map(function(r){return '<option value="'+r.id+'">'+r.emoji+' '+r.label+'</option>';}).join('');
+  var html='<p style="color:var(--muted);font-size:13px;margin-bottom:20px;line-height:1.7;">No CV, no references needed. Upload samples of your work and let customers find you on WhatsApp. Earn XP, grow your bubble, level up.</p>'+
+    '<div class="jfield"><label>Full Name</label><input type="text" placeholder="e.g. Wanjiku Muthoni"/></div>'+
+    '<div class="jfield"><label>WhatsApp Number</label><input type="text" placeholder="+254 7XX XXX XXX"/></div>'+
+    '<div class="jfield"><label>Your Service</label><select><option value="">Select a category…</option>'+opts+'</select></div>'+
+    '<div class="jfield"><label>Your Area</label><input type="text" placeholder="e.g. Westlands, Kilimani, Kasarani…"/></div>'+
+    '<div class="jfield"><label>Work Samples</label>'+
+    '<div class="udrop"><div class="ui">📂</div><p>Drop photos, videos or docs from your past work or apprenticeship.<br><b style="color:var(--text)">Your portfolio does the talking.</b></p></div></div>'+
+    '<button class="btn btn-prime" style="width:100%;padding:14px;font-size:14px;border-radius:10px;margin-top:4px;" onclick="alert(\'Thank you! We will reach you on WhatsApp shortly.\')">📲 Start with WhatsApp →</button>';
+  document.getElementById('mbody').innerHTML=html;
+  document.getElementById('mbg').classList.add('open');
+}
+
+function closeModal(){document.getElementById('mbg').classList.remove('open');}
+function maybeClose(e){if(e.target===document.getElementById('mbg'))closeModal();}
+
+// live counter
+setInterval(function(){
+  var el=document.getElementById('n-online');
+  if(el) el.textContent=Math.max(100,parseInt(el.textContent)+rnd(-2,4));
+},3200);
+
+// ================================================================
+// THEME & ICON STATE
+// ================================================================
+var currentTheme = 'minimal';   // 'minimal' | 'heatmap'
+var iconStyle    = 'emoji';     // 'emoji' | 'text' | 'none'
+
+function setTheme(t){
+  currentTheme = t;
+  document.querySelectorAll('.tpill-opt').forEach(function(el){
+    el.classList.toggle('active', el.dataset.theme === t);
+  });
+  document.body.classList.toggle('crisp-mode', t === 'crisp');
+}
+
+function setIconStyle(s){
+  iconStyle = s;
+  document.querySelectorAll('.icon-pill span').forEach(function(el){
+    el.classList.toggle('active', el.dataset.icon === s);
+  });
+}
+
+// ================================================================
+// BOOT
+// ================================================================
+buildEmojiCache();
+buildFilters();
+buildTicker();
+buildLeaders();
+initBubbles();
+// Set initial side-toggle position (side panel starts open at 300px)
+(function(){
+  var btn = document.getElementById('side-toggle');
+  if(btn){ btn.style.right = '300px'; btn.style.transition='none'; }
+})();
+
+
+// ================================================================
+// COLLAPSE CHROME
+// ================================================================
+var topCollapsed  = false;
+var sideCollapsed = false;
+
+function collapseForCanvas(){
+  // Auto-collapse both panels when user starts interacting with bubbles
+  if(!topCollapsed)  collapseTop(true);
+  if(!sideCollapsed) collapseSide(true);
+}
+
+function collapseTop(instant){
+  topCollapsed = true;
+  var el = document.getElementById('top-chrome');
+  if(instant){ el.style.transition='none'; requestAnimationFrame(function(){ el.style.transition=''; }); }
+  el.classList.add('collapsed');
+  // flip arrow on reveal tab
+  var tab = document.getElementById('top-reveal');
+  if(tab){ tab.style.transform = 'translateX(-50%) translateY(0)'; }
+  // resize canvas after transition
+  setTimeout(function(){ cancelAnimationFrame(raf); initBubbles(); }, instant?40:400);
+}
+
+function expandTop(){
+  topCollapsed = false;
+  var el = document.getElementById('top-chrome');
+  el.classList.remove('collapsed');
+  var tab = document.getElementById('top-reveal');
+  if(tab){ tab.style.transform = ''; }
+  setTimeout(function(){ cancelAnimationFrame(raf); initBubbles(); }, 400);
+}
+
+function toggleTopChrome(){
+  if(topCollapsed) expandTop(); else collapseTop(false);
+}
+
+function updateTogglePos(){
+  var btn = document.getElementById('side-toggle');
+  if(!btn) return;
+  var panel = document.getElementById('side-panel');
+  var w = sideCollapsed ? 0 : (panel ? panel.offsetWidth : 300);
+  btn.style.right = w + 'px';
+  if(sideCollapsed){ btn.classList.add('flipped'); }
+  else             { btn.classList.remove('flipped'); }
+}
+
+function collapseSide(instant){
+  sideCollapsed = true;
+  var el = document.getElementById('side-panel');
+  if(instant){
+    el.style.transition='none';
+    requestAnimationFrame(function(){ el.style.transition=''; });
+  }
+  el.classList.add('collapsed');
+  // move toggle smoothly
+  var btn = document.getElementById('side-toggle');
+  if(btn){ btn.style.transition = instant ? 'none' : 'right .38s cubic-bezier(.4,0,.2,1), color .15s, background .15s';
+           btn.style.right = '0'; btn.classList.add('flipped'); }
+  setTimeout(function(){ cancelAnimationFrame(raf); initBubbles(); }, instant?40:400);
+}
+
+function expandSide(){
+  sideCollapsed = false;
+  var el = document.getElementById('side-panel');
+  el.classList.remove('collapsed');
+  var btn = document.getElementById('side-toggle');
+  if(btn){ btn.style.transition = 'right .38s cubic-bezier(.4,0,.2,1), color .15s, background .15s';
+           btn.style.right = '300px'; btn.classList.remove('flipped'); }
+  setTimeout(function(){ cancelAnimationFrame(raf); initBubbles(); }, 400);
+}
+
+function toggleSide(){
+  if(sideCollapsed) expandSide(); else collapseSide(false);
+}
+
+// Wire canvas mousedown → auto-collapse (desktop)
+canvas.addEventListener('mousedown', function(){
+  if(!topCollapsed || !sideCollapsed) collapseForCanvas();
+});
+// Touch collapse is handled inside the existing touchstart handler (see above)
+
+</script>
+<!-- KAZIHUB CHATBOT -->
+<button id="kh-chat-btn" onclick="khChatToggle()" title="Chat with KaziHub">
+  🤖
+  <div class="kh-chat-unread" id="kh-unread">1</div>
+</button>
+<div id="kh-chat-panel">
+  <div class="kh-chat-head">
+    <div class="kh-chat-avatar">🤖</div>
+    <div>
+      <div class="kh-chat-title">KaziHub Assistant</div>
+      <div class="kh-chat-sub">● Online · Nairobi</div>
+    </div>
+    <button class="kh-chat-close" onclick="khChatToggle()">✕</button>
+  </div>
+  <div class="kh-chat-msgs" id="kh-msgs"></div>
+  <div class="kh-chips" id="kh-chips"></div>
+  <div class="kh-chat-foot">
+    <textarea class="kh-chat-input" id="kh-input" rows="1"
+      placeholder="Find a plumber, electrician…"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();khSend();}"></textarea>
+    <button class="kh-chat-send" id="kh-send-btn" onclick="khSend()">➤</button>
+  </div>
+</div>
+<script>
+(function(){
+var KH_PANEL,KH_MSGS,KH_INPUT,KH_SEND,KH_CHIPS,KH_UNREAD;
+var khOpen=false,khHistory=[],khBusy=false;
+
+function khServiceList(){
+  if(typeof DATA!=='undefined'){
+    return DATA.slice(0,100).map(function(d){return d.emoji+' '+d.label;}).join(', ');
+  }
+  return 'Electricians, Plumbers, Carpenters, House Cleaners, Photographers, Web Designers, Tailors, Event Caterers, Drivers, Security Guards, Fitness Trainers, Lawyers, Accountants, Nannies, Barbers, DJs, Plumbers, Masons, Solar Installers, and 240+ more';
+}
+
+var KH_SYS='You are KaziHub Assistant — a sharp, friendly AI for KaziHub, Kenya\'s gig economy marketplace in Nairobi.\nKaziHub connects customers with verified local professionals across 259 service categories.\nServices available: '+khServiceList()+'\n\nRules:\n- Keep replies SHORT (2-4 sentences max). No walls of text.\n- When a user describes a need, identify the best matching service and recommend it directly.\n- Always end service recommendations with a WhatsApp CTA on a new line in this exact format: [WA:ServiceName:Neighbourhood]\n  Example: [WA:Electrician:Westlands]\n- Typical prices in KES: small jobs 500-2000, medium 2000-8000, large 8000-50000+.\n- Payment is via M-Pesa STK Push after booking on WhatsApp.\n- If you need more info, ask ONE question only (area or urgency).\n- Never make up specific pro names or phone numbers.\n- If user writes in Swahili, respond in Swahili.';
+
+var STARTERS=['Find me a plumber 🪠','I need an electrician ⚡','House cleaning today 🧹','Event photographer 📸','Graphic designer 🎨'];
+
+function khInit(){
+  KH_PANEL=document.getElementById('kh-chat-panel');
+  KH_MSGS=document.getElementById('kh-msgs');
+  KH_INPUT=document.getElementById('kh-input');
+  KH_SEND=document.getElementById('kh-send-btn');
+  KH_CHIPS=document.getElementById('kh-chips');
+  KH_UNREAD=document.getElementById('kh-unread');
+  if(!KH_PANEL)return;
+  khAddMsg('bot','Hey! 👋 I\'m your KaziHub assistant. Tell me what service you need and I\'ll match you with a verified pro in Nairobi.');
+  STARTERS.forEach(function(s){
+    var c=document.createElement('button');
+    c.className='kh-chip';c.textContent=s;
+    c.onclick=function(){KH_INPUT.value=s;khSend();};
+    KH_CHIPS.appendChild(c);
+  });
+  setTimeout(function(){if(KH_UNREAD)KH_UNREAD.classList.add('show');},2000);
+  var inp=document.getElementById('kh-input');
+  if(inp){inp.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px';});}
+}
+
+function khChatToggle(){
+  if(!KH_PANEL)return;
+  khOpen=!khOpen;
+  KH_PANEL.classList.toggle('open',khOpen);
+  if(khOpen){
+    if(KH_UNREAD)KH_UNREAD.classList.remove('show');
+    setTimeout(function(){if(KH_INPUT)KH_INPUT.focus();},250);
+  }
+}
+
+function khAddMsg(role,content){
+  if(!KH_MSGS)return null;
+  var div=document.createElement('div');
+  div.className='kh-msg '+role;
+  var html=content.replace(/\[WA:([^\]]+)\]/g,function(_,p){
+    var pts=p.split(':'),svc=pts[0]||'service',loc=pts[1]||'Nairobi';
+    var msg=encodeURIComponent('Hi, I found you on KaziHub. I need '+svc+' in '+loc+'. Are you available?');
+    return '<br><a class="kh-wa-cta" href="https://wa.me/254700000000?text='+msg+'" target="_blank">💬 Book via WhatsApp — '+svc+'</a>';
+  });
+  html=html.replace(/\n/g,'<br>');
+  div.innerHTML=html;
+  KH_MSGS.appendChild(div);
+  KH_MSGS.scrollTop=KH_MSGS.scrollHeight;
+  return div;
+}
+
+function khRemove(el){if(el&&el.parentNode)el.parentNode.removeChild(el);}
+
+async function khSend(){
+  if(khBusy||!KH_INPUT)return;
+  var text=(KH_INPUT.value||'').trim();if(!text)return;
+  KH_INPUT.value='';KH_INPUT.style.height='';
+  if(KH_CHIPS)KH_CHIPS.innerHTML='';
+  khAddMsg('user',text);
+  khHistory.push({role:'user',content:text});
+  khBusy=true;if(KH_SEND)KH_SEND.disabled=true;
+  var thinking=khAddMsg('thinking','● thinking…');
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:300,
+        system:KH_SYS,
+        messages:khHistory
+      })
+    });
+    var data=await res.json();
+    var reply=(data.content&&data.content[0]&&data.content[0].text)||'Sorry, something went wrong. Try again.';
+    khRemove(thinking);
+    khAddMsg('bot',reply);
+    khHistory.push({role:'assistant',content:reply});
+    if(khHistory.length>20)khHistory=khHistory.slice(-20);
+  }catch(e){
+    khRemove(thinking);
+    khAddMsg('bot','Connection issue — please try again in a moment.');
+  }
+  khBusy=false;if(KH_SEND)KH_SEND.disabled=false;if(KH_INPUT)KH_INPUT.focus();
+}
+
+window.khChatToggle=khChatToggle;
+window.khSend=khSend;
+document.addEventListener('DOMContentLoaded',khInit);
+})();
+</script>
+</body>
+</html>

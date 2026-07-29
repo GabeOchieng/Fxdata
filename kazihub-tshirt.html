@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KaziHub Merch — Wear Your Hustle</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700;1,900&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{
+  --bg:#030508;--bg2:#07080f;--bg3:#0c0e18;--bg4:#111320;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.12);
+  --text:#f2f0ea;--text2:#8a8aa8;--muted:#2e3050;
+  --cyan:#00e5ff;--lime:#c8ff00;--red:#ff2d2d;--amber:#f5a623;
+  --green:#00ffb3;--magenta:#ff2d87;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden;min-height:100vh;}
+
+/* ── TOPBAR ── */
+#kh-topbar{position:fixed;top:0;left:0;right:0;z-index:999;background:rgba(3,5,8,.97);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);display:flex;align-items:center;height:40px;padding:0 20px;gap:0;font-family:'Outfit',sans-serif;}
+#kh-topbar a.kh-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:6px;margin-right:14px;}
+#kh-topbar a.kh-logo em{color:var(--cyan);font-style:normal;}
+.kh-tb-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan);animation:kp 2s ease-in-out infinite;}
+@keyframes kp{0%,100%{opacity:1}50%{opacity:.3}}
+#kh-topbar .kh-sep{width:1px;height:16px;background:var(--border);margin:0 12px;}
+#kh-topbar .kh-nav{display:flex;align-items:center;gap:2px;flex:1;}
+#kh-topbar .kh-link{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;color:rgba(154,152,181,.8);transition:all .13s;border:1px solid transparent;}
+#kh-topbar .kh-link:hover{color:var(--text);background:rgba(255,255,255,.05);}
+#kh-topbar .kh-link.kh-active{color:var(--lime);border-color:rgba(200,255,0,.2);background:rgba(200,255,0,.06);}
+#kh-topbar .kh-r{margin-left:auto;}
+
+/* atmospheric bg */
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 30% 0%,rgba(200,255,0,.04) 0%,transparent 65%),radial-gradient(ellipse 50% 40% at 80% 80%,rgba(255,45,135,.04) 0%,transparent 60%),radial-gradient(ellipse 40% 30% at 10% 70%,rgba(0,229,255,.03) 0%,transparent 60%);}
+
+/* ── HERO DROP ── */
+.drop-hero{
+  position:relative;z-index:1;
+  min-height:100vh;padding:80px 24px 60px;
+  display:flex;align-items:center;
+  overflow:hidden;
+}
+/* giant BG text */
+.bgt{position:absolute;font-family:'Bebas Neue',sans-serif;pointer-events:none;user-select:none;white-space:nowrap;color:rgba(255,255,255,.015);}
+.bgt1{font-size:clamp(120px,20vw,280px);top:-20px;left:-10px;letter-spacing:-5px;}
+.bgt2{font-size:clamp(80px,14vw,200px);bottom:-10px;right:-5px;letter-spacing:-3px;}
+
+.drop-inner{
+  max-width:1200px;margin:auto;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;
+}
+@media(max-width:800px){.drop-inner{grid-template-columns:1fr;gap:40px;}}
+
+/* left copy */
+.drop-copy{}
+.drop-label{
+  font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:3px;
+  color:var(--lime);margin-bottom:14px;display:flex;align-items:center;gap:10px;
+}
+.drop-label::before{content:'';width:24px;height:2px;background:var(--lime);}
+.drop-h{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(56px,9vw,110px);
+  font-weight:900;font-style:italic;
+  line-height:.88;letter-spacing:-1px;
+  margin-bottom:20px;text-transform:uppercase;
+}
+.drop-h .line-white{
+  display:block;
+  color:#fff;
+  text-shadow:0 0 40px rgba(255,255,255,.1);
+}
+.drop-h .line-lime{
+  display:block;
+  color:var(--lime);
+  text-shadow:0 0 40px rgba(200,255,0,.3);
+}
+.drop-h .line-ghost{
+  display:block;
+  -webkit-text-stroke:1px rgba(255,255,255,.2);
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+}
+.drop-sub{font-size:15px;color:var(--text2);line-height:1.75;max-width:420px;margin-bottom:28px;}
+.drop-sub b{color:var(--text);}
+.drop-price-badge{
+  display:inline-flex;align-items:baseline;gap:8px;
+  background:rgba(200,255,0,.08);border:1px solid rgba(200,255,0,.2);
+  border-radius:12px;padding:10px 18px;margin-bottom:28px;
+}
+.dpb-price{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:1px;color:var(--lime);}
+.dpb-sub{font-size:12px;color:var(--text2);}
+.drop-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.dbt{padding:13px 30px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:800;cursor:pointer;border:none;transition:all .18s;text-decoration:none;letter-spacing:.4px;}
+.dbt-prime{background:var(--lime);color:#030508;}
+.dbt-prime:hover{box-shadow:0 0 30px rgba(200,255,0,.4);transform:translateY(-2px);}
+.dbt-ghost{background:transparent;border:1px solid var(--border2);color:var(--text);}
+.dbt-ghost:hover{border-color:var(--cyan);color:var(--cyan);}
+
+/* ── SHIRT MOCKUP ── */
+.shirt-stage{
+  display:flex;flex-direction:column;align-items:center;gap:20px;
+  position:relative;
+}
+.shirt-wrap{
+  position:relative;width:320px;height:380px;
+  filter:drop-shadow(0 32px 64px rgba(0,0,0,.7));
+  transition:filter .3s;
+}
+.shirt-wrap:hover{filter:drop-shadow(0 40px 80px rgba(200,255,0,.2)) drop-shadow(0 20px 60px rgba(0,0,0,.8));}
+
+/* shirt SVG base */
+.shirt-svg{width:100%;height:100%;}
+
+/* QR overlay on shirt */
+.shirt-qr-zone{
+  position:absolute;
+  top:110px;left:50%;transform:translateX(-50%);
+  width:88px;height:88px;
+  background:#fff;
+  border-radius:6px;
+  padding:5px;
+  box-shadow:0 0 0 3px rgba(0,0,0,.4),0 0 20px rgba(200,255,0,.3);
+  animation:qrpulse 3s ease-in-out infinite;
+}
+@keyframes qrpulse{0%,100%{box-shadow:0 0 0 3px rgba(0,0,0,.4),0 0 20px rgba(200,255,0,.2)}50%{box-shadow:0 0 0 3px rgba(0,0,0,.4),0 0 32px rgba(200,255,0,.5),0 0 60px rgba(200,255,0,.15)}}
+#shirt-qr-canvas{width:100%!important;height:100%!important;}
+#shirt-qr-canvas canvas,#shirt-qr-canvas img{width:100%!important;height:100%!important;}
+
+/* shirt name text */
+.shirt-name-text{
+  position:absolute;top:76px;left:50%;transform:translateX(-50%);
+  font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:2px;
+  color:rgba(200,255,0,.7);text-transform:uppercase;white-space:nowrap;
+  max-width:160px;overflow:hidden;text-overflow:ellipsis;
+  text-align:center;
+}
+
+/* shirt color selector */
+.shirt-colors{display:flex;gap:8px;align-items:center;}
+.shirt-colors span{font-size:11px;color:var(--text2);margin-right:4px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.sc{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;}
+.sc:hover{transform:scale(1.15);}
+.sc.on{border-color:var(--lime);box-shadow:0 0 8px rgba(200,255,0,.4);}
+
+/* shirt size */
+.shirt-sizes{display:flex;gap:6px;align-items:center;}
+.shirt-sizes span{font-size:11px;color:var(--text2);margin-right:4px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.ssz{padding:5px 11px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text2);transition:all .13s;font-family:'JetBrains Mono',monospace;}
+.ssz:hover{color:var(--text);}
+.ssz.on{background:var(--lime);color:#030508;border-color:transparent;}
+
+/* ── CUSTOMIZER ── */
+.customizer{
+  position:relative;z-index:1;
+  padding:0 24px 80px;max-width:1200px;margin:0 auto;
+}
+.cust-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+@media(max-width:720px){.cust-grid{grid-template-columns:1fr;}}
+
+.cust-panel{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:20px;padding:28px;
+}
+.cp-title{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:22px;font-weight:800;font-style:italic;text-transform:uppercase;
+  margin-bottom:18px;letter-spacing:.5px;
+  display:flex;align-items:center;gap:10px;
+}
+.cp-title::before{content:'';width:3px;height:20px;border-radius:2px;}
+
+.fld{margin-bottom:16px;}
+.fld label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);margin-bottom:6px;}
+.fld input,.fld select{
+  width:100%;padding:11px 14px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:10px;color:var(--text);font-family:'Outfit',sans-serif;
+  font-size:13px;outline:none;transition:border-color .15s;
+}
+.fld input:focus,.fld select:focus{border-color:var(--lime);}
+.fld select option{background:var(--bg3);}
+.fld input::placeholder{color:var(--muted);}
+
+/* preview card */
+.preview-card{
+  background:linear-gradient(135deg,rgba(200,255,0,.06),rgba(200,255,0,.02));
+  border:1px solid rgba(200,255,0,.15);border-radius:16px;padding:20px;
+}
+.pc-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px;color:var(--text2);}
+.pc-row:last-child{margin-bottom:0;padding-top:8px;border-top:1px solid var(--border);font-size:14px;font-weight:700;}
+.pc-row .val{color:var(--text);font-weight:600;font-family:'JetBrains Mono',monospace;}
+.pc-row.total .val{color:var(--lime);font-size:16px;}
+
+.wa-order-btn{
+  width:100%;padding:14px;border-radius:12px;border:none;
+  background:#25d366;color:#fff;font-family:'Outfit',sans-serif;
+  font-size:14px;font-weight:800;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  transition:all .18s;margin-top:16px;letter-spacing:.3px;
+}
+.wa-order-btn:hover{box-shadow:0 0 24px rgba(37,211,102,.4);transform:translateY(-1px);}
+
+/* ── VIRAL LOOP SECTION ── */
+.viral-section{
+  position:relative;z-index:1;
+  padding:0 24px 80px;max-width:1100px;margin:0 auto;
+}
+.sec-head{text-align:center;margin-bottom:48px;}
+.sec-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--lime);margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:10px;}
+.sec-eyebrow::before,.sec-eyebrow::after{content:'';width:28px;height:1px;background:var(--lime);opacity:.4;}
+.sec-h{font-family:'Barlow Condensed',sans-serif;font-size:clamp(36px,6vw,72px);font-weight:900;font-style:italic;text-transform:uppercase;line-height:.95;margin-bottom:10px;}
+.sec-sub{font-size:13px;color:var(--text2);max-width:480px;margin:0 auto;line-height:1.7;}
+
+/* loop diagram */
+.viral-loop{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto;max-width:900px;
+}
+.vl-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:120px;height:120px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(200,255,0,.15),rgba(200,255,0,.05));
+  border:2px solid rgba(200,255,0,.3);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  text-align:center;
+}
+.vl-center .vl-icon{font-size:32px;}
+.vl-center .vl-label{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:var(--lime);line-height:1.2;margin-top:4px;}
+
+.vl-steps{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;width:100%;
+}
+@media(max-width:700px){.vl-steps{grid-template-columns:repeat(2,1fr);}}
+
+.vl-step{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:16px;padding:20px 16px;text-align:center;
+  position:relative;
+  transition:all .2s;
+  animation:fadeup .5s ease both;
+}
+@keyframes fadeup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.vl-step:hover{border-color:rgba(200,255,0,.25);transform:translateY(-4px);}
+.vl-step:nth-child(1){animation-delay:.05s;--sc:var(--cyan);}
+.vl-step:nth-child(2){animation-delay:.1s;--sc:var(--lime);}
+.vl-step:nth-child(3){animation-delay:.15s;--sc:var(--amber);}
+.vl-step:nth-child(4){animation-delay:.2s;--sc:var(--magenta);}
+
+.vl-step .vls-num{
+  font-family:'Bebas Neue',sans-serif;font-size:42px;
+  color:var(--sc);line-height:1;margin-bottom:8px;
+  text-shadow:0 0 20px var(--sc);
+}
+.vl-step .vls-icon{font-size:26px;margin-bottom:8px;}
+.vl-step .vls-title{font-size:13px;font-weight:800;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;}
+.vl-step .vls-desc{font-size:11px;color:var(--text2);line-height:1.6;}
+.vl-arrow{
+  position:absolute;top:50%;right:-14px;transform:translateY(-50%);
+  width:28px;height:28px;border-radius:50%;
+  background:var(--bg4);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:var(--text2);z-index:2;
+}
+.vl-step:last-child .vl-arrow{display:none;}
+@media(max-width:700px){.vl-arrow{display:none;}}
+
+/* impact stats */
+.impact-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  margin-top:48px;
+}
+@media(max-width:600px){.impact-grid{grid-template-columns:1fr 1fr;}}
+.ig-card{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:16px;padding:20px;text-align:center;
+}
+.igc-val{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(36px,5vw,56px);line-height:1;
+  margin-bottom:4px;
+}
+.igc-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;font-weight:600;}
+.igc-sub{font-size:10px;color:var(--muted);margin-top:4px;}
+
+/* ── HOW QR WORKS ── */
+.how-qr{
+  position:relative;z-index:1;
+  padding:0 24px 80px;max-width:1100px;margin:0 auto;
+}
+.qr-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:0;align-items:center;margin-top:40px;}
+@media(max-width:720px){.qr-flow{grid-template-columns:repeat(3,1fr);gap:14px;}}
+.qf-step{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:14px;padding:18px 12px;text-align:center;
+  position:relative;
+  transition:border-color .2s;
+}
+.qf-step:hover{border-color:rgba(200,255,0,.25);}
+.qf-icon{font-size:28px;margin-bottom:8px;}
+.qf-num{
+  position:absolute;top:8px;right:10px;
+  font-family:'Bebas Neue',sans-serif;font-size:18px;
+  color:rgba(200,255,0,.3);letter-spacing:1px;
+}
+.qf-title{font-size:12px;font-weight:700;margin-bottom:4px;}
+.qf-desc{font-size:10px;color:var(--text2);line-height:1.5;}
+.qf-arr{
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:var(--muted);
+}
+@media(max-width:720px){.qf-arr{display:none;}}
+
+/* ── SCANNED PROFILE PREVIEW ── */
+.preview-section{
+  position:relative;z-index:1;
+  padding:0 24px 80px;max-width:1100px;margin:0 auto;
+}
+.phone-mockup{
+  width:260px;margin:0 auto;
+  background:var(--bg2);border:2px solid rgba(255,255,255,.1);
+  border-radius:36px;overflow:hidden;
+  box-shadow:0 48px 96px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.04) inset;
+  position:relative;
+}
+.phone-notch{height:24px;background:var(--bg2);display:flex;align-items:center;justify-content:center;}
+.phone-notch::after{content:'';width:60px;height:10px;background:#000;border-radius:0 0 8px 8px;}
+.phone-screen{overflow-y:auto;max-height:500px;background:var(--bg2);}
+.phone-screen::-webkit-scrollbar{display:none;}
+
+/* mini profile inside phone */
+.mp-hero{
+  padding:20px;
+  background:linear-gradient(135deg,rgba(200,255,0,.12),rgba(0,229,255,.06));
+  text-align:center;border-bottom:1px solid var(--border);
+}
+.mp-av{
+  width:64px;height:64px;border-radius:50%;
+  background:var(--lime);color:#030508;
+  font-family:'Bebas Neue',sans-serif;font-size:26px;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 10px;border:3px solid rgba(200,255,0,.3);
+  box-shadow:0 0 20px rgba(200,255,0,.2);
+}
+.mp-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;margin-bottom:2px;}
+.mp-cat{font-size:11px;color:var(--lime);font-weight:600;margin-bottom:8px;}
+.mp-stats{display:flex;justify-content:center;gap:14px;}
+.mp-stat .sv{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--text);}
+.mp-stat .sl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.3px;}
+.mp-body{padding:14px;}
+.mp-cta{
+  width:100%;padding:10px;border-radius:8px;border:none;
+  background:#25d366;color:#fff;font-family:'Outfit',sans-serif;
+  font-size:12px;font-weight:700;cursor:pointer;margin-bottom:8px;
+}
+.mp-cta2{
+  width:100%;padding:9px;border-radius:8px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--text2);font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;
+}
+.mp-sect{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:12px 0 8px;}
+.mp-chips{display:flex;flex-wrap:wrap;gap:5px;}
+.mp-chip{padding:3px 9px;border-radius:99px;font-size:10px;font-weight:600;background:rgba(200,255,0,.08);border:1px solid rgba(200,255,0,.15);color:var(--lime);}
+.mp-badge{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:5px 10px;border-radius:8px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.15);font-size:10px;color:var(--cyan);font-weight:600;}
+
+.preview-copy{padding:32px 0;}
+.pc-claim{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(28px,4vw,48px);font-weight:900;font-style:italic;
+  text-transform:uppercase;line-height:.95;margin-bottom:16px;
+}
+.pc-claim em{color:var(--lime);font-style:italic;}
+.pc-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.pc-item{display:flex;align-items:flex-start;gap:12px;font-size:13px;color:var(--text2);line-height:1.6;}
+.pc-item b{color:var(--text);}
+.pc-ic{width:28px;height:28px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;}
+
+/* ── ORDER SUCCESS ── */
+.success-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.92);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s;}
+.success-overlay.open{opacity:1;pointer-events:all;}
+.success-box{background:var(--bg2);border:1px solid rgba(200,255,0,.2);border-radius:22px;padding:36px 28px;text-align:center;max-width:380px;width:90%;}
+.sb-icon{font-size:56px;margin-bottom:16px;}
+.sb-title{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;font-style:italic;text-transform:uppercase;margin-bottom:8px;color:var(--lime);}
+.sb-sub{font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.6;}
+.sb-ref{font-family:'JetBrains Mono',monospace;font-size:12px;padding:8px 16px;background:rgba(200,255,0,.07);border:1px solid rgba(200,255,0,.15);border-radius:8px;color:var(--lime);display:inline-block;margin-bottom:20px;}
+
+/* ── WA PREVIEW MODAL ── */
+.wa-modal-bg{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.88);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.wa-modal-bg.open{opacity:1;pointer-events:all;}
+.wa-modal{background:var(--bg2);border:1px solid rgba(37,211,102,.2);border-radius:18px;padding:24px;width:min(460px,100%);max-height:90vh;overflow-y:auto;}
+.wa-modal h3{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;font-style:italic;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--lime);}
+.wa-msg{background:#0d1117;border:1px solid var(--border);border-radius:10px;padding:14px;font-size:12px;color:#dcf8c6;line-height:1.8;font-family:'JetBrains Mono',monospace;white-space:pre-wrap;max-height:300px;overflow-y:auto;margin-bottom:14px;}
+.wa-send{width:100%;padding:13px;border-radius:10px;border:none;background:#25d366;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px;transition:all .15s;}
+.wa-send:hover{box-shadow:0 0 20px rgba(37,211,102,.4);}
+.wa-cancel{width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;}
+
+/* QR download section */
+.qr-download-strip{
+  background:var(--bg3);border:1px solid rgba(200,255,0,.1);
+  border-radius:14px;padding:18px;display:flex;align-items:center;gap:16px;
+  margin-top:20px;
+}
+.qds-qr{width:72px;height:72px;background:#fff;border-radius:8px;padding:4px;flex-shrink:0;}
+.qds-info{flex:1;}
+.qds-title{font-size:13px;font-weight:700;margin-bottom:3px;}
+.qds-sub{font-size:11px;color:var(--text2);line-height:1.5;}
+.qds-btn{padding:8px 16px;border-radius:8px;background:var(--lime);color:#030508;font-family:'Outfit',sans-serif;font-size:11px;font-weight:800;border:none;cursor:pointer;white-space:nowrap;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ── KAZIHUB CHATBOT ──────────────────────────────────────── */
+#kh-chat-btn{
+  position:fixed;bottom:22px;right:22px;z-index:200;
+  width:52px;height:52px;border-radius:50%;
+  background:var(--accent,#00ffb3);
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 24px rgba(0,255,179,.35);
+  transition:transform .2s, box-shadow .2s;
+  font-size:22px;
+}
+#kh-chat-btn:hover{transform:scale(1.08);box-shadow:0 6px 32px rgba(0,255,179,.5);}
+#kh-chat-btn .kh-chat-unread{
+  position:absolute;top:-2px;right:-2px;
+  width:16px;height:16px;border-radius:50%;
+  background:#ff3d5a;color:#fff;
+  font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;
+}
+#kh-chat-btn .kh-chat-unread.show{opacity:1;}
+#kh-chat-panel{
+  position:fixed;bottom:86px;right:22px;z-index:200;
+  width:340px;max-height:520px;
+  background:rgba(6,10,22,.97);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  display:flex;flex-direction:column;
+  box-shadow:0 16px 60px rgba(0,0,0,.7);
+  backdrop-filter:blur(24px);
+  transform:scale(.9) translateY(12px);
+  opacity:0;pointer-events:none;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), opacity .18s;
+  overflow:hidden;
+}
+#kh-chat-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
+.kh-chat-head{
+  padding:14px 16px 12px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.kh-chat-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#00ffb3,#00d4ff);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+}
+.kh-chat-title{font-size:13px;font-weight:700;color:#f0eee8;}
+.kh-chat-sub{font-size:10px;color:rgba(0,255,179,.8);margin-top:1px;}
+.kh-chat-close{
+  margin-left:auto;background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.35);font-size:16px;padding:2px 4px;transition:color .15s;
+}
+.kh-chat-close:hover{color:rgba(255,255,255,.7);}
+.kh-chat-msgs{
+  flex:1;overflow-y:auto;padding:12px;
+  display:flex;flex-direction:column;gap:8px;min-height:0;
+}
+.kh-chat-msgs::-webkit-scrollbar{width:3px;}
+.kh-chat-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+.kh-msg{max-width:86%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.55;}
+.kh-msg.bot{background:rgba(255,255,255,.06);color:#dde3f0;border-bottom-left-radius:4px;align-self:flex-start;}
+.kh-msg.user{background:#00ffb3;color:#04070f;font-weight:600;border-bottom-right-radius:4px;align-self:flex-end;}
+.kh-msg.thinking{background:rgba(255,255,255,.04);color:rgba(221,227,240,.45);font-style:italic;align-self:flex-start;}
+.kh-chips{display:flex;flex-wrap:wrap;gap:5px;padding:0 12px 10px;flex-shrink:0;}
+.kh-chip{
+  padding:4px 11px;border-radius:99px;font-size:10px;font-weight:700;cursor:pointer;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:rgba(221,227,240,.8);transition:all .15s;white-space:nowrap;
+}
+.kh-chip:hover{background:rgba(0,255,179,.12);border-color:rgba(0,255,179,.4);color:#00ffb3;}
+.kh-chat-foot{
+  padding:10px 12px;border-top:1px solid rgba(255,255,255,.06);
+  display:flex;gap:8px;align-items:center;flex-shrink:0;
+}
+.kh-chat-input{
+  flex:1;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);border-radius:10px;
+  padding:8px 12px;color:#dde3f0;font-size:12px;
+  font-family:inherit;outline:none;transition:border-color .15s;
+  resize:none;max-height:80px;
+}
+.kh-chat-input:focus{border-color:rgba(0,255,179,.5);}
+.kh-chat-input::placeholder{color:rgba(255,255,255,.25);}
+.kh-chat-send{
+  width:34px;height:34px;border-radius:10px;
+  background:#00ffb3;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .15s;color:#04070f;font-size:14px;
+}
+.kh-chat-send:hover{box-shadow:0 0 14px rgba(0,255,179,.4);}
+.kh-chat-send:disabled{opacity:.35;cursor:not-allowed;}
+.kh-wa-cta{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:8px;padding:7px 13px;border-radius:9px;
+  background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.35);
+  color:#25d366;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;
+  transition:all .15s;
+}
+.kh-wa-cta:hover{background:rgba(37,211,102,.25);}
+@media(max-width:400px){#kh-chat-panel{width:calc(100vw - 20px);right:10px;}}
+</style>
+<style id="kh-topbar-css">
+#kh-topbar{
+  position:fixed;top:0;left:0;right:0;z-index:9999;
+  background:rgba(4,6,14,.97);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(20px);
+  display:flex;align-items:center;height:40px;padding:0 20px;gap:0;
+  font-family:'Outfit','DM Sans',sans-serif;
+}
+#kh-topbar a.kh-logo{
+  font-size:16px;font-weight:800;
+  color:#f0eee8;text-decoration:none;
+  display:flex;align-items:center;gap:6px;margin-right:14px;
+  font-family:'Bebas Neue','Outfit',sans-serif;font-size:20px;
+}
+#kh-topbar a.kh-logo em{color:#00e5ff;font-style:normal;}
+.kh-tb-dot{width:6px;height:6px;border-radius:50%;background:#00e5ff;box-shadow:0 0 6px #00e5ff;animation:kh_pulse 2s ease-in-out infinite;}
+@keyframes kh_pulse{0%,100%{opacity:1}50%{opacity:.3}}
+#kh-topbar .kh-sep{width:1px;height:16px;background:rgba(255,255,255,.08);margin:0 12px;}
+#kh-topbar .kh-nav{display:flex;align-items:center;gap:2px;flex:1;}
+#kh-topbar .kh-link{
+  padding:4px 11px;border-radius:7px;font-size:11px;font-weight:600;
+  text-decoration:none;color:rgba(154,152,181,.85);
+  transition:all .13s;border:1px solid transparent;
+}
+#kh-topbar .kh-link:hover{color:#f0eee8;background:rgba(255,255,255,.05);}
+#kh-topbar .kh-link.kh-active{color:#f0eee8;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.1);}
+#kh-topbar .kh-link.kh-docs{color:#f5a623 !important;}
+#kh-topbar .kh-link.kh-docs:hover{background:rgba(245,166,35,.06);}
+#kh-topbar .kh-link.kh-docs.kh-active{border-color:rgba(245,166,35,.2);background:rgba(245,166,35,.07);}
+#kh-topbar .kh-link.kh-merch{color:#c8ff00 !important;}
+#kh-topbar .kh-link.kh-merch:hover{background:rgba(200,255,0,.06);}
+#kh-topbar .kh-link.kh-merch.kh-active{border-color:rgba(200,255,0,.2);background:rgba(200,255,0,.07);}
+body{padding-top:40px;}
+</style>
+</head>
+<body>
+<div id="kh-topbar">
+  <a class="kh-logo" href="kazihub-home.html"><div class="kh-tb-dot"></div>Kazi<em>Hub</em></a>
+  <div class="kh-sep"></div>
+  <div class="kh-nav">
+    <a class="kh-link" href="kazihub-home.html">Home</a>
+    <a class="kh-link" href="kazihub.html">🗺 Market</a>
+    <a class="kh-link" href="kazihub-store.html">👔 Hire a Pro</a>
+    <a class="kh-link" href="kazihub-rentals.html">🏠 Rentals</a>
+    <a class="kh-link" href="kazihub-footwear.html">👟 Footwear</a>
+    <a class="kh-link kh-merch kh-active" href="kazihub-tshirt.html">👕 Merch</a>
+    <a class="kh-link kh-docs" href="kazihub-docs.html">📋 Docs</a>
+  </div>
+</div>
+
+
+<!-- UNIFIED TOPBAR -->
+
+
+<!-- HERO DROP SECTION -->
+<section class="drop-hero">
+  <div class="bgt bgt1">HUSTLE</div>
+  <div class="bgt bgt2">MERCH</div>
+  <div class="drop-inner">
+
+    <!-- Copy -->
+    <div class="drop-copy">
+      <div class="drop-label">KaziHub Merch Drop — Limited Edition</div>
+      <h1 class="drop-h">
+        <span class="line-white">Your Hustle.</span>
+        <span class="line-lime">On Every</span>
+        <span class="line-ghost">Street.</span>
+      </h1>
+      <p class="drop-sub">A custom KaziHub tee with a <b>unique QR code</b> linking directly to <b>your profile</b>. Anyone who scans it discovers you, books you, and finds KaziHub. It's not a shirt — it's a <b>walking billboard</b> that never sleeps.</p>
+      <div class="drop-price-badge">
+        <div class="dpb-price">KES 1,500</div>
+        <div class="dpb-sub">per shirt · free delivery Nairobi CBD</div>
+      </div>
+      <div class="drop-btns">
+        <button class="dbt dbt-prime" onclick="document.getElementById('customizer-section').scrollIntoView({behavior:'smooth'})">Design Your Shirt →</button>
+        <button class="dbt dbt-ghost" onclick="document.getElementById('viral-section').scrollIntoView({behavior:'smooth'})">How It Works</button>
+      </div>
+    </div>
+
+    <!-- Shirt Mockup -->
+    <div class="shirt-stage">
+      <div class="shirt-wrap">
+        <!-- SVG Shirt Shape -->
+        <svg class="shirt-svg" viewBox="0 0 320 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="shirtShadow" x="-10%" y="-5%" width="120%" height="120%">
+              <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="rgba(0,0,0,0.6)"/>
+            </filter>
+          </defs>
+          <!-- shirt body -->
+          <path id="shirt-path" d="M80 40 L20 80 L50 110 L40 360 L280 360 L270 110 L300 80 L240 40 Q220 20 200 24 Q180 42 160 42 Q140 42 120 24 Q100 20 80 40Z" fill="#111420" filter="url(#shirtShadow)"/>
+          <!-- collar -->
+          <path d="M120 24 Q140 42 160 42 Q180 42 200 24" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
+          <!-- subtle fabric fold lines -->
+          <line x1="160" y1="80" x2="155" y2="360" stroke="rgba(255,255,255,.025)" stroke-width="1.5"/>
+          <line x1="100" y1="100" x2="80" y2="360" stroke="rgba(255,255,255,.015)" stroke-width="1"/>
+          <line x1="220" y1="100" x2="240" y2="360" stroke="rgba(255,255,255,.015)" stroke-width="1"/>
+          <!-- sleeve stitching -->
+          <path d="M20 80 L50 110" stroke="rgba(255,255,255,.08)" stroke-width="1" stroke-dasharray="3,2"/>
+          <path d="M300 80 L270 110" stroke="rgba(255,255,255,.08)" stroke-width="1" stroke-dasharray="3,2"/>
+          <!-- KaziHub wordmark on shirt (below QR) -->
+          <text x="160" y="230" font-family="Bebas Neue, sans-serif" font-size="18" fill="rgba(200,255,0,0.5)" text-anchor="middle" letter-spacing="4">KAZIHUB</text>
+          <text x="160" y="248" font-family="Outfit, sans-serif" font-size="9" fill="rgba(255,255,255,0.18)" text-anchor="middle" letter-spacing="2">NAIROBI · KENYA</text>
+          <!-- bottom stripe accent -->
+          <rect x="40" y="340" width="240" height="4" rx="2" fill="rgba(200,255,0,0.15)"/>
+        </svg>
+
+        <!-- QR code zone on shirt -->
+        <div class="shirt-qr-zone" id="shirt-qr-zone">
+          <div id="shirt-qr-canvas"></div>
+        </div>
+        <!-- Name on shirt -->
+        <div class="shirt-name-text" id="shirt-name-display">YOUR NAME</div>
+      </div>
+
+      <!-- Controls -->
+      <div class="shirt-colors">
+        <span>Colour:</span>
+        <div class="sc on" style="background:#111420;border-color:rgba(255,255,255,.3)" data-color="#111420" title="Midnight Black" onclick="setShirtColor('#111420','#111420',this)"></div>
+        <div class="sc" style="background:#f5f5f5" data-color="#f5f5f5" title="Clean White" onclick="setShirtColor('#f5f5f5','#e8e8e8',this)"></div>
+        <div class="sc" style="background:#1a2e1a" data-color="#1a2e1a" title="Forest Green" onclick="setShirtColor('#1a2e1a','#1a2e1a',this)"></div>
+        <div class="sc" style="background:#1a1a2e" data-color="#1a1a2e" title="Deep Navy" onclick="setShirtColor('#1a1a2e','#1a1a2e',this)"></div>
+        <div class="sc" style="background:#2e1a1a" data-color="#2e1a1a" title="Burgundy" onclick="setShirtColor('#2e1a1a','#2e1a1a',this)"></div>
+        <div class="sc" style="background:#c8ff00;border:1px solid rgba(0,0,0,.2)" data-color="#c8ff00" title="Lime Drop" onclick="setShirtColor('#c8ff00','#b8e800',this)"></div>
+      </div>
+
+      <div class="shirt-sizes">
+        <span>Size:</span>
+        <div class="ssz" onclick="setSz(this)">S</div>
+        <div class="ssz on" onclick="setSz(this)">M</div>
+        <div class="ssz" onclick="setSz(this)">L</div>
+        <div class="ssz" onclick="setSz(this)">XL</div>
+        <div class="ssz" onclick="setSz(this)">XXL</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CUSTOMIZER -->
+<section class="customizer" id="customizer-section">
+  <div class="cust-grid">
+
+    <!-- YOUR DETAILS -->
+    <div class="cust-panel">
+      <div class="cp-title" style="color:var(--lime)"><span style="background:var(--lime)"></span>Your Details</div>
+      <div class="fld">
+        <label>Your Name (printed on shirt)</label>
+        <input type="text" id="inp-name" placeholder="e.g. Kamau Electricals" oninput="updatePreview()" maxlength="24">
+      </div>
+      <div class="fld">
+        <label>Your Service / Profession</label>
+        <select id="inp-cat" onchange="updatePreview()">
+          <option value="">Select your trade…</option>
+          <option>Electrician</option><option>Plumber</option><option>Carpenter</option>
+          <option>Painter</option><option>Mason</option><option>Welder</option>
+          <option>Driver / Transport</option><option>Photographer</option>
+          <option>Web Designer</option><option>Tailor</option><option>Chef / Caterer</option>
+          <option>Event Organiser</option><option>Graphic Designer</option>
+          <option>Barber / Hair Stylist</option><option>Personal Trainer</option>
+          <option>Nanny / Babysitter</option><option>Cleaner</option>
+          <option>Security Guard</option><option>Landlord / Caretaker</option>
+          <option>Footwear Seller</option><option>Other</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label>Your WhatsApp Number</label>
+        <input type="tel" id="inp-phone" placeholder="+254 7XX XXX XXX" oninput="updatePreview()">
+      </div>
+      <div class="fld">
+        <label>Your KaziHub Profile URL (optional)</label>
+        <input type="text" id="inp-url" placeholder="kazihub.co.ke/u/your-name" oninput="updatePreview()">
+      </div>
+      <div class="fld">
+        <label>Area / Neighbourhood</label>
+        <input type="text" id="inp-area" placeholder="e.g. Kasarani, Westlands…" oninput="updatePreview()">
+      </div>
+
+      <!-- QR download -->
+      <div class="qr-download-strip">
+        <div class="qds-qr" id="qds-preview-qr"></div>
+        <div class="qds-info">
+          <div class="qds-title">Your Unique QR Code</div>
+          <div class="qds-sub">This QR links directly to your profile + WhatsApp. Anyone who scans it will be able to book you instantly.</div>
+        </div>
+        <button class="qds-btn" onclick="downloadQR()">⬇ Save QR</button>
+      </div>
+    </div>
+
+    <!-- ORDER SUMMARY -->
+    <div class="cust-panel">
+      <div class="cp-title" style="color:var(--amber)"><span style="background:var(--amber)"></span>Your Order</div>
+      <div class="fld">
+        <label>Delivery Address in Nairobi</label>
+        <input type="text" id="inp-delivery" placeholder="Area / estate / nearest stage">
+      </div>
+      <div class="fld">
+        <label>Quantity</label>
+        <select id="inp-qty" onchange="updateSummary()">
+          <option value="1">1 shirt — KES 1,500</option>
+          <option value="2">2 shirts — KES 2,800 (save KES 200)</option>
+          <option value="3">3 shirts — KES 4,000 (save KES 500)</option>
+          <option value="5">5 shirts — KES 6,000 (save KES 1,500) 🔥</option>
+          <option value="10">10 shirts — KES 10,000 (save KES 5,000) 💎</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label>Any special instructions</label>
+        <input type="text" id="inp-notes" placeholder="e.g. add phone number below QR, specific area colour…">
+      </div>
+
+      <!-- Summary -->
+      <div class="preview-card" id="order-summary">
+        <div class="pc-row"><span>Shirt(s)</span><span class="val" id="s-shirts">KES 1,500</span></div>
+        <div class="pc-row"><span>Size</span><span class="val" id="s-size">M</span></div>
+        <div class="pc-row"><span>Colour</span><span class="val" id="s-color">Midnight Black</span></div>
+        <div class="pc-row"><span>Nairobi Delivery</span><span class="val" id="s-del">FREE</span></div>
+        <div class="pc-row total"><span>Total</span><span class="val" id="s-total">KES 1,500</span></div>
+      </div>
+
+      <button class="wa-order-btn" onclick="generateOrder()">
+        <span style="font-size:18px">💬</span> Order via WhatsApp + M-Pesa
+      </button>
+      <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">Shirts printed & delivered within 3–5 working days</div>
+    </div>
+  </div>
+</section>
+
+<!-- VIRAL LOOP -->
+<section class="viral-section" id="viral-section">
+  <div class="sec-head">
+    <div class="sec-eyebrow">The Growth Engine</div>
+    <div class="sec-h">How One Shirt<br>Builds Your Empire</div>
+    <p class="sec-sub">Every scan is a new customer, a new connection, a new referral — all without you lifting a finger. This is passive marketing at street level.</p>
+  </div>
+
+  <div class="vl-steps">
+    <div class="vl-step">
+      <div class="vls-num">01</div>
+      <div class="vls-icon">👕</div>
+      <div class="vls-title">You Wear It</div>
+      <div class="vls-desc">Put it on at work sites, markets, events, matatus — anywhere people can see you working your trade.</div>
+      <div class="vl-arrow">→</div>
+    </div>
+    <div class="vl-step">
+      <div class="vls-num">02</div>
+      <div class="vls-icon">📱</div>
+      <div class="vls-title">They Scan It</div>
+      <div class="vls-desc">Curious passer-by, potential client or referral scans the QR code with their phone camera — zero friction.</div>
+      <div class="vl-arrow">→</div>
+    </div>
+    <div class="vl-step">
+      <div class="vls-num">03</div>
+      <div class="vls-icon">⚡</div>
+      <div class="vls-title">They See You</div>
+      <div class="vls-desc">Instant full profile: your name, services, rating, portfolio, packages and a direct WhatsApp button.</div>
+      <div class="vl-arrow">→</div>
+    </div>
+    <div class="vl-step">
+      <div class="vls-num">04</div>
+      <div class="vls-icon">🎯</div>
+      <div class="vls-title">They Discover KaziHub</div>
+      <div class="vls-desc">From your profile they browse the full platform — 259 categories, rentals, footwear. They sign up. The loop grows.</div>
+    </div>
+  </div>
+
+  <!-- Impact stats -->
+  <div class="impact-grid">
+    <div class="ig-card">
+      <div class="igc-val" style="color:var(--lime)">12×</div>
+      <div class="igc-label">More Profile Views</div>
+      <div class="igc-sub">vs. no shirt — estimated from scan tracking</div>
+    </div>
+    <div class="ig-card">
+      <div class="igc-val" style="color:var(--cyan)">200+</div>
+      <div class="igc-label">Daily Scan Impressions</div>
+      <div class="igc-sub">average for a pro working in public</div>
+    </div>
+    <div class="ig-card">
+      <div class="igc-val" style="color:var(--amber)">KES 0</div>
+      <div class="igc-label">Cost Per Impression</div>
+      <div class="igc-sub">after the one-time shirt purchase</div>
+    </div>
+    <div class="ig-card">
+      <div class="igc-val" style="color:var(--magenta)">∞</div>
+      <div class="igc-label">Active Hours</div>
+      <div class="igc-sub">works while you sleep, walk, work</div>
+    </div>
+    <div class="ig-card">
+      <div class="igc-val" style="color:var(--green)">3 yrs</div>
+      <div class="igc-label">Shirt Lifespan</div>
+      <div class="igc-sub">QR code never expires. Profile auto-updates.</div>
+    </div>
+    <div class="ig-card">
+      <div class="igc-val" style="color:var(--violet,#a78bfa)">📲</div>
+      <div class="igc-label">Every Scan Tracked</div>
+      <div class="igc-sub">see scan counts in your dashboard</div>
+    </div>
+  </div>
+</section>
+
+<!-- QR FLOW -->
+<section class="how-qr">
+  <div class="sec-head">
+    <div class="sec-eyebrow">Technical Flow</div>
+    <div class="sec-h">What Happens When<br>Someone Scans You</div>
+  </div>
+  <div class="qr-flow">
+    <div class="qf-step"><div class="qf-num">1</div><div class="qf-icon">📷</div><div class="qf-title">Phone Camera Scans</div><div class="qf-desc">Standard QR — works on any phone, no app needed.</div></div>
+    <div class="qf-arr">→</div>
+    <div class="qf-step"><div class="qf-num">2</div><div class="qf-icon">🔗</div><div class="qf-title">Unique URL Resolves</div><div class="qf-desc">kazihub.co.ke/u/[your-unique-id] — tracked click.</div></div>
+    <div class="qf-arr">→</div>
+    <div class="qf-step"><div class="qf-num">3</div><div class="qf-icon">⚡</div><div class="qf-title">Profile Loads</div><div class="qf-desc">Your live profile — services, portfolio, ratings, packages.</div></div>
+    <div class="qf-arr">→</div>
+    <div class="qf-step"><div class="qf-num">4</div><div class="qf-icon">💬</div><div class="qf-title">They Book You</div><div class="qf-desc">One tap → WhatsApp chat opens with pre-filled message.</div></div>
+    <div class="qf-arr">→</div>
+    <div class="qf-step"><div class="qf-num">5</div><div class="qf-icon">🚀</div><div class="qf-title">They Join KaziHub</div><div class="qf-desc">Discover the platform → sign up → viral loop completes.</div></div>
+  </div>
+</section>
+
+<!-- WHAT THEY SEE WHEN THEY SCAN -->
+<section class="preview-section">
+  <div class="sec-head">
+    <div class="sec-eyebrow">The Scan Experience</div>
+    <div class="sec-h">What The World<br>Sees When They Scan</div>
+  </div>
+  <div style="display:grid;grid-template-columns:260px 1fr;gap:48px;align-items:center;max-width:800px;margin:40px auto 0;">
+    <!-- Phone mockup -->
+    <div>
+      <div class="phone-mockup">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="mp-hero">
+            <div class="mp-av" id="mp-av-preview">K</div>
+            <div class="mp-name" id="mp-name-preview">YOUR NAME</div>
+            <div class="mp-cat" id="mp-cat-preview">Select a service above</div>
+            <div class="mp-stats">
+              <div class="mp-stat"><div class="sv">4.9★</div><div class="sl">Rating</div></div>
+              <div class="mp-stat"><div class="sv">127</div><div class="sl">Jobs</div></div>
+              <div class="mp-stat"><div class="sv">🟡</div><div class="sl">Expert</div></div>
+            </div>
+          </div>
+          <div class="mp-body">
+            <button class="mp-cta">💬 WhatsApp Me Now</button>
+            <button class="mp-cta2">📋 View Full Profile</button>
+            <div class="mp-sect">Services</div>
+            <div class="mp-chips" id="mp-chips-preview">
+              <div class="mp-chip">Loading…</div>
+            </div>
+            <div class="mp-badge">📍 <span id="mp-area-preview">Nairobi</span> · Verified Pro</div>
+            <div class="mp-badge" style="margin-top:6px;background:rgba(0,229,255,.06);border-color:rgba(0,229,255,.15);color:#00e5ff;">🔗 Via KaziHub QR Scan</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Copy beside phone -->
+    <div class="preview-copy">
+      <div class="pc-claim">First impressions<br>that <em>convert.</em></div>
+      <div class="pc-list">
+        <div class="pc-item"><div class="pc-ic" style="background:rgba(200,255,0,.08);">⚡</div><div><b>Loads in under 1 second.</b> Mobile-optimised, no app download needed. Pure instant impact.</div></div>
+        <div class="pc-item"><div class="pc-ic" style="background:rgba(0,229,255,.08);">📋</div><div><b>Your live portfolio.</b> Not a static business card — your profile updates in real time as you complete jobs and earn reviews.</div></div>
+        <div class="pc-item"><div class="pc-ic" style="background:rgba(37,211,102,.08);">💬</div><div><b>One-tap WhatsApp booking.</b> The button opens a conversation with your number + a pre-filled message so there's no friction.</div></div>
+        <div class="pc-item"><div class="pc-ic" style="background:rgba(245,166,35,.08);">📊</div><div><b>Every scan tracked.</b> See how many people scanned your shirt, which days were busiest, which areas — all in your dashboard.</div></div>
+        <div class="pc-item"><div class="pc-ic" style="background:rgba(255,45,135,.08);">🌍</div><div><b>Viral discovery loop.</b> From your profile, new users discover KaziHub — they sign up, buy their own shirt, the network grows.</div></div>
+      </div>
+      <a class="dbt dbt-prime" href="#customizer-section" onclick="document.getElementById('customizer-section').scrollIntoView({behavior:'smooth'});return false;">Get My Shirt Now →</a>
+    </div>
+  </div>
+</section>
+
+<!-- WA MODAL -->
+<div class="wa-modal-bg" id="wa-modal-bg" onclick="if(event.target===this)closeWAModal()">
+  <div class="wa-modal">
+    <h3>💬 Your Shirt Order</h3>
+    <div class="wa-msg" id="wa-msg-preview"></div>
+    <button class="wa-send" onclick="sendOrder()">Open WhatsApp & Send Order →</button>
+    <button class="wa-cancel" onclick="closeWAModal()">Go Back & Edit</button>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="success-overlay" id="success-overlay" onclick="this.classList.remove('open')">
+  <div class="success-box" onclick="event.stopPropagation()">
+    <div class="sb-icon">🎉</div>
+    <div class="sb-title">Order Sent!</div>
+    <div class="sb-sub">Your shirt order has been sent via WhatsApp. We'll confirm your custom QR code within 24 hours and deliver within 3–5 working days.</div>
+    <div class="sb-ref" id="sb-ref">REF: KH-SHIRT-XXXX</div>
+    <button class="dbt dbt-prime" style="width:100%;padding:12px;font-size:14px;border-radius:10px;" onclick="document.getElementById('success-overlay').classList.remove('open')">Done ✓</button>
+  </div>
+</div>
+
+<!-- Hidden full-size QR for download -->
+<div id="download-qr-container" style="position:absolute;left:-9999px;top:-9999px;width:300px;height:300px;background:#fff;padding:12px;"></div>
+
+<script>
+var currentShirtColor='#111420';
+var currentShirtColorName='Midnight Black';
+var currentSize='M';
+var qrInstance=null;
+var qrSideInstance=null;
+var downloadQRInstance=null;
+var priceMap={'1':1500,'2':2800,'3':4000,'5':6000,'10':10000};
+var colorNames={'#111420':'Midnight Black','#f5f5f5':'Clean White','#1a2e1a':'Forest Green','#1a1a2e':'Deep Navy','#2e1a1a':'Burgundy','#c8ff00':'Lime Drop'};
+
+// ── QR GENERATION ──────────────────────────────────
+function getQRContent(){
+  var url=document.getElementById('inp-url').value.trim();
+  var phone=document.getElementById('inp-phone').value.trim().replace(/\s/g,'');
+  var name=document.getElementById('inp-name').value.trim();
+  if(url) return url.startsWith('http')?url:'https://'+url;
+  if(phone) return 'https://wa.me/'+phone.replace('+','')+'?text=Hi+'+encodeURIComponent(name||'KaziHub Pro')+',+I+scanned+your+shirt+on+KaziHub!';
+  return 'https://kazihub.co.ke/u/'+(name.toLowerCase().replace(/\s+/g,'-')||'pro');
+}
+
+function buildQR(containerId,content,size){
+  var el=document.getElementById(containerId);
+  el.innerHTML='';
+  return new QRCode(el,{text:content,width:size,height:size,colorDark:'#030508',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H});
+}
+
+function updateQRCodes(){
+  var content=getQRContent();
+  buildQR('shirt-qr-canvas',content,78);
+  buildQR('qds-preview-qr',content,62);
+  buildQR('download-qr-container',content,276);
+}
+
+// ── SHIRT UPDATES ──────────────────────────────────
+function updatePreview(){
+  var name=document.getElementById('inp-name').value||'YOUR NAME';
+  var cat=document.getElementById('inp-cat').value||'Kazi Pro';
+  var area=document.getElementById('inp-area').value||'Nairobi';
+
+  // shirt name
+  document.getElementById('shirt-name-display').textContent=name.toUpperCase();
+
+  // phone screen
+  document.getElementById('mp-av-preview').textContent=name[0]||'K';
+  document.getElementById('mp-name-preview').textContent=name;
+  document.getElementById('mp-cat-preview').textContent=cat;
+  document.getElementById('mp-area-preview').textContent=area;
+
+  // chips
+  var chips=getCategoryChips(cat);
+  document.getElementById('mp-chips-preview').innerHTML=chips.map(function(c){return '<div class="mp-chip">'+c+'</div>';}).join('');
+
+  updateQRCodes();
+}
+
+function getCategoryChips(cat){
+  var map={
+    'Electrician':['Wiring','Fuse Box','Installations','24h Emergency'],
+    'Plumber':['Pipe Repair','Drainage','Water Tanks','Borehole'],
+    'Carpenter':['Furniture','Roofing','Doors & Windows','Custom Builds'],
+    'Painter':['Interior','Exterior','Texture Paint','Commercial'],
+    'Photographer':['Events','Portraits','Product Shoots','Video'],
+    'Driver / Transport':['Airport Pickup','Errands','Long Distance','Hired Car'],
+    'Chef / Caterer':['Events','Meal Prep','Office Catering','BBQ'],
+    'Footwear Seller':['Sneakers','Loafers','Heels','Custom Orders'],
+    'Barber / Hair Stylist':['Cuts','Braids','Locs','Home Service'],
+  };
+  return map[cat]||[cat,'Professional','KaziHub Verified','WhatsApp Ready'];
+}
+
+function setShirtColor(hex,strokeHex,btn){
+  currentShirtColor=hex;
+  currentShirtColorName=colorNames[hex]||hex;
+  document.querySelectorAll('.sc').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  // update SVG path fill
+  var path=document.getElementById('shirt-path');
+  if(path) path.setAttribute('fill',hex);
+  // update QR zone border glow
+  var qrzone=document.getElementById('shirt-qr-zone');
+  var isLight=(hex==='#f5f5f5'||hex==='#c8ff00');
+  qrzone.style.boxShadow=isLight?'0 0 0 3px rgba(0,0,0,.3),0 0 20px rgba(0,0,0,.2)':'0 0 0 3px rgba(0,0,0,.4),0 0 20px rgba(200,255,0,.3)';
+  updateSummary();
+}
+
+function setSz(el){
+  document.querySelectorAll('.ssz').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+  currentSize=el.textContent;
+  updateSummary();
+}
+
+function updateSummary(){
+  var qty=document.getElementById('inp-qty').value;
+  var price=priceMap[qty]||1500;
+  document.getElementById('s-shirts').textContent='KES '+price.toLocaleString();
+  document.getElementById('s-size').textContent=currentSize;
+  document.getElementById('s-color').textContent=currentShirtColorName;
+  document.getElementById('s-del').textContent=(price>=4000)?'FREE':'FREE (Nairobi CBD)';
+  document.getElementById('s-total').textContent='KES '+price.toLocaleString();
+}
+
+// ── ORDER GENERATION ──────────────────────────────────
+function generateOrder(){
+  var name=document.getElementById('inp-name').value.trim();
+  if(!name){alert('Please enter your name first!');document.getElementById('inp-name').focus();return;}
+  var phone=document.getElementById('inp-phone').value.trim();
+  var cat=document.getElementById('inp-cat').value||'Pro';
+  var qty=document.getElementById('inp-qty').value;
+  var price=priceMap[qty]||1500;
+  var delivery=document.getElementById('inp-delivery').value.trim()||'To be discussed';
+  var notes=document.getElementById('inp-notes').value.trim();
+  var area=document.getElementById('inp-area').value.trim();
+  var qrLink=getQRContent();
+  var ref='KH-SHIRT-'+Math.random().toString(36).substr(2,6).toUpperCase();
+
+  var lines=[
+    '👕 *KAZIHUB SHIRT ORDER*',
+    '─────────────────────',
+    '*Name on Shirt:* '+name,
+    '*Service / Trade:* '+cat,
+    (area?'*Area:* '+area:''),
+    (phone?'*WhatsApp:* '+phone:''),
+    '─────────────────────',
+    '*Shirt Details:*',
+    '  Quantity: '+qty+' shirt'+(qty>1?'s':''),
+    '  Size: '+currentSize,
+    '  Colour: '+currentShirtColorName,
+    '  QR Links To: '+qrLink,
+    '─────────────────────',
+    '*Delivery To:* '+delivery,
+    (notes?'*Notes:* '+notes:''),
+    '─────────────────────',
+    '*Total: KES '+price.toLocaleString()+'*',
+    'Payment: M-Pesa STK Push',
+    '─────────────────────',
+    'Ref: '+ref,
+    'Please confirm availability & send M-Pesa details.',
+    'Thank you! 🙏',
+  ].filter(Boolean).join('\n');
+
+  document.getElementById('wa-msg-preview').textContent=lines;
+  document.getElementById('sb-ref').textContent='REF: '+ref;
+  document.getElementById('wa-modal-bg').classList.add('open');
+}
+
+function sendOrder(){
+  var msg=document.getElementById('wa-msg-preview').textContent;
+  window.open('https://wa.me/254700000000?text='+encodeURIComponent(msg),'_blank');
+  closeWAModal();
+  setTimeout(function(){document.getElementById('success-overlay').classList.add('open');},400);
+}
+
+function closeWAModal(){document.getElementById('wa-modal-bg').classList.remove('open');}
+
+function downloadQR(){
+  var canvas=document.querySelector('#download-qr-container canvas');
+  if(!canvas){alert('Please fill in your details first to generate your QR.');return;}
+  var link=document.createElement('a');
+  link.download='kazihub-my-qr-code.png';
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+}
+
+// ── INIT ──────────────────────────────────
+updatePreview();
+updateSummary();
+</script>
+<!-- KAZIHUB CHATBOT -->
+<button id="kh-chat-btn" onclick="khChatToggle()" title="Chat with KaziHub">
+  🤖
+  <div class="kh-chat-unread" id="kh-unread">1</div>
+</button>
+<div id="kh-chat-panel">
+  <div class="kh-chat-head">
+    <div class="kh-chat-avatar">🤖</div>
+    <div>
+      <div class="kh-chat-title">KaziHub Assistant</div>
+      <div class="kh-chat-sub">● Online · Nairobi</div>
+    </div>
+    <button class="kh-chat-close" onclick="khChatToggle()">✕</button>
+  </div>
+  <div class="kh-chat-msgs" id="kh-msgs"></div>
+  <div class="kh-chips" id="kh-chips"></div>
+  <div class="kh-chat-foot">
+    <textarea class="kh-chat-input" id="kh-input" rows="1"
+      placeholder="Find a plumber, electrician…"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();khSend();}"></textarea>
+    <button class="kh-chat-send" id="kh-send-btn" onclick="khSend()">➤</button>
+  </div>
+</div>
+<script>
+(function(){
+var KH_PANEL,KH_MSGS,KH_INPUT,KH_SEND,KH_CHIPS,KH_UNREAD;
+var khOpen=false,khHistory=[],khBusy=false;
+
+function khServiceList(){
+  if(typeof DATA!=='undefined'){
+    return DATA.slice(0,100).map(function(d){return d.emoji+' '+d.label;}).join(', ');
+  }
+  return 'Electricians, Plumbers, Carpenters, House Cleaners, Photographers, Web Designers, Tailors, Event Caterers, Drivers, Security Guards, Fitness Trainers, Lawyers, Accountants, Nannies, Barbers, DJs, Plumbers, Masons, Solar Installers, and 240+ more';
+}
+
+var KH_SYS='You are KaziHub Assistant — a sharp, friendly AI for KaziHub, Kenya\'s gig economy marketplace in Nairobi.\nKaziHub connects customers with verified local professionals across 259 service categories.\nServices available: '+khServiceList()+'\n\nRules:\n- Keep replies SHORT (2-4 sentences max). No walls of text.\n- When a user describes a need, identify the best matching service and recommend it directly.\n- Always end service recommendations with a WhatsApp CTA on a new line in this exact format: [WA:ServiceName:Neighbourhood]\n  Example: [WA:Electrician:Westlands]\n- Typical prices in KES: small jobs 500-2000, medium 2000-8000, large 8000-50000+.\n- Payment is via M-Pesa STK Push after booking on WhatsApp.\n- If you need more info, ask ONE question only (area or urgency).\n- Never make up specific pro names or phone numbers.\n- If user writes in Swahili, respond in Swahili.';
+
+var STARTERS=['Find me a plumber 🪠','I need an electrician ⚡','House cleaning today 🧹','Event photographer 📸','Graphic designer 🎨'];
+
+function khInit(){
+  KH_PANEL=document.getElementById('kh-chat-panel');
+  KH_MSGS=document.getElementById('kh-msgs');
+  KH_INPUT=document.getElementById('kh-input');
+  KH_SEND=document.getElementById('kh-send-btn');
+  KH_CHIPS=document.getElementById('kh-chips');
+  KH_UNREAD=document.getElementById('kh-unread');
+  if(!KH_PANEL)return;
+  khAddMsg('bot','Hey! 👋 I\'m your KaziHub assistant. Tell me what service you need and I\'ll match you with a verified pro in Nairobi.');
+  STARTERS.forEach(function(s){
+    var c=document.createElement('button');
+    c.className='kh-chip';c.textContent=s;
+    c.onclick=function(){KH_INPUT.value=s;khSend();};
+    KH_CHIPS.appendChild(c);
+  });
+  setTimeout(function(){if(KH_UNREAD)KH_UNREAD.classList.add('show');},2000);
+  var inp=document.getElementById('kh-input');
+  if(inp){inp.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px';});}
+}
+
+function khChatToggle(){
+  if(!KH_PANEL)return;
+  khOpen=!khOpen;
+  KH_PANEL.classList.toggle('open',khOpen);
+  if(khOpen){
+    if(KH_UNREAD)KH_UNREAD.classList.remove('show');
+    setTimeout(function(){if(KH_INPUT)KH_INPUT.focus();},250);
+  }
+}
+
+function khAddMsg(role,content){
+  if(!KH_MSGS)return null;
+  var div=document.createElement('div');
+  div.className='kh-msg '+role;
+  var html=content.replace(/\[WA:([^\]]+)\]/g,function(_,p){
+    var pts=p.split(':'),svc=pts[0]||'service',loc=pts[1]||'Nairobi';
+    var msg=encodeURIComponent('Hi, I found you on KaziHub. I need '+svc+' in '+loc+'. Are you available?');
+    return '<br><a class="kh-wa-cta" href="https://wa.me/254700000000?text='+msg+'" target="_blank">💬 Book via WhatsApp — '+svc+'</a>';
+  });
+  html=html.replace(/\n/g,'<br>');
+  div.innerHTML=html;
+  KH_MSGS.appendChild(div);
+  KH_MSGS.scrollTop=KH_MSGS.scrollHeight;
+  return div;
+}
+
+function khRemove(el){if(el&&el.parentNode)el.parentNode.removeChild(el);}
+
+async function khSend(){
+  if(khBusy||!KH_INPUT)return;
+  var text=(KH_INPUT.value||'').trim();if(!text)return;
+  KH_INPUT.value='';KH_INPUT.style.height='';
+  if(KH_CHIPS)KH_CHIPS.innerHTML='';
+  khAddMsg('user',text);
+  khHistory.push({role:'user',content:text});
+  khBusy=true;if(KH_SEND)KH_SEND.disabled=true;
+  var thinking=khAddMsg('thinking','● thinking…');
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:300,
+        system:KH_SYS,
+        messages:khHistory
+      })
+    });
+    var data=await res.json();
+    var reply=(data.content&&data.content[0]&&data.content[0].text)||'Sorry, something went wrong. Try again.';
+    khRemove(thinking);
+    khAddMsg('bot',reply);
+    khHistory.push({role:'assistant',content:reply});
+    if(khHistory.length>20)khHistory=khHistory.slice(-20);
+  }catch(e){
+    khRemove(thinking);
+    khAddMsg('bot','Connection issue — please try again in a moment.');
+  }
+  khBusy=false;if(KH_SEND)KH_SEND.disabled=false;if(KH_INPUT)KH_INPUT.focus();
+}
+
+window.khChatToggle=khChatToggle;
+window.khSend=khSend;
+document.addEventListener('DOMContentLoaded',khInit);
+})();
+</script>
+</body>
+</html>
