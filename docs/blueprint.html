@@ -1,0 +1,2132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KaziHub — System Architecture & Technical Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+<style>
+:root{
+  --bg:#04060e;--bg2:#080a18;--bg3:#0e1022;--bg4:#131628;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --text:#f0eee8;--text2:#9a98b5;--muted:#3e4260;
+  --amber:#f5a623;--cyan:#00e5ff;--green:#00ffb3;
+  --magenta:#ff2d87;--violet:#a78bfa;--orange:#ff6b2b;
+  --red:#ff4a5a;
+  --sidebar:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;display:flex;flex-direction:column;min-height:100vh;}
+
+/* topbar */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  background:rgba(4,6,14,.97);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(20px);
+  display:flex;align-items:center;gap:0;height:52px;padding:0 24px;
+}
+.tb-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px;margin-right:16px;}
+.tb-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.tb-logo em{color:var(--cyan);font-style:normal;}
+.tb-sep{width:1px;height:20px;background:var(--border);margin:0 14px;}
+.tb-nav{display:flex;align-items:center;gap:4px;flex:1;}
+.tb-link{padding:5px 12px;border-radius:7px;font-size:12px;font-weight:600;text-decoration:none;color:var(--text2);transition:all .15s;border:1px solid transparent;}
+.tb-link:hover{color:var(--text);background:rgba(255,255,255,.05);}
+.tb-link.docs-active{color:var(--amber);border-color:rgba(245,166,35,.2);background:rgba(245,166,35,.06);}
+.tb-r{display:flex;gap:8px;}
+.tb-btn{padding:6px 14px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border:none;background:var(--cyan);color:#04060e;}
+
+/* main layout */
+.doc-layout{display:flex;padding-top:52px;min-height:100vh;}
+
+/* sidebar */
+.doc-sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  position:fixed;top:52px;left:0;bottom:0;
+  background:var(--bg2);border-right:1px solid var(--border);
+  overflow-y:auto;padding:20px 0;z-index:200;
+}
+.doc-sidebar::-webkit-scrollbar{width:3px;}
+.doc-sidebar::-webkit-scrollbar-thumb{background:var(--border);}
+.sb-section{margin-bottom:6px;}
+.sb-title{
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--muted);padding:8px 18px 4px;
+}
+.sb-link{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 18px;font-size:12px;font-weight:500;
+  color:var(--text2);text-decoration:none;cursor:pointer;
+  transition:all .13s;border-left:2px solid transparent;
+}
+.sb-link:hover{color:var(--text);background:rgba(255,255,255,.03);}
+.sb-link.active{color:var(--cyan);border-left-color:var(--cyan);background:rgba(0,229,255,.04);}
+.sb-link .si{font-size:13px;flex-shrink:0;}
+.sb-divider{height:1px;background:var(--border);margin:10px 18px;}
+
+/* content */
+.doc-content{
+  margin-left:var(--sidebar);flex:1;
+  padding:36px 48px 80px;
+  max-width:calc(100% - var(--sidebar));
+}
+@media(max-width:860px){
+  .doc-sidebar{display:none;}
+  .doc-content{margin-left:0;max-width:100%;padding:24px 16px 60px;}
+}
+
+/* section */
+.doc-section{
+  margin-bottom:72px;
+  scroll-margin-top:72px;
+}
+.ds-eyebrow{
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;
+  color:var(--cyan);margin-bottom:8px;display:flex;align-items:center;gap:8px;
+}
+.ds-eyebrow::before{content:'';width:20px;height:2px;background:var(--cyan);opacity:.6;}
+.ds-h{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(28px,4vw,48px);letter-spacing:.5px;line-height:1;
+  margin-bottom:12px;
+}
+.ds-sub{font-size:13px;color:var(--text2);line-height:1.75;max-width:700px;margin-bottom:28px;}
+
+/* hero doc banner */
+.doc-hero{
+  background:linear-gradient(135deg,rgba(0,229,255,.08),rgba(255,45,135,.05),rgba(167,139,250,.04));
+  border:1px solid rgba(0,229,255,.15);
+  border-radius:20px;padding:36px 40px;margin-bottom:48px;
+  position:relative;overflow:hidden;
+}
+.doc-hero::before{
+  content:'';position:absolute;top:-30px;right:-30px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,229,255,.08),transparent);
+  pointer-events:none;
+}
+.dh-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:4px 14px;border-radius:99px;
+  background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--cyan);margin-bottom:14px;
+}
+.dh-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,64px);letter-spacing:.5px;line-height:.95;margin-bottom:12px;}
+.dh-title em{
+  background:linear-gradient(135deg,var(--cyan),var(--magenta));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal;
+}
+.dh-sub{font-size:14px;color:var(--text2);line-height:1.7;max-width:600px;margin-bottom:20px;}
+.dh-pills{display:flex;flex-wrap:wrap;gap:7px;}
+.dp{padding:5px 13px;border-radius:99px;font-size:11px;font-weight:600;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text2);}
+
+/* architecture diagram */
+.arch-diagram{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:16px;padding:32px;overflow-x:auto;
+  margin-bottom:20px;
+}
+.arch-svg{width:100%;min-width:700px;}
+
+/* info cards */
+.info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:28px;}
+.info-card{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:14px;padding:16px;
+}
+.ic-icon{font-size:24px;margin-bottom:8px;}
+.ic-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:4px;}
+.ic-val{font-size:14px;font-weight:700;color:var(--text);}
+.ic-sub{font-size:11px;color:var(--text2);margin-top:3px;}
+
+/* code block */
+pre{
+  background:var(--bg4)!important;
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow-x:auto;
+  margin-bottom:20px;
+  font-size:12.5px;
+  line-height:1.65;
+}
+pre code.hljs{
+  background:transparent!important;
+  padding:22px 24px!important;
+  font-family:'JetBrains Mono',monospace!important;
+}
+.code-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;
+  background:rgba(255,255,255,.03);
+  border-bottom:1px solid var(--border);
+  border-radius:14px 14px 0 0;
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);
+}
+.code-header span{color:var(--text2);}
+.code-copy{
+  padding:4px 10px;border-radius:6px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);font-family:'Outfit',sans-serif;
+  font-size:10px;cursor:pointer;transition:all .13s;
+}
+.code-copy:hover{color:var(--text);border-color:var(--border2);}
+.code-wrap{border-radius:14px;overflow:hidden;margin-bottom:20px;border:1px solid var(--border);}
+.code-wrap pre{border:none;border-radius:0;margin-bottom:0;}
+
+/* mermaid diagram */
+.mermaid-wrap{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:16px;padding:28px;overflow-x:auto;
+  margin-bottom:20px;
+}
+.mermaid-wrap .mermaid{min-width:600px;}
+/* force dark mermaid */
+.mermaid svg{background:transparent!important;}
+
+/* endpoint table */
+.ep-table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:12px;}
+.ep-table th{
+  text-align:left;padding:10px 14px;
+  background:rgba(255,255,255,.04);border-bottom:1px solid var(--border);
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);
+}
+.ep-table td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;}
+.ep-table tr:last-child td{border-bottom:none;}
+.method{
+  padding:2px 8px;border-radius:5px;font-size:10px;font-weight:800;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.5px;
+  display:inline-block;
+}
+.get{background:rgba(0,229,255,.12);color:var(--cyan);}
+.post{background:rgba(0,255,179,.12);color:var(--green);}
+.put{background:rgba(245,166,35,.12);color:var(--amber);}
+.del{background:rgba(255,74,90,.12);color:var(--red);}
+.patch{background:rgba(167,139,250,.12);color:var(--violet);}
+.ep-path{font-family:'JetBrains Mono',monospace;color:var(--text);font-size:11px;}
+.ep-desc{color:var(--text2);}
+.ep-auth{font-size:10px;background:rgba(255,45,135,.08);color:var(--magenta);padding:2px 7px;border-radius:4px;white-space:nowrap;}
+
+/* tag row */
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.tag{padding:4px 12px;border-radius:99px;font-size:11px;font-weight:600;border:1px solid;display:flex;align-items:center;gap:5px;}
+.tag-cyan{background:rgba(0,229,255,.08);color:var(--cyan);border-color:rgba(0,229,255,.2);}
+.tag-green{background:rgba(0,255,179,.08);color:var(--green);border-color:rgba(0,255,179,.2);}
+.tag-amber{background:rgba(245,166,35,.08);color:var(--amber);border-color:rgba(245,166,35,.2);}
+.tag-violet{background:rgba(167,139,250,.08);color:var(--violet);border-color:rgba(167,139,250,.2);}
+.tag-magenta{background:rgba(255,45,135,.08);color:var(--magenta);border-color:rgba(255,45,135,.2);}
+.tag-orange{background:rgba(255,107,43,.08);color:var(--orange);border-color:rgba(255,107,43,.2);}
+
+/* two-col layout for tables/code */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:700px){.two-col{grid-template-columns:1fr;}}
+
+/* deploy diagram */
+.deploy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:600px){.deploy-grid{grid-template-columns:1fr;}}
+.deploy-box{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:14px;padding:16px;
+}
+.db-layer{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;}
+.db-items{display:flex;flex-direction:column;gap:6px;}
+.db-item{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 10px;border-radius:8px;background:rgba(255,255,255,.03);
+  font-size:11px;font-weight:600;color:var(--text2);
+}
+.db-item .db-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ── KAZIHUB CHATBOT ──────────────────────────────────────── */
+#kh-chat-btn{
+  position:fixed;bottom:22px;right:22px;z-index:200;
+  width:52px;height:52px;border-radius:50%;
+  background:var(--accent,#00ffb3);
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 24px rgba(0,255,179,.35);
+  transition:transform .2s, box-shadow .2s;
+  font-size:22px;
+}
+#kh-chat-btn:hover{transform:scale(1.08);box-shadow:0 6px 32px rgba(0,255,179,.5);}
+#kh-chat-btn .kh-chat-unread{
+  position:absolute;top:-2px;right:-2px;
+  width:16px;height:16px;border-radius:50%;
+  background:#ff3d5a;color:#fff;
+  font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;
+}
+#kh-chat-btn .kh-chat-unread.show{opacity:1;}
+#kh-chat-panel{
+  position:fixed;bottom:86px;right:22px;z-index:200;
+  width:340px;max-height:520px;
+  background:rgba(6,10,22,.97);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  display:flex;flex-direction:column;
+  box-shadow:0 16px 60px rgba(0,0,0,.7);
+  backdrop-filter:blur(24px);
+  transform:scale(.9) translateY(12px);
+  opacity:0;pointer-events:none;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), opacity .18s;
+  overflow:hidden;
+}
+#kh-chat-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
+.kh-chat-head{
+  padding:14px 16px 12px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.kh-chat-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#00ffb3,#00d4ff);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+}
+.kh-chat-title{font-size:13px;font-weight:700;color:#f0eee8;}
+.kh-chat-sub{font-size:10px;color:rgba(0,255,179,.8);margin-top:1px;}
+.kh-chat-close{
+  margin-left:auto;background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.35);font-size:16px;padding:2px 4px;transition:color .15s;
+}
+.kh-chat-close:hover{color:rgba(255,255,255,.7);}
+.kh-chat-msgs{
+  flex:1;overflow-y:auto;padding:12px;
+  display:flex;flex-direction:column;gap:8px;min-height:0;
+}
+.kh-chat-msgs::-webkit-scrollbar{width:3px;}
+.kh-chat-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+.kh-msg{max-width:86%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.55;}
+.kh-msg.bot{background:rgba(255,255,255,.06);color:#dde3f0;border-bottom-left-radius:4px;align-self:flex-start;}
+.kh-msg.user{background:#00ffb3;color:#04070f;font-weight:600;border-bottom-right-radius:4px;align-self:flex-end;}
+.kh-msg.thinking{background:rgba(255,255,255,.04);color:rgba(221,227,240,.45);font-style:italic;align-self:flex-start;}
+.kh-chips{display:flex;flex-wrap:wrap;gap:5px;padding:0 12px 10px;flex-shrink:0;}
+.kh-chip{
+  padding:4px 11px;border-radius:99px;font-size:10px;font-weight:700;cursor:pointer;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:rgba(221,227,240,.8);transition:all .15s;white-space:nowrap;
+}
+.kh-chip:hover{background:rgba(0,255,179,.12);border-color:rgba(0,255,179,.4);color:#00ffb3;}
+.kh-chat-foot{
+  padding:10px 12px;border-top:1px solid rgba(255,255,255,.06);
+  display:flex;gap:8px;align-items:center;flex-shrink:0;
+}
+.kh-chat-input{
+  flex:1;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);border-radius:10px;
+  padding:8px 12px;color:#dde3f0;font-size:12px;
+  font-family:inherit;outline:none;transition:border-color .15s;
+  resize:none;max-height:80px;
+}
+.kh-chat-input:focus{border-color:rgba(0,255,179,.5);}
+.kh-chat-input::placeholder{color:rgba(255,255,255,.25);}
+.kh-chat-send{
+  width:34px;height:34px;border-radius:10px;
+  background:#00ffb3;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .15s;color:#04070f;font-size:14px;
+}
+.kh-chat-send:hover{box-shadow:0 0 14px rgba(0,255,179,.4);}
+.kh-chat-send:disabled{opacity:.35;cursor:not-allowed;}
+.kh-wa-cta{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:8px;padding:7px 13px;border-radius:9px;
+  background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.35);
+  color:#25d366;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;
+  transition:all .15s;
+}
+.kh-wa-cta:hover{background:rgba(37,211,102,.25);}
+@media(max-width:400px){#kh-chat-panel{width:calc(100vw - 20px);right:10px;}}
+</style>
+<style id="kh-topbar-css">
+#kh-topbar{
+  position:fixed;top:0;left:0;right:0;z-index:9999;
+  background:rgba(4,6,14,.97);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(20px);
+  display:flex;align-items:center;height:40px;padding:0 20px;gap:0;
+  font-family:'Outfit','DM Sans',sans-serif;
+}
+#kh-topbar a.kh-logo{
+  font-size:16px;font-weight:800;
+  color:#f0eee8;text-decoration:none;
+  display:flex;align-items:center;gap:6px;margin-right:14px;
+  font-family:'Bebas Neue','Outfit',sans-serif;font-size:20px;
+}
+#kh-topbar a.kh-logo em{color:#00e5ff;font-style:normal;}
+.kh-tb-dot{width:6px;height:6px;border-radius:50%;background:#00e5ff;box-shadow:0 0 6px #00e5ff;animation:kh_pulse 2s ease-in-out infinite;}
+@keyframes kh_pulse{0%,100%{opacity:1}50%{opacity:.3}}
+#kh-topbar .kh-sep{width:1px;height:16px;background:rgba(255,255,255,.08);margin:0 12px;}
+#kh-topbar .kh-nav{display:flex;align-items:center;gap:2px;flex:1;}
+#kh-topbar .kh-link{
+  padding:4px 11px;border-radius:7px;font-size:11px;font-weight:600;
+  text-decoration:none;color:rgba(154,152,181,.85);
+  transition:all .13s;border:1px solid transparent;
+}
+#kh-topbar .kh-link:hover{color:#f0eee8;background:rgba(255,255,255,.05);}
+#kh-topbar .kh-link.kh-active{color:#f0eee8;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.1);}
+#kh-topbar .kh-link.kh-docs{color:#f5a623 !important;}
+#kh-topbar .kh-link.kh-docs:hover{background:rgba(245,166,35,.06);}
+#kh-topbar .kh-link.kh-docs.kh-active{border-color:rgba(245,166,35,.2);background:rgba(245,166,35,.07);}
+#kh-topbar .kh-link.kh-merch{color:#c8ff00 !important;}
+#kh-topbar .kh-link.kh-merch:hover{background:rgba(200,255,0,.06);}
+#kh-topbar .kh-link.kh-merch.kh-active{border-color:rgba(200,255,0,.2);background:rgba(200,255,0,.07);}
+body{padding-top:40px;}
+</style>
+</head>
+<body>
+<div id="kh-topbar">
+  <a class="kh-logo" href="kazihub-home.html"><div class="kh-tb-dot"></div>Kazi<em>Hub</em></a>
+  <div class="kh-sep"></div>
+  <div class="kh-nav">
+    <a class="kh-link" href="kazihub-home.html">Home</a>
+    <a class="kh-link" href="kazihub.html">🗺 Market</a>
+    <a class="kh-link" href="kazihub-store.html">👔 Hire a Pro</a>
+    <a class="kh-link" href="kazihub-rentals.html">🏠 Rentals</a>
+    <a class="kh-link" href="kazihub-footwear.html">👟 Footwear</a>
+    <a class="kh-link kh-merch" href="kazihub-tshirt.html">👕 Merch</a>
+    <a class="kh-link kh-docs kh-active" href="kazihub-docs.html">📋 Docs</a>
+  </div>
+</div>
+
+
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <a class="tb-logo" href="kazihub-home.html"><div class="tb-dot"></div>Kazi<em>Hub</em></a>
+  <div class="tb-sep"></div>
+  <div class="tb-nav">
+    <a class="tb-link" href="kazihub-home.html">Home</a>
+    <a class="tb-link" href="kazihub.html">🗺 Market</a>
+    <a class="tb-link" href="kazihub-store.html">👔 Hire a Pro</a>
+    <a class="tb-link" href="kazihub-rentals.html">🏠 Rentals</a>
+    <a class="tb-link" href="kazihub-footwear.html">👟 Footwear</a>
+    <a class="tb-link docs-active" href="kazihub-docs.html">📋 System Docs</a>
+  </div>
+  <div class="tb-r">
+    <button class="tb-btn" onclick="window.print()">⬇ Export PDF</button>
+  </div>
+</nav>
+
+<div class="doc-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="doc-sidebar">
+    <div class="sb-section">
+      <div class="sb-title">Overview</div>
+      <a class="sb-link active" onclick="scrollTo('overview')"><span class="si">🏛️</span> System Overview</a>
+      <a class="sb-link" onclick="scrollTo('architecture')"><span class="si">🗺</span> Architecture</a>
+      <a class="sb-link" onclick="scrollTo('tech-stack')"><span class="si">⚙️</span> Tech Stack</a>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-title">Data Layer</div>
+      <a class="sb-link" onclick="scrollTo('erd')"><span class="si">🔗</span> ERD Diagram</a>
+      <a class="sb-link" onclick="scrollTo('schema')"><span class="si">🐘</span> PostgreSQL Schema</a>
+      <a class="sb-link" onclick="scrollTo('orm')"><span class="si">🔷</span> SQLAlchemy ORM</a>
+      <a class="sb-link" onclick="scrollTo('pydantic')"><span class="si">📦</span> Pydantic Schemas</a>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-title">API Layer</div>
+      <a class="sb-link" onclick="scrollTo('api-auth')"><span class="si">🔐</span> Auth Endpoints</a>
+      <a class="sb-link" onclick="scrollTo('api-services')"><span class="si">👔</span> Services API</a>
+      <a class="sb-link" onclick="scrollTo('api-rentals')"><span class="si">🏠</span> Rentals API</a>
+      <a class="sb-link" onclick="scrollTo('api-products')"><span class="si">👟</span> Products API</a>
+      <a class="sb-link" onclick="scrollTo('api-orders')"><span class="si">🛒</span> Orders API</a>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-title">Integrations</div>
+      <a class="sb-link" onclick="scrollTo('mpesa')"><span class="si">💚</span> M-Pesa Service</a>
+      <a class="sb-link" onclick="scrollTo('whatsapp')"><span class="si">💬</span> WhatsApp Service</a>
+      <a class="sb-link" onclick="scrollTo('tasks')"><span class="si">📬</span> Celery Tasks</a>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-title">Diagrams</div>
+      <a class="sb-link" onclick="scrollTo('flows')"><span class="si">🔄</span> User Flow Charts</a>
+      <a class="sb-link" onclick="scrollTo('deploy')"><span class="si">🐳</span> Deployment</a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="doc-content">
+
+    <!-- HERO BANNER -->
+    <div class="doc-hero">
+      <div class="dh-badge">Presidential Technical Brief · v1.0.0</div>
+      <div class="dh-title">KaziHub<br><em>System Architecture</em></div>
+      <div class="dh-sub">Full-stack technical specification for Kenya's gig economy super-platform. Covers data models, REST API, integrations, infrastructure and all system flows.</div>
+      <div class="dh-pills">
+        <span class="dp">Python 3.12</span><span class="dp">FastAPI</span><span class="dp">PostgreSQL 15</span>
+        <span class="dp">SQLAlchemy 2.0</span><span class="dp">Pydantic v2</span><span class="dp">Redis 7</span>
+        <span class="dp">Celery 5</span><span class="dp">M-Pesa Daraja API</span><span class="dp">WhatsApp Business API</span>
+        <span class="dp">Docker + AWS ECS</span><span class="dp">Elasticsearch 8</span><span class="dp">Alembic</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- OVERVIEW -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="doc-section" id="overview">
+      <div class="ds-eyebrow">01 · System Overview</div>
+      <h2 class="ds-h">Platform at a Glance</h2>
+      <p class="ds-sub">KaziHub is a multi-sided marketplace platform connecting gig workers, property owners and independent sellers with consumers across Kenya. It operates four distinct market modules — Service Marketplace, Rentals, Footwear Commerce, and a Market Intelligence dashboard — unified under a single identity, shared authentication, and a WhatsApp-first transaction layer.</p>
+      <div class="info-grid">
+        <div class="info-card"><div class="ic-icon">🗺</div><div class="ic-label">Modules</div><div class="ic-val">4 Marketplaces</div><div class="ic-sub">Market, Pros, Rentals, Commerce</div></div>
+        <div class="info-card"><div class="ic-icon">🐍</div><div class="ic-label">Backend</div><div class="ic-val">Python FastAPI</div><div class="ic-sub">Async, OpenAPI auto-docs</div></div>
+        <div class="info-card"><div class="ic-icon">🐘</div><div class="ic-label">Primary DB</div><div class="ic-val">PostgreSQL 15</div><div class="ic-sub">+ Redis for cache & queue</div></div>
+        <div class="info-card"><div class="ic-icon">📱</div><div class="ic-label">Checkout</div><div class="ic-val">WhatsApp Native</div><div class="ic-sub">Pre-formatted order messages</div></div>
+        <div class="info-card"><div class="ic-icon">💚</div><div class="ic-label">Payments</div><div class="ic-val">M-Pesa STK Push</div><div class="ic-sub">Safaricom Daraja API v2</div></div>
+        <div class="info-card"><div class="ic-icon">🔐</div><div class="ic-label">Auth</div><div class="ic-val">JWT + OAuth2</div><div class="ic-sub">Phone OTP + Google login</div></div>
+        <div class="info-card"><div class="ic-icon">🔍</div><div class="ic-label">Search</div><div class="ic-val">Elasticsearch 8</div><div class="ic-sub">Full-text + geo filtering</div></div>
+        <div class="info-card"><div class="ic-icon">🐳</div><div class="ic-label">Deploy</div><div class="ic-val">Docker + AWS ECS</div><div class="ic-sub">Fargate, auto-scaling</div></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- ARCHITECTURE -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="doc-section" id="architecture">
+      <div class="ds-eyebrow">02 · Architecture</div>
+      <h2 class="ds-h">System Architecture</h2>
+      <p class="ds-sub">Three-tier architecture with a React/HTML frontend, FastAPI service layer, and a PostgreSQL + Redis data tier. Async task processing via Celery handles notifications, M-Pesa callbacks and bulk operations.</p>
+      <div class="arch-diagram">
+        <svg class="arch-svg" viewBox="0 0 900 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="gcyan" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00e5ff" stop-opacity=".3"/><stop offset="100%" stop-color="#00e5ff" stop-opacity=".06"/></linearGradient>
+            <linearGradient id="gamber" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5a623" stop-opacity=".3"/><stop offset="100%" stop-color="#f5a623" stop-opacity=".06"/></linearGradient>
+            <linearGradient id="ggreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00ffb3" stop-opacity=".3"/><stop offset="100%" stop-color="#00ffb3" stop-opacity=".06"/></linearGradient>
+            <linearGradient id="gviolet" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a78bfa" stop-opacity=".3"/><stop offset="100%" stop-color="#a78bfa" stop-opacity=".06"/></linearGradient>
+            <linearGradient id="gmagenta" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff2d87" stop-opacity=".3"/><stop offset="100%" stop-color="#ff2d87" stop-opacity=".06"/></linearGradient>
+            <marker id="arrow" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(255,255,255,.3)"/></marker>
+            <marker id="arrowcyan" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#00e5ff"/></marker>
+          </defs>
+
+          <!-- background layers -->
+          <rect x="8" y="8" width="884" height="504" rx="16" fill="rgba(255,255,255,.02)" stroke="rgba(255,255,255,.07)" stroke-width="1"/>
+
+          <!-- CLIENT LAYER -->
+          <rect x="28" y="26" width="844" height="82" rx="10" fill="rgba(0,229,255,.04)" stroke="rgba(0,229,255,.2)" stroke-width="1"/>
+          <text x="44" y="44" font-family="Outfit" font-size="10" fill="#00e5ff" font-weight="700" text-transform="uppercase" letter-spacing="1">CLIENT LAYER</text>
+          <rect x="44" y="52" width="130" height="44" rx="8" fill="url(#gcyan)" stroke="#00e5ff" stroke-opacity=".3" stroke-width="1"/>
+          <text x="109" y="71" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">🗺 Market Map</text>
+          <text x="109" y="87" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">HTML/JS</text>
+          <rect x="186" y="52" width="130" height="44" rx="8" fill="url(#gamber)" stroke="#f5a623" stroke-opacity=".3" stroke-width="1"/>
+          <text x="251" y="71" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">👔 Hire a Pro</text>
+          <text x="251" y="87" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">HTML/JS</text>
+          <rect x="328" y="52" width="130" height="44" rx="8" fill="url(#ggreen)" stroke="#00ffb3" stroke-opacity=".3" stroke-width="1"/>
+          <text x="393" y="71" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">🏠 Rentals</text>
+          <text x="393" y="87" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">HTML/JS</text>
+          <rect x="470" y="52" width="130" height="44" rx="8" fill="url(#gmagenta)" stroke="#ff2d87" stroke-opacity=".3" stroke-width="1"/>
+          <text x="535" y="71" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">👟 Footwear</text>
+          <text x="535" y="87" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">HTML/JS</text>
+          <rect x="612" y="52" width="100" height="44" rx="8" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+          <text x="662" y="71" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">📱 Mobile</text>
+          <text x="662" y="87" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">React Native</text>
+          <rect x="724" y="52" width="128" height="44" rx="8" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+          <text x="788" y="71" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">🌐 Web App</text>
+          <text x="788" y="87" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">Next.js (future)</text>
+
+          <!-- arrows down -->
+          <line x1="450" y1="108" x2="450" y2="128" stroke="rgba(255,255,255,.2)" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+          <!-- API GATEWAY LAYER -->
+          <rect x="28" y="128" width="844" height="56" rx="10" fill="rgba(167,139,250,.04)" stroke="rgba(167,139,250,.2)" stroke-width="1"/>
+          <text x="44" y="146" font-family="Outfit" font-size="10" fill="#a78bfa" font-weight="700" letter-spacing="1">API GATEWAY + LOAD BALANCER</text>
+          <text x="450" y="162" font-family="Outfit" font-size="11" fill="#9a98b5" text-anchor="middle">AWS Application Load Balancer · Nginx · HTTPS/TLS · Rate Limiting · CORS · JWT Validation</text>
+
+          <!-- arrows down -->
+          <line x1="450" y1="184" x2="450" y2="204" stroke="rgba(255,255,255,.2)" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+          <!-- SERVICE LAYER -->
+          <rect x="28" y="204" width="844" height="100" rx="10" fill="rgba(0,229,255,.03)" stroke="rgba(0,229,255,.15)" stroke-width="1"/>
+          <text x="44" y="222" font-family="Outfit" font-size="10" fill="#00e5ff" font-weight="700" letter-spacing="1">FASTAPI SERVICE LAYER (Python 3.12)</text>
+          <rect x="44" y="228" width="120" height="60" rx="8" fill="rgba(0,229,255,.08)" stroke="rgba(0,229,255,.25)" stroke-width="1"/>
+          <text x="104" y="254" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">Auth Service</text>
+          <text x="104" y="270" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">JWT · OTP · OAuth2</text>
+          <rect x="174" y="228" width="120" height="60" rx="8" fill="rgba(0,229,255,.08)" stroke="rgba(0,229,255,.25)" stroke-width="1"/>
+          <text x="234" y="254" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">Services API</text>
+          <text x="234" y="270" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">Listings · Search</text>
+          <rect x="304" y="228" width="120" height="60" rx="8" fill="rgba(0,229,255,.08)" stroke="rgba(0,229,255,.25)" stroke-width="1"/>
+          <text x="364" y="254" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">Rentals API</text>
+          <text x="364" y="270" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">Listings · Bookings</text>
+          <rect x="434" y="228" width="120" height="60" rx="8" fill="rgba(0,229,255,.08)" stroke="rgba(0,229,255,.25)" stroke-width="1"/>
+          <text x="494" y="254" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">Products API</text>
+          <text x="494" y="270" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">Catalog · Variants</text>
+          <rect x="564" y="228" width="120" height="60" rx="8" fill="rgba(0,229,255,.08)" stroke="rgba(0,229,255,.25)" stroke-width="1"/>
+          <text x="624" y="254" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">Orders API</text>
+          <text x="624" y="270" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">Cart · Checkout</text>
+          <rect x="694" y="228" width="160" height="60" rx="8" fill="rgba(255,45,135,.06)" stroke="rgba(255,45,135,.2)" stroke-width="1"/>
+          <text x="774" y="254" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">Notification Service</text>
+          <text x="774" y="270" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">WA · SMS · Email · Push</text>
+
+          <!-- arrows down -->
+          <line x1="300" y1="304" x2="300" y2="324" stroke="rgba(255,255,255,.2)" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <line x1="600" y1="304" x2="600" y2="324" stroke="rgba(255,255,255,.2)" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+          <!-- DATA LAYER -->
+          <rect x="28" y="324" width="844" height="90" rx="10" fill="rgba(0,255,179,.03)" stroke="rgba(0,255,179,.15)" stroke-width="1"/>
+          <text x="44" y="342" font-family="Outfit" font-size="10" fill="#00ffb3" font-weight="700" letter-spacing="1">DATA LAYER</text>
+          <rect x="44" y="348" width="160" height="54" rx="8" fill="rgba(0,255,179,.07)" stroke="rgba(0,255,179,.25)" stroke-width="1"/>
+          <text x="124" y="370" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">🐘 PostgreSQL 15</text>
+          <text x="124" y="386" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">Primary · RDS · Multi-AZ</text>
+          <rect x="216" y="348" width="140" height="54" rx="8" fill="rgba(245,166,35,.07)" stroke="rgba(245,166,35,.25)" stroke-width="1"/>
+          <text x="286" y="370" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">⚡ Redis 7</text>
+          <text x="286" y="386" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">Cache · Sessions · Queue</text>
+          <rect x="368" y="348" width="150" height="54" rx="8" fill="rgba(167,139,250,.07)" stroke="rgba(167,139,250,.25)" stroke-width="1"/>
+          <text x="443" y="370" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">🔍 Elasticsearch</text>
+          <text x="443" y="386" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">Full-text · Geo search</text>
+          <rect x="530" y="348" width="140" height="54" rx="8" fill="rgba(255,107,43,.07)" stroke="rgba(255,107,43,.25)" stroke-width="1"/>
+          <text x="600" y="370" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">☁️ AWS S3</text>
+          <text x="600" y="386" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">Media · Portfolios</text>
+          <rect x="682" y="348" width="174" height="54" rx="8" fill="rgba(255,45,135,.07)" stroke="rgba(255,45,135,.25)" stroke-width="1"/>
+          <text x="769" y="370" font-family="Outfit" font-size="11" fill="#f0eee8" font-weight="700" text-anchor="middle">📬 Celery Workers</text>
+          <text x="769" y="386" font-family="Outfit" font-size="9" fill="#9a98b5" text-anchor="middle">Async tasks · Jobs</text>
+
+          <!-- EXTERNAL APIs -->
+          <rect x="28" y="432" width="844" height="68" rx="10" fill="rgba(245,166,35,.02)" stroke="rgba(245,166,35,.12)" stroke-width="1"/>
+          <text x="44" y="450" font-family="Outfit" font-size="10" fill="#f5a623" font-weight="700" letter-spacing="1">EXTERNAL INTEGRATIONS</text>
+          <rect x="44" y="456" width="130" height="36" rx="7" fill="rgba(37,211,102,.08)" stroke="rgba(37,211,102,.25)" stroke-width="1"/>
+          <text x="109" y="478" font-family="Outfit" font-size="11" fill="#25d366" font-weight="700" text-anchor="middle">💬 WhatsApp API</text>
+          <rect x="186" y="456" width="130" height="36" rx="7" fill="rgba(0,200,100,.08)" stroke="rgba(0,200,100,.25)" stroke-width="1"/>
+          <text x="251" y="478" font-family="Outfit" font-size="11" fill="#00c864" font-weight="700" text-anchor="middle">💚 M-Pesa Daraja</text>
+          <rect x="328" y="456" width="130" height="36" rx="7" fill="rgba(245,166,35,.08)" stroke="rgba(245,166,35,.25)" stroke-width="1"/>
+          <text x="393" y="478" font-family="Outfit" font-size="11" fill="#f5a623" font-weight="700" text-anchor="middle">📲 Africa's Talking</text>
+          <rect x="470" y="456" width="130" height="36" rx="7" fill="rgba(0,229,255,.06)" stroke="rgba(0,229,255,.2)" stroke-width="1"/>
+          <text x="535" y="478" font-family="Outfit" font-size="11" fill="#00e5ff" font-weight="700" text-anchor="middle">☁️ Cloudinary CDN</text>
+          <rect x="612" y="456" width="130" height="36" rx="7" fill="rgba(167,139,250,.06)" stroke="rgba(167,139,250,.2)" stroke-width="1"/>
+          <text x="677" y="478" font-family="Outfit" font-size="11" fill="#a78bfa" font-weight="700" text-anchor="middle">🔐 Firebase OTP</text>
+          <rect x="754" y="456" width="110" height="36" rx="7" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+          <text x="809" y="478" font-family="Outfit" font-size="11" fill="#9a98b5" font-weight="700" text-anchor="middle">📊 Datadog</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- TECH STACK -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="doc-section" id="tech-stack">
+      <div class="ds-eyebrow">03 · Tech Stack</div>
+      <h2 class="ds-h">Technology Choices</h2>
+      <div class="two-col">
+        <div class="code-wrap">
+          <div class="code-header"><span>requirements.txt</span></div>
+          <pre><code class="language-text">fastapi==0.111.0
+uvicorn[standard]==0.29.0
+sqlalchemy==2.0.30
+alembic==1.13.1
+pydantic==2.7.1
+pydantic-settings==2.2.1
+asyncpg==0.29.0
+redis==5.0.4
+celery==5.3.6
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.9
+httpx==0.27.0
+boto3==1.34.95          # AWS S3
+elasticsearch==8.13.0
+phonenumbers==8.13.36   # KE number validation
+pillow==10.3.0          # image processing
+sendgrid==6.11.0
+pytest==8.2.0
+pytest-asyncio==0.23.7</code></pre>
+        </div>
+        <div class="code-wrap">
+          <div class="code-header"><span>Project Structure</span></div>
+          <pre><code class="language-text">kazihub/
+├── app/
+│   ├── main.py
+│   ├── core/
+│   │   ├── config.py
+│   │   ├── security.py
+│   │   ├── database.py
+│   │   └── dependencies.py
+│   ├── models/
+│   │   ├── user.py
+│   │   ├── service.py
+│   │   ├── rental.py
+│   │   ├── product.py
+│   │   └── order.py
+│   ├── schemas/
+│   │   ├── user.py
+│   │   ├── service.py
+│   │   ├── rental.py
+│   │   ├── product.py
+│   │   └── order.py
+│   ├── api/v1/
+│   │   ├── router.py
+│   │   ├── auth.py
+│   │   ├── users.py
+│   │   ├── services.py
+│   │   ├── rentals.py
+│   │   ├── products.py
+│   │   └── orders.py
+│   ├── services/
+│   │   ├── mpesa.py
+│   │   ├── whatsapp.py
+│   │   └── notifications.py
+│   └── tasks/
+│       ├── celery_app.py
+│       └── jobs.py
+├── alembic/
+│   └── versions/
+├── tests/
+├── docker-compose.yml
+└── Dockerfile</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- ERD -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="doc-section" id="erd">
+      <div class="ds-eyebrow">04 · Data Model</div>
+      <h2 class="ds-h">Entity Relationship Diagram</h2>
+      <p class="ds-sub">Core entities and their relationships across all four platform modules. 22 tables, designed for multi-tenancy and horizontal scaling.</p>
+      <div class="mermaid-wrap">
+        <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#0e1022', 'primaryTextColor': '#f0eee8', 'primaryBorderColor': '#00e5ff', 'lineColor': '#9a98b5', 'secondaryColor': '#131628', 'tertiaryColor': '#0e1022', 'edgeLabelBackground': '#131628', 'fontFamily': 'JetBrains Mono'}}}%%
+erDiagram
+    USERS {
+        uuid id PK
+        string phone UK
+        string email UK
+        string name
+        enum role
+        string password_hash
+        bool is_verified
+        timestamp created_at
+    }
+    USER_PROFILES {
+        uuid id PK
+        uuid user_id FK
+        text bio
+        string avatar_url
+        string location
+        string whatsapp
+        int xp
+        int jobs_done
+        float rating
+    }
+    CATEGORIES {
+        int id PK
+        string name UK
+        string slug UK
+        string icon
+        string color
+        int parent_id FK
+    }
+    SERVICE_LISTINGS {
+        uuid id PK
+        uuid user_id FK
+        int category_id FK
+        string title
+        text description
+        decimal price_from
+        int workers
+        int jobs_done
+        int xp
+        enum status
+        string area
+    }
+    PORTFOLIO_ITEMS {
+        uuid id PK
+        uuid listing_id FK
+        string media_url
+        string title
+    }
+    SERVICE_PACKAGES {
+        uuid id PK
+        uuid listing_id FK
+        string name
+        text description
+        decimal price
+        bool is_featured
+    }
+    RENTALS {
+        uuid id PK
+        uuid owner_id FK
+        enum type
+        string title
+        text description
+        decimal price_monthly
+        decimal deposit
+        string area
+        int sqft
+        int floor_num
+        enum availability
+        bool is_furnished
+    }
+    RENTAL_AMENITIES {
+        uuid id PK
+        uuid rental_id FK
+        string key
+        string value
+    }
+    PRODUCTS {
+        uuid id PK
+        uuid seller_id FK
+        string name
+        enum category
+        text description
+        decimal price
+        decimal was_price
+        int sold_count
+    }
+    PRODUCT_VARIANTS {
+        uuid id PK
+        uuid product_id FK
+        string size
+        string color
+        int stock
+    }
+    ORDERS {
+        uuid id PK
+        uuid buyer_id FK
+        enum type
+        enum status
+        decimal subtotal
+        decimal delivery_fee
+        enum delivery_type
+        string delivery_address
+        timestamp placed_at
+    }
+    ORDER_ITEMS {
+        uuid id PK
+        uuid order_id FK
+        uuid item_id
+        string item_type
+        int qty
+        decimal unit_price
+        string size
+        string color
+    }
+    PAYMENTS {
+        uuid id PK
+        uuid order_id FK
+        enum method
+        decimal amount
+        string mpesa_ref
+        string mpesa_checkout_id
+        enum status
+        timestamp paid_at
+    }
+    REVIEWS {
+        uuid id PK
+        uuid reviewer_id FK
+        uuid subject_id
+        string subject_type
+        int rating
+        text comment
+        timestamp created_at
+    }
+    NOTIFICATIONS {
+        uuid id PK
+        uuid user_id FK
+        string type
+        jsonb payload
+        timestamp read_at
+    }
+
+    USERS ||--|| USER_PROFILES : has
+    USERS ||--o{ SERVICE_LISTINGS : creates
+    USERS ||--o{ RENTALS : owns
+    USERS ||--o{ PRODUCTS : sells
+    USERS ||--o{ ORDERS : places
+    USERS ||--o{ REVIEWS : writes
+    USERS ||--o{ NOTIFICATIONS : receives
+    CATEGORIES ||--o{ SERVICE_LISTINGS : contains
+    CATEGORIES ||--o{ CATEGORIES : parent
+    SERVICE_LISTINGS ||--o{ PORTFOLIO_ITEMS : has
+    SERVICE_LISTINGS ||--o{ SERVICE_PACKAGES : has
+    RENTALS ||--o{ RENTAL_AMENITIES : has
+    PRODUCTS ||--o{ PRODUCT_VARIANTS : has
+    ORDERS ||--o{ ORDER_ITEMS : contains
+    ORDERS ||--|| PAYMENTS : paid_via
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- SCHEMA -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="doc-section" id="schema">
+      <div class="ds-eyebrow">05 · PostgreSQL</div>
+      <h2 class="ds-h">Database Schema (DDL)</h2>
+      <div class="code-wrap">
+        <div class="code-header"><span>schema.sql</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><code class="language-sql">-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm"; -- fuzzy search
+
+-- ── ENUMS ──────────────────────────────────────────────────────
+CREATE TYPE user_role AS ENUM ('buyer', 'seller', 'admin', 'caretaker');
+CREATE TYPE listing_status AS ENUM ('active', 'paused', 'pending', 'suspended');
+CREATE TYPE rental_type AS ENUM (
+  'bedsitter','sq','studio','1br','2br','3br',
+  'shared','hostel','short_stay','furnished_apt',
+  'office','shop','event_space','land'
+);
+CREATE TYPE rental_availability AS ENUM ('now','30days','60days');
+CREATE TYPE order_type AS ENUM ('service','rental','product');
+CREATE TYPE order_status AS ENUM (
+  'pending','confirmed','in_progress','completed','cancelled','refunded'
+);
+CREATE TYPE delivery_type AS ENUM (
+  'pickup','cbd','nairobi','outside','upcountry'
+);
+CREATE TYPE payment_method AS ENUM ('mpesa','card','cash','wallet');
+CREATE TYPE payment_status AS ENUM (
+  'pending','processing','paid','failed','refunded'
+);
+
+-- ── USERS ──────────────────────────────────────────────────────
+CREATE TABLE users (
+  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  phone           VARCHAR(20) UNIQUE,
+  email           VARCHAR(255) UNIQUE,
+  name            VARCHAR(255) NOT NULL,
+  role            user_role NOT NULL DEFAULT 'buyer',
+  password_hash   TEXT,
+  is_verified     BOOLEAN DEFAULT FALSE,
+  is_active       BOOLEAN DEFAULT TRUE,
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX idx_users_phone ON users(phone);
+CREATE INDEX idx_users_email ON users(email);
+
+CREATE TABLE user_profiles (
+  id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id     UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  bio         TEXT,
+  avatar_url  TEXT,
+  location    VARCHAR(255),
+  area        VARCHAR(100),
+  whatsapp    VARCHAR(20),
+  xp          INTEGER DEFAULT 0,
+  jobs_done   INTEGER DEFAULT 0,
+  rating      NUMERIC(3,2) DEFAULT 0,
+  review_count INTEGER DEFAULT 0,
+  response_time VARCHAR(50),
+  UNIQUE(user_id)
+);
+
+-- ── CATEGORIES ─────────────────────────────────────────────────
+CREATE TABLE categories (
+  id        SERIAL PRIMARY KEY,
+  name      VARCHAR(100) NOT NULL UNIQUE,
+  slug      VARCHAR(100) NOT NULL UNIQUE,
+  icon      VARCHAR(10),
+  color     VARCHAR(20),
+  parent_id INTEGER REFERENCES categories(id)
+);
+
+-- ── SERVICE LISTINGS ───────────────────────────────────────────
+CREATE TABLE service_listings (
+  id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id     UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  category_id INTEGER NOT NULL REFERENCES categories(id),
+  title       VARCHAR(255) NOT NULL,
+  description TEXT,
+  price_from  NUMERIC(10,2),
+  workers     INTEGER DEFAULT 1,
+  jobs_done   INTEGER DEFAULT 0,
+  xp          INTEGER DEFAULT 0,
+  status      listing_status DEFAULT 'pending',
+  area        VARCHAR(100),
+  created_at  TIMESTAMPTZ DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX idx_listings_category ON service_listings(category_id);
+CREATE INDEX idx_listings_user ON service_listings(user_id);
+CREATE INDEX idx_listings_area ON service_listings(area);
+CREATE INDEX idx_listings_title_trgm ON service_listings
+  USING gin(title gin_trgm_ops); -- fuzzy search
+
+CREATE TABLE portfolio_items (
+  id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  listing_id  UUID NOT NULL REFERENCES service_listings(id) ON DELETE CASCADE,
+  media_url   TEXT NOT NULL,
+  media_type  VARCHAR(20) DEFAULT 'image',
+  title       VARCHAR(255),
+  description TEXT,
+  sort_order  INTEGER DEFAULT 0
+);
+
+CREATE TABLE service_packages (
+  id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  listing_id  UUID NOT NULL REFERENCES service_listings(id) ON DELETE CASCADE,
+  name        VARCHAR(100) NOT NULL,
+  description TEXT,
+  price       NUMERIC(10,2) NOT NULL,
+  is_featured BOOLEAN DEFAULT FALSE,
+  icon        VARCHAR(10)
+);
+
+-- ── RENTALS ────────────────────────────────────────────────────
+CREATE TABLE rentals (
+  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  owner_id        UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  type            rental_type NOT NULL,
+  title           VARCHAR(255) NOT NULL,
+  description     TEXT,
+  price_monthly   NUMERIC(10,2) NOT NULL,
+  deposit         NUMERIC(10,2),
+  area            VARCHAR(100),
+  location_lat    NUMERIC(9,6),
+  location_lng    NUMERIC(9,6),
+  sqft            INTEGER,
+  floor_num       INTEGER,
+  beds            SMALLINT DEFAULT 0,
+  baths           SMALLINT DEFAULT 0,
+  availability    rental_availability DEFAULT 'now',
+  is_furnished    BOOLEAN DEFAULT FALSE,
+  is_short_term   BOOLEAN DEFAULT FALSE,
+  matatu_stage    VARCHAR(100),
+  matatu_mins     INTEGER,
+  views           INTEGER DEFAULT 0,
+  is_active       BOOLEAN DEFAULT TRUE,
+  created_at      TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX idx_rentals_owner ON rentals(owner_id);
+CREATE INDEX idx_rentals_area ON rentals(area);
+CREATE INDEX idx_rentals_type ON rentals(type);
+CREATE INDEX idx_rentals_price ON rentals(price_monthly);
+
+CREATE TABLE rental_amenities (
+  id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  rental_id   UUID NOT NULL REFERENCES rentals(id) ON DELETE CASCADE,
+  amenity_key VARCHAR(50) NOT NULL,
+  value       VARCHAR(100),
+  UNIQUE(rental_id, amenity_key)
+);
+
+-- ── PRODUCTS ───────────────────────────────────────────────────
+CREATE TABLE products (
+  id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  seller_id   UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  name        VARCHAR(255) NOT NULL,
+  category    VARCHAR(50),
+  description TEXT,
+  price       NUMERIC(10,2) NOT NULL,
+  was_price   NUMERIC(10,2),
+  sold_count  INTEGER DEFAULT 0,
+  is_active   BOOLEAN DEFAULT TRUE,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE product_variants (
+  id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  product_id  UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  size        VARCHAR(20),
+  color       VARCHAR(50),
+  stock       INTEGER DEFAULT 0,
+  UNIQUE(product_id, size, color)
+);
+
+-- ── ORDERS ─────────────────────────────────────────────────────
+CREATE TABLE orders (
+  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  buyer_id        UUID NOT NULL REFERENCES users(id),
+  type            order_type NOT NULL,
+  status          order_status DEFAULT 'pending',
+  subtotal        NUMERIC(10,2) NOT NULL,
+  delivery_fee    NUMERIC(10,2) DEFAULT 0,
+  delivery_type   delivery_type,
+  delivery_address TEXT,
+  notes           TEXT,
+  placed_at       TIMESTAMPTZ DEFAULT NOW(),
+  completed_at    TIMESTAMPTZ
+);
+CREATE INDEX idx_orders_buyer ON orders(buyer_id);
+CREATE INDEX idx_orders_status ON orders(status);
+
+CREATE TABLE order_items (
+  id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  order_id    UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  item_id     UUID NOT NULL,
+  item_type   VARCHAR(20) NOT NULL, -- 'service'|'rental'|'product'
+  qty         INTEGER DEFAULT 1,
+  unit_price  NUMERIC(10,2) NOT NULL,
+  size        VARCHAR(20),
+  color       VARCHAR(50),
+  package_id  UUID
+);
+
+-- ── PAYMENTS ───────────────────────────────────────────────────
+CREATE TABLE payments (
+  id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  order_id            UUID NOT NULL REFERENCES orders(id),
+  method              payment_method DEFAULT 'mpesa',
+  amount              NUMERIC(10,2) NOT NULL,
+  mpesa_ref           VARCHAR(50),
+  mpesa_checkout_id   VARCHAR(100),
+  status              payment_status DEFAULT 'pending',
+  paid_at             TIMESTAMPTZ,
+  raw_callback        JSONB,
+  UNIQUE(order_id)
+);
+
+-- ── REVIEWS ────────────────────────────────────────────────────
+CREATE TABLE reviews (
+  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  reviewer_id   UUID NOT NULL REFERENCES users(id),
+  subject_id    UUID NOT NULL,
+  subject_type  VARCHAR(20), -- 'listing'|'rental'|'product'
+  rating        SMALLINT NOT NULL CHECK(rating BETWEEN 1 AND 5),
+  comment       TEXT,
+  created_at    TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX idx_reviews_subject ON reviews(subject_id, subject_type);
+
+-- ── NOTIFICATIONS ──────────────────────────────────────────────
+CREATE TABLE notifications (
+  id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id     UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  type        VARCHAR(50),
+  payload     JSONB,
+  read_at     TIMESTAMPTZ,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX idx_notif_user ON notifications(user_id) WHERE read_at IS NULL;</code></pre>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- ORM MODELS -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="doc-section" id="orm">
+      <div class="ds-eyebrow">06 · SQLAlchemy</div>
+      <h2 class="ds-h">ORM Models</h2>
+      <div class="code-wrap">
+        <div class="code-header"><span>app/models/base.py</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><code class="language-python">from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessionmaker
+from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
+from sqlalchemy import func
+import uuid
+from datetime import datetime
+
+engine = create_async_engine(settings.DATABASE_URL, echo=False, pool_size=20)
+AsyncSession = async_sessionmaker(engine, expire_on_commit=False)
+
+class Base(AsyncAttrs, DeclarativeBase):
+    pass
+
+class TimestampMixin:
+    created_at: Mapped[datetime] = mapped_column(
+        server_default=func.now(), nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        server_default=func.now(), onupdate=func.now(), nullable=False
+    )</code></pre>
+      </div>
+      <div class="code-wrap">
+        <div class="code-header"><span>app/models/user.py</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><code class="language-python">from sqlalchemy import String, Boolean, Enum as SAEnum, ForeignKey, Numeric, Text, Integer
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.dialects.postgresql import UUID
+import uuid, enum
+from .base import Base, TimestampMixin
+
+class UserRole(str, enum.Enum):
+    buyer    = "buyer"
+    seller   = "seller"
+    admin    = "admin"
+    caretaker = "caretaker"
+
+class User(Base, TimestampMixin):
+    __tablename__ = "users"
+
+    id:            Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    phone:         Mapped[str | None] = mapped_column(String(20), unique=True, index=True)
+    email:         Mapped[str | None] = mapped_column(String(255), unique=True, index=True)
+    name:          Mapped[str]        = mapped_column(String(255))
+    role:          Mapped[UserRole]   = mapped_column(SAEnum(UserRole), default=UserRole.buyer)
+    password_hash: Mapped[str | None] = mapped_column(Text)
+    is_verified:   Mapped[bool]       = mapped_column(Boolean, default=False)
+    is_active:     Mapped[bool]       = mapped_column(Boolean, default=True)
+
+    # Relationships
+    profile:   Mapped["UserProfile"]       = relationship(back_populates="user", uselist=False, cascade="all, delete-orphan")
+    listings:  Mapped[list["ServiceListing"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    rentals:   Mapped[list["Rental"]]      = relationship(back_populates="owner", cascade="all, delete-orphan")
+    products:  Mapped[list["Product"]]     = relationship(back_populates="seller", cascade="all, delete-orphan")
+    orders:    Mapped[list["Order"]]       = relationship(back_populates="buyer")
+    reviews:   Mapped[list["Review"]]      = relationship(back_populates="reviewer")
+
+class UserProfile(Base):
+    __tablename__ = "user_profiles"
+
+    id:            Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id:       Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), unique=True)
+    bio:           Mapped[str | None] = mapped_column(Text)
+    avatar_url:    Mapped[str | None] = mapped_column(Text)
+    location:      Mapped[str | None] = mapped_column(String(255))
+    whatsapp:      Mapped[str | None] = mapped_column(String(20))
+    xp:            Mapped[int]        = mapped_column(Integer, default=0)
+    jobs_done:     Mapped[int]        = mapped_column(Integer, default=0)
+    rating:        Mapped[float]      = mapped_column(Numeric(3, 2), default=0)
+    response_time: Mapped[str | None] = mapped_column(String(50))
+
+    user: Mapped["User"] = relationship(back_populates="profile")</code></pre>
+      </div>
+      <div class="code-wrap">
+        <div class="code-header"><span>app/models/product.py</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><code class="language-python">class Product(Base, TimestampMixin):
+    __tablename__ = "products"
+
+    id:          Mapped[uuid.UUID]  = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    seller_id:   Mapped[uuid.UUID]  = mapped_column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"))
+    name:        Mapped[str]        = mapped_column(String(255), nullable=False)
+    category:    Mapped[str | None] = mapped_column(String(50))
+    description: Mapped[str | None] = mapped_column(Text)
+    price:       Mapped[float]      = mapped_column(Numeric(10, 2), nullable=False)
+    was_price:   Mapped[float | None] = mapped_column(Numeric(10, 2))
+    sold_count:  Mapped[int]        = mapped_column(Integer, default=0)
+    is_active:   Mapped[bool]       = mapped_column(Boolean, default=True)
+
+    seller:   Mapped["User"]                  = relationship(back_populates="products")
+    variants: Mapped[list["ProductVariant"]]  = relationship(back_populates="product", cascade="all, delete-orphan")
+
+class ProductVariant(Base):
+    __tablename__ = "product_variants"
+
+    id:         Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    product_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("products.id", ondelete="CASCADE"))
+    size:       Mapped[str | None] = mapped_column(String(20))
+    color:      Mapped[str | None] = mapped_column(String(50))
+    stock:      Mapped[int]        = mapped_column(Integer, default=0)
+
+    product: Mapped["Product"] = relationship(back_populates="variants")
+
+class Order(Base):
+    __tablename__ = "orders"
+
+    id:               Mapped[uuid.UUID]    = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    buyer_id:         Mapped[uuid.UUID]    = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"))
+    type:             Mapped[str]          = mapped_column(String(20))
+    status:           Mapped[str]          = mapped_column(String(20), default="pending")
+    subtotal:         Mapped[float]        = mapped_column(Numeric(10, 2))
+    delivery_fee:     Mapped[float]        = mapped_column(Numeric(10, 2), default=0)
+    delivery_type:    Mapped[str | None]   = mapped_column(String(30))
+    delivery_address: Mapped[str | None]   = mapped_column(Text)
+    notes:            Mapped[str | None]   = mapped_column(Text)
+    placed_at:        Mapped[datetime]     = mapped_column(server_default=func.now())
+
+    buyer:   Mapped["User"]             = relationship(back_populates="orders")
+    items:   Mapped[list["OrderItem"]]  = relationship(back_populates="order", cascade="all, delete-orphan")
+    payment: Mapped["Payment | None"]   = relationship(back_populates="order", uselist=False)</code></pre>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- PYDANTIC -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="doc-section" id="pydantic">
+      <div class="ds-eyebrow">07 · Pydantic v2</div>
+      <h2 class="ds-h">Request / Response Schemas</h2>
+      <div class="code-wrap">
+        <div class="code-header"><span>app/schemas/order.py</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><code class="language-python">from pydantic import BaseModel, field_validator, model_validator
+from typing import Literal
+from uuid import UUID
+from decimal import Decimal
+import phonenumbers
+
+class OrderItemCreate(BaseModel):
+    item_id:    UUID
+    item_type:  Literal["service", "rental", "product"]
+    qty:        int = 1
+    unit_price: Decimal
+    size:       str | None = None
+    color:      str | None = None
+    package_id: UUID | None = None
+
+    @field_validator("qty")
+    @classmethod
+    def qty_positive(cls, v: int) -> int:
+        if v < 1:
+            raise ValueError("Quantity must be at least 1")
+        return v
+
+class OrderCreate(BaseModel):
+    type:             Literal["service", "rental", "product"]
+    items:            list[OrderItemCreate]
+    delivery_type:    Literal["pickup","cbd","nairobi","outside","upcountry"] | None = None
+    delivery_address: str | None = None
+    notes:            str | None = None
+
+    @model_validator(mode="after")
+    def delivery_address_required(self) -> "OrderCreate":
+        if self.delivery_type in ("nairobi", "outside", "upcountry"):
+            if not self.delivery_address:
+                raise ValueError("delivery_address required for this delivery type")
+        return self
+
+class OrderItemOut(BaseModel):
+    model_config = {"from_attributes": True}
+    id:         UUID
+    item_id:    UUID
+    item_type:  str
+    qty:        int
+    unit_price: Decimal
+    size:       str | None
+    color:      str | None
+
+class OrderOut(BaseModel):
+    model_config = {"from_attributes": True}
+    id:               UUID
+    type:             str
+    status:           str
+    subtotal:         Decimal
+    delivery_fee:     Decimal
+    delivery_type:    str | None
+    delivery_address: str | None
+    items:            list[OrderItemOut]
+    whatsapp_message: str  # pre-formatted WA order message
+
+class PaymentInitiate(BaseModel):
+    order_id:     UUID
+    phone_number: str  # +254 format
+
+    @field_validator("phone_number")
+    @classmethod
+    def validate_ke_phone(cls, v: str) -> str:
+        try:
+            parsed = phonenumbers.parse(v, "KE")
+            if not phonenumbers.is_valid_number(parsed):
+                raise ValueError()
+            return phonenumbers.format_number(
+                parsed, phonenumbers.PhoneNumberFormat.E164
+            )
+        except Exception:
+            raise ValueError("Invalid Kenyan phone number")
+
+class MpesaCallbackSchema(BaseModel):
+    """Incoming M-Pesa STK Push callback"""
+    Body: dict
+
+    def get_result_code(self) -> int:
+        return self.Body["stkCallback"]["ResultCode"]
+
+    def get_mpesa_ref(self) -> str | None:
+        items = self.Body["stkCallback"].get("CallbackMetadata", {}).get("Item", [])
+        for item in items:
+            if item.get("Name") == "MpesaReceiptNumber":
+                return item.get("Value")
+        return None</code></pre>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- API AUTH -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="doc-section" id="api-auth">
+      <div class="ds-eyebrow">08 · API Reference</div>
+      <h2 class="ds-h">Auth Endpoints</h2>
+      <div class="tag-row">
+        <span class="tag tag-cyan">Base: /api/v1/auth</span>
+        <span class="tag tag-green">JWT Bearer</span>
+        <span class="tag tag-amber">Phone OTP</span>
+      </div>
+      <table class="ep-table">
+        <tr><th>Method</th><th>Path</th><th>Description</th><th>Auth</th></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/auth/register</td><td class="ep-desc">Register with phone + name. Sends OTP.</td><td>—</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/auth/verify-otp</td><td class="ep-desc">Verify OTP → returns access + refresh tokens.</td><td>—</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/auth/login</td><td class="ep-desc">Phone/email + password login.</td><td>—</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/auth/refresh</td><td class="ep-desc">Refresh access token.</td><td>Refresh</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/auth/logout</td><td class="ep-desc">Invalidate refresh token.</td><td>Bearer</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/auth/google</td><td class="ep-desc">Google OAuth2 callback.</td><td>—</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/auth/forgot-password</td><td class="ep-desc">Send OTP for password reset.</td><td>—</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/auth/reset-password</td><td class="ep-desc">Reset password with valid OTP.</td><td>—</td></tr>
+      </table>
+
+      <div class="code-wrap">
+        <div class="code-header"><span>app/api/v1/auth.py</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><code class="language-python">from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.core.database import get_session
+from app.core.security import (
+    create_access_token, create_refresh_token,
+    verify_password, get_password_hash
+)
+from app.models.user import User
+from app.schemas.user import UserCreate, UserOut, Token
+from app.services.notifications import send_otp_sms
+import secrets
+
+router = APIRouter(prefix="/auth", tags=["auth"])
+
+@router.post("/register", response_model=dict, status_code=201)
+async def register(payload: UserCreate, db: AsyncSession = Depends(get_session)):
+    """Register new user — sends OTP to phone number."""
+    existing = await db.execute(
+        select(User).where(User.phone == payload.phone)
+    )
+    if existing.scalar_one_or_none():
+        raise HTTPException(status.HTTP_409_CONFLICT, "Phone already registered")
+
+    otp = str(secrets.randbelow(900000) + 100000)  # 6-digit OTP
+    user = User(
+        phone=payload.phone,
+        name=payload.name,
+        password_hash=get_password_hash(payload.password) if payload.password else None,
+    )
+    db.add(user)
+    await db.commit()
+    await send_otp_sms(payload.phone, otp)          # Africa's Talking
+    # store OTP in Redis with 10-min TTL
+    await redis.setex(f"otp:{payload.phone}", 600, otp)
+    return {"message": "OTP sent to your phone", "phone": payload.phone}
+
+@router.post("/verify-otp", response_model=Token)
+async def verify_otp(phone: str, otp: str, db: AsyncSession = Depends(get_session)):
+    """Verify OTP and issue JWT tokens."""
+    stored = await redis.get(f"otp:{phone}")
+    if not stored or stored.decode() != otp:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Invalid or expired OTP")
+
+    user = await get_user_by_phone(db, phone)
+    user.is_verified = True
+    await db.commit()
+    await redis.delete(f"otp:{phone}")
+
+    return Token(
+        access_token=create_access_token(str(user.id)),
+        refresh_token=create_refresh_token(str(user.id)),
+        token_type="bearer",
+        user=UserOut.model_validate(user),
+    )</code></pre>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- API SERVICES / RENTALS / PRODUCTS / ORDERS -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="doc-section" id="api-services">
+      <div class="ds-eyebrow">09 · Services API</div>
+      <h2 class="ds-h">Service Listings Endpoints</h2>
+      <table class="ep-table">
+        <tr><th>Method</th><th>Path</th><th>Description</th><th>Auth</th></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/services/</td><td class="ep-desc">List all active listings. Filters: category, area, min_xp, search. Pagination.</td><td>—</td></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/services/{id}</td><td class="ep-desc">Get single listing with packages, portfolio and reviews.</td><td>—</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/services/</td><td class="ep-desc">Create new service listing.</td><td class="ep-auth">🔐 seller</td></tr>
+        <tr><td><span class="method put">PUT</span></td><td class="ep-path">/services/{id}</td><td class="ep-desc">Update own listing.</td><td class="ep-auth">🔐 owner</td></tr>
+        <tr><td><span class="method del">DELETE</span></td><td class="ep-path">/services/{id}</td><td class="ep-desc">Delete own listing.</td><td class="ep-auth">🔐 owner</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/services/{id}/portfolio</td><td class="ep-desc">Upload portfolio item (multipart/form-data).</td><td class="ep-auth">🔐 owner</td></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/services/bubble-data</td><td class="ep-desc">Aggregate XP/worker/job counts per category for bubble viz.</td><td>—</td></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/services/categories</td><td class="ep-desc">All 259 categories with metadata.</td><td>—</td></tr>
+      </table>
+    </section>
+
+    <section class="doc-section" id="api-rentals">
+      <div class="ds-eyebrow">10 · Rentals API</div>
+      <h2 class="ds-h">Rental Listing Endpoints</h2>
+      <table class="ep-table">
+        <tr><th>Method</th><th>Path</th><th>Description</th><th>Auth</th></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/rentals/</td><td class="ep-desc">Browse rentals. Filters: type, area, min_price, max_price, amenities, availability, furnished.</td><td>—</td></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/rentals/{id}</td><td class="ep-desc">Rental detail with amenities, rules, landlord info.</td><td>—</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/rentals/</td><td class="ep-desc">List a new rental property.</td><td class="ep-auth">🔐 bearer</td></tr>
+        <tr><td><span class="method patch">PATCH</span></td><td class="ep-path">/rentals/{id}</td><td class="ep-desc">Update listing availability or details.</td><td class="ep-auth">🔐 owner</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/rentals/{id}/enquire</td><td class="ep-desc">Submit viewing request — triggers WhatsApp notification to landlord.</td><td class="ep-auth">🔐 bearer</td></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/rentals/areas</td><td class="ep-desc">Area list with listing counts and min-price per area.</td><td>—</td></tr>
+      </table>
+    </section>
+
+    <section class="doc-section" id="api-products">
+      <div class="ds-eyebrow">11 · Products API</div>
+      <h2 class="ds-h">Product / Footwear Catalog Endpoints</h2>
+      <table class="ep-table">
+        <tr><th>Method</th><th>Path</th><th>Description</th><th>Auth</th></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/products/</td><td class="ep-desc">List products. Filters: category, min_price, max_price, size, color, sort.</td><td>—</td></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/products/{id}</td><td class="ep-desc">Product detail with all variants (size × color matrix).</td><td>—</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/products/</td><td class="ep-desc">Create product with variants.</td><td class="ep-auth">🔐 seller</td></tr>
+        <tr><td><span class="method put">PUT</span></td><td class="ep-path">/products/{id}/variants/{vid}</td><td class="ep-desc">Update stock for specific variant.</td><td class="ep-auth">🔐 owner</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/products/{id}/images</td><td class="ep-desc">Upload product images to S3.</td><td class="ep-auth">🔐 owner</td></tr>
+      </table>
+    </section>
+
+    <section class="doc-section" id="api-orders">
+      <div class="ds-eyebrow">12 · Orders API</div>
+      <h2 class="ds-h">Order & Checkout Endpoints</h2>
+      <table class="ep-table">
+        <tr><th>Method</th><th>Path</th><th>Description</th><th>Auth</th></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/orders/</td><td class="ep-desc">Create order from cart items. Returns formatted WhatsApp message.</td><td class="ep-auth">🔐 bearer</td></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/orders/</td><td class="ep-desc">List buyer's orders.</td><td class="ep-auth">🔐 bearer</td></tr>
+        <tr><td><span class="method get">GET</span></td><td class="ep-path">/orders/{id}</td><td class="ep-desc">Order detail with items and payment status.</td><td class="ep-auth">🔐 owner</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/orders/{id}/pay</td><td class="ep-desc">Initiate M-Pesa STK Push payment.</td><td class="ep-auth">🔐 bearer</td></tr>
+        <tr><td><span class="method post">POST</span></td><td class="ep-path">/orders/mpesa-callback</td><td class="ep-desc">M-Pesa Daraja API callback webhook. Validates signature, updates payment status.</td><td>IP Whitelist</td></tr>
+        <tr><td><span class="method patch">PATCH</span></td><td class="ep-path">/orders/{id}/status</td><td class="ep-desc">Seller updates order status (confirmed → in_progress → completed).</td><td class="ep-auth">🔐 seller</td></tr>
+      </table>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- M-PESA SERVICE -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="doc-section" id="mpesa">
+      <div class="ds-eyebrow">13 · M-Pesa Integration</div>
+      <h2 class="ds-h">Safaricom Daraja API Service</h2>
+      <div class="code-wrap">
+        <div class="code-header"><span>app/services/mpesa.py</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><code class="language-python">import httpx, base64, json
+from datetime import datetime
+from app.core.config import settings
+
+DARAJA_BASE = "https://api.safaricom.co.ke"  # live
+# DARAJA_BASE = "https://sandbox.safaricom.co.ke"  # sandbox
+
+class MpesaService:
+    """Safaricom Daraja API v2 — STK Push integration."""
+
+    async def get_access_token(self) -> str:
+        """OAuth token — cached in Redis for 55 minutes."""
+        cached = await redis.get("mpesa:token")
+        if cached:
+            return cached.decode()
+
+        creds = base64.b64encode(
+            f"{settings.MPESA_CONSUMER_KEY}:{settings.MPESA_CONSUMER_SECRET}".encode()
+        ).decode()
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(
+                f"{DARAJA_BASE}/oauth/v1/generate?grant_type=client_credentials",
+                headers={"Authorization": f"Basic {creds}"}
+            )
+        token = resp.json()["access_token"]
+        await redis.setex("mpesa:token", 3300, token)
+        return token
+
+    async def stk_push(
+        self, phone: str, amount: int,
+        order_id: str, description: str = "KaziHub Order"
+    ) -> dict:
+        """Initiate Lipa Na M-Pesa STK Push."""
+        token = await self.get_access_token()
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        password = base64.b64encode(
+            f"{settings.MPESA_SHORTCODE}{settings.MPESA_PASSKEY}{timestamp}".encode()
+        ).decode()
+
+        payload = {
+            "BusinessShortCode": settings.MPESA_SHORTCODE,
+            "Password": password,
+            "Timestamp": timestamp,
+            "TransactionType": "CustomerPayBillOnline",
+            "Amount": amount,
+            "PartyA": phone,
+            "PartyB": settings.MPESA_SHORTCODE,
+            "PhoneNumber": phone,
+            "CallBackURL": f"{settings.BASE_URL}/api/v1/orders/mpesa-callback",
+            "AccountReference": f"KH-{order_id[:8].upper()}",
+            "TransactionDesc": description,
+        }
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(
+                f"{DARAJA_BASE}/mpesa/stkpush/v1/processrequest",
+                headers={"Authorization": f"Bearer {token}"},
+                json=payload
+            )
+        result = resp.json()
+        # store CheckoutRequestID for callback matching
+        await redis.setex(
+            f"mpesa:pending:{result['CheckoutRequestID']}", 300, order_id
+        )
+        return result
+
+    async def handle_callback(self, payload: dict) -> bool:
+        """Process STK Push callback from Safaricom."""
+        body = payload["Body"]["stkCallback"]
+        checkout_id = body["CheckoutRequestID"]
+        result_code = body["ResultCode"]
+
+        order_id = await redis.get(f"mpesa:pending:{checkout_id}")
+        if not order_id:
+            return False
+
+        if result_code == 0:  # Success
+            items = body["CallbackMetadata"]["Item"]
+            mpesa_ref = next(
+                (i["Value"] for i in items if i["Name"] == "MpesaReceiptNumber"), None
+            )
+            await update_payment_success(order_id.decode(), mpesa_ref)
+            await send_order_confirmation.delay(order_id.decode())  # Celery
+        else:
+            await update_payment_failed(order_id.decode(), result_code)
+
+        await redis.delete(f"mpesa:pending:{checkout_id}")
+        return True
+
+mpesa = MpesaService()</code></pre>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- WHATSAPP SERVICE -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="doc-section" id="whatsapp">
+      <div class="ds-eyebrow">14 · WhatsApp Integration</div>
+      <h2 class="ds-h">WhatsApp Business API Service</h2>
+      <div class="code-wrap">
+        <div class="code-header"><span>app/services/whatsapp.py</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><code class="language-python">import httpx
+from app.core.config import settings
+from app.models.order import Order
+
+WA_API = "https://graph.facebook.com/v18.0"
+
+class WhatsAppService:
+    """WhatsApp Business Cloud API — messages and order notifications."""
+
+    async def send_message(self, to: str, text: str) -> dict:
+        """Send plain text message."""
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(
+                f"{WA_API}/{settings.WA_PHONE_ID}/messages",
+                headers={
+                    "Authorization": f"Bearer {settings.WA_TOKEN}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "messaging_product": "whatsapp",
+                    "to": to,
+                    "type": "text",
+                    "text": {"body": text}
+                }
+            )
+        return resp.json()
+
+    def format_order_message(self, order: Order, seller_phone: str) -> str:
+        """Format a complete order as a WhatsApp-ready message."""
+        lines = [
+            "🛍️ *NEW ORDER — KaziHub*",
+            "─────────────────────",
+        ]
+        for i, item in enumerate(order.items, 1):
+            lines.append(f"{i}. *{item.name}*")
+            if item.size:   lines.append(f"   Size: {item.size}")
+            if item.color:  lines.append(f"   Colour: {item.color}")
+            lines.append(f"   Qty: {item.qty} × KES {item.unit_price:,.0f}")
+        lines += [
+            "─────────────────────",
+            f"Subtotal: KES {order.subtotal:,.0f}",
+            f"Delivery: {'FREE' if order.delivery_fee == 0 else f'KES {order.delivery_fee:,.0f}'}",
+            f"*TOTAL: KES {(order.subtotal + order.delivery_fee):,.0f}*",
+        ]
+        if order.delivery_address:
+            lines.append(f"📍 Deliver to: {order.delivery_address}")
+        if order.notes:
+            lines.append(f"📝 Notes: {order.notes}")
+        lines += [
+            "─────────────────────",
+            f"Order Ref: KH-{str(order.id)[:8].upper()}",
+            "✅ Please confirm & share M-Pesa details.",
+            "Thank you! 🙏",
+        ]
+        return "\n".join(lines)
+
+    def get_wa_link(self, phone: str, message: str) -> str:
+        """Generate wa.me link for frontend one-tap order."""
+        import urllib.parse
+        return f"https://wa.me/{phone}?text={urllib.parse.quote(message)}"
+
+    async def send_order_to_seller(self, order: Order) -> None:
+        """Send formatted order notification to seller via WA API."""
+        seller = order.items[0].seller
+        if not seller.profile or not seller.profile.whatsapp:
+            return
+        msg = self.format_order_message(order, seller.profile.whatsapp)
+        await self.send_message(seller.profile.whatsapp, msg)
+
+whatsapp = WhatsAppService()</code></pre>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- CELERY TASKS -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="doc-section" id="tasks">
+      <div class="ds-eyebrow">15 · Async Tasks</div>
+      <h2 class="ds-h">Celery Task Queue</h2>
+      <div class="code-wrap">
+        <div class="code-header"><span>app/tasks/jobs.py</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><code class="language-python">from celery import shared_task
+from app.services.whatsapp import whatsapp
+from app.services.notifications import send_sms, send_push
+from app.core.database import sync_session
+
+@shared_task(name="send_order_confirmation", max_retries=3, default_retry_delay=30)
+def send_order_confirmation(order_id: str) -> None:
+    """Notify buyer and seller after successful M-Pesa payment."""
+    with sync_session() as db:
+        order = db.get(Order, order_id)
+        if not order:
+            return
+        # WA to seller
+        whatsapp.send_order_to_seller.delay(order_id)
+        # SMS to buyer
+        send_sms(
+            order.buyer.phone,
+            f"✅ Order KH-{order_id[:8].upper()} confirmed!\n"
+            f"KES {order.subtotal + order.delivery_fee:,.0f} received.\n"
+            "Your seller will contact you shortly via WhatsApp."
+        )
+
+@shared_task(name="update_listing_xp")
+def update_listing_xp(listing_id: str, jobs_delta: int = 1) -> None:
+    """Recalculate XP for a listing after a completed job."""
+    with sync_session() as db:
+        listing = db.get(ServiceListing, listing_id)
+        if listing:
+            listing.jobs_done += jobs_delta
+            listing.xp = min(10000,
+                listing.workers * 18 +
+                listing.jobs_done * 2.2 +
+                listing.review_count * 4
+            )
+            db.commit()
+
+@shared_task(name="send_rental_enquiry_notification")
+def send_rental_enquiry(rental_id: str, enquirer_phone: str, message: str) -> None:
+    """Notify landlord of a new viewing request."""
+    with sync_session() as db:
+        rental = db.get(Rental, rental_id)
+        if rental and rental.owner.profile.whatsapp:
+            whatsapp.send_message(
+                rental.owner.profile.whatsapp,
+                f"🏠 *New Viewing Request — KaziHub*\n\n"
+                f"Property: {rental.title}\n"
+                f"From: {enquirer_phone}\n"
+                f"Message: {message}\n\n"
+                "Reply to confirm a viewing time."
+            )
+
+@shared_task(name="process_media_upload")
+def process_media_upload(file_key: str, entity_id: str, entity_type: str) -> None:
+    """Resize images, generate thumbnails, update DB with CDN URLs."""
+    from PIL import Image
+    import boto3
+    # resize to 1200×800 max, generate 400×300 thumb
+    # upload both to S3 → update portfolio_items / products table</code></pre>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- FLOWCHARTS -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="doc-section" id="flows">
+      <div class="ds-eyebrow">16 · User Flows</div>
+      <h2 class="ds-h">System Flow Charts</h2>
+
+      <p class="ds-sub" style="margin-bottom:16px;">Order & Payment Flow — from browse to M-Pesa confirmation</p>
+      <div class="mermaid-wrap">
+        <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#0e1022', 'primaryTextColor': '#f0eee8', 'primaryBorderColor': '#00e5ff', 'lineColor': '#9a98b5', 'secondaryColor': '#131628', 'fontFamily': 'JetBrains Mono', 'edgeLabelBackground':'#0e1022'}}}%%
+flowchart TD
+    A([🧑 Buyer visits KaziHub]) --> B{Selects Module}
+    B -->|Services| C[Browse 259 Categories]
+    B -->|Rentals| D[Filter by Area & Type]
+    B -->|Footwear| E[Pick Size & Colour]
+    C --> F[View Pro Profile & Packages]
+    D --> G[View Rental Detail]
+    E --> H[Add to Cart]
+    F --> I[Select Package]
+    G --> J[Book Viewing Request]
+    I --> H
+    H --> K[🛒 Cart Review]
+    K --> L[Select Delivery Option]
+    L --> M[POST /api/v1/orders]
+    M --> N[Order Created — status: pending]
+    N --> O{Payment Method}
+    O -->|M-Pesa STK Push| P[POST /orders/id/pay]
+    O -->|WA First| Q[Generate WA Order Message]
+    P --> R[📱 STK Push sent to phone]
+    R --> S{User completes on phone}
+    S -->|✅ Paid| T[Daraja Callback → /mpesa-callback]
+    S -->|❌ Cancelled| U[Order status: failed]
+    T --> V[Payment status: paid]
+    V --> W[Celery: send_order_confirmation]
+    W --> X[💬 WA notification to Seller]
+    W --> Y[📲 SMS confirmation to Buyer]
+    Q --> Z[wa.me link opens WhatsApp]
+    Z --> AA[Seller confirms manually]
+    X --> AB([✅ Order in progress])
+    AA --> AB
+        </div>
+      </div>
+
+      <p class="ds-sub" style="margin-top:28px;margin-bottom:16px;">Pro Onboarding Flow — joining as a service seller</p>
+      <div class="mermaid-wrap">
+        <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#0e1022', 'primaryTextColor': '#f0eee8', 'primaryBorderColor': '#f5a623', 'lineColor': '#9a98b5', 'secondaryColor': '#131628', 'fontFamily': 'JetBrains Mono'}}}%%
+flowchart LR
+    A([Pro downloads app]) --> B[Register with Phone]
+    B --> C[OTP via Africa's Talking]
+    C --> D{OTP valid?}
+    D -->|No| C
+    D -->|Yes| E[Complete Profile: name, area, whatsapp]
+    E --> F[Select Category & Upload Portfolio]
+    F --> G[Set Packages & Prices]
+    G --> H[POST /api/v1/services → status: pending]
+    H --> I[Admin Review Queue]
+    I --> J{Approved?}
+    J -->|Rejected| K[Email feedback to Pro]
+    J -->|Approved| L[Listing goes live — status: active]
+    L --> M[Appears in Bubble Visualization]
+    M --> N[XP starts at 0 — Rookie tier]
+    N --> O{Jobs completed}
+    O -->|1500 XP| P[🟢 Skilled]
+    O -->|3500 XP| Q[🔵 Expert]
+    O -->|6500 XP| R[🟡 Master — dashed ring]
+    O -->|9000 XP| S[🔴 Legend — featured bubble]
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <!-- DEPLOYMENT -->
+    <!-- ══════════════════════════════════════════════ -->
+    <section class="doc-section" id="deploy">
+      <div class="ds-eyebrow">17 · Infrastructure</div>
+      <h2 class="ds-h">Deployment Architecture</h2>
+      <div class="deploy-grid">
+        <div class="deploy-box">
+          <div class="db-layer">CDN & DNS</div>
+          <div class="db-items">
+            <div class="db-item"><span class="db-dot" style="background:#ff6b2b"></span>Cloudflare DNS</div>
+            <div class="db-item"><span class="db-dot" style="background:#ff6b2b"></span>Cloudflare CDN</div>
+            <div class="db-item"><span class="db-dot" style="background:#ff6b2b"></span>SSL/TLS (ACM)</div>
+          </div>
+        </div>
+        <div class="deploy-box">
+          <div class="db-layer">Load Balancer</div>
+          <div class="db-items">
+            <div class="db-item"><span class="db-dot" style="background:#a78bfa"></span>AWS ALB</div>
+            <div class="db-item"><span class="db-dot" style="background:#a78bfa"></span>Nginx (reverse proxy)</div>
+            <div class="db-item"><span class="db-dot" style="background:#a78bfa"></span>Health checks</div>
+          </div>
+        </div>
+        <div class="deploy-box">
+          <div class="db-layer">Compute</div>
+          <div class="db-items">
+            <div class="db-item"><span class="db-dot" style="background:#00e5ff"></span>AWS ECS Fargate</div>
+            <div class="db-item"><span class="db-dot" style="background:#00e5ff"></span>FastAPI (2–8 tasks)</div>
+            <div class="db-item"><span class="db-dot" style="background:#00e5ff"></span>Celery workers (2–4)</div>
+          </div>
+        </div>
+        <div class="deploy-box">
+          <div class="db-layer">Database</div>
+          <div class="db-items">
+            <div class="db-item"><span class="db-dot" style="background:#00ffb3"></span>AWS RDS PostgreSQL 15</div>
+            <div class="db-item"><span class="db-dot" style="background:#00ffb3"></span>Multi-AZ standby</div>
+            <div class="db-item"><span class="db-dot" style="background:#00ffb3"></span>Daily snapshots</div>
+          </div>
+        </div>
+        <div class="deploy-box">
+          <div class="db-layer">Cache & Queue</div>
+          <div class="db-items">
+            <div class="db-item"><span class="db-dot" style="background:#f5a623"></span>AWS ElastiCache Redis</div>
+            <div class="db-item"><span class="db-dot" style="background:#f5a623"></span>Sessions & OTP</div>
+            <div class="db-item"><span class="db-dot" style="background:#f5a623"></span>Celery broker</div>
+          </div>
+        </div>
+        <div class="deploy-box">
+          <div class="db-layer">Storage & Search</div>
+          <div class="db-items">
+            <div class="db-item"><span class="db-dot" style="background:#ff2d87"></span>AWS S3 (media)</div>
+            <div class="db-item"><span class="db-dot" style="background:#ff2d87"></span>Elasticsearch (AWS OS)</div>
+            <div class="db-item"><span class="db-dot" style="background:#ff2d87"></span>Datadog monitoring</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-header"><span>docker-compose.yml</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><code class="language-yaml">version: "3.9"
+services:
+  api:
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    ports: ["8000:8000"]
+    environment:
+      DATABASE_URL: postgresql+asyncpg://kazi:secret@db:5432/kazihub
+      REDIS_URL: redis://redis:6379/0
+      MPESA_CONSUMER_KEY: ${MPESA_CONSUMER_KEY}
+      MPESA_CONSUMER_SECRET: ${MPESA_CONSUMER_SECRET}
+      MPESA_PASSKEY: ${MPESA_PASSKEY}
+      MPESA_SHORTCODE: ${MPESA_SHORTCODE}
+      WA_TOKEN: ${WA_TOKEN}
+      WA_PHONE_ID: ${WA_PHONE_ID}
+      SECRET_KEY: ${SECRET_KEY}
+    depends_on: [db, redis]
+    volumes: [".:/app"]
+
+  worker:
+    build: .
+    command: celery -A app.tasks.celery_app worker --loglevel=info -Q default,notifications
+    environment:
+      DATABASE_URL: postgresql+asyncpg://kazi:secret@db:5432/kazihub
+      REDIS_URL: redis://redis:6379/0
+    depends_on: [db, redis]
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: kazihub
+      POSTGRES_USER: kazi
+      POSTGRES_PASSWORD: secret
+    volumes: [pg_data:/var/lib/postgresql/data]
+    ports: ["5432:5432"]
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+
+  elasticsearch:
+    image: elasticsearch:8.13.0
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+    ports: ["9200:9200"]
+
+volumes:
+  pg_data:</code></pre>
+      </div>
+
+      <div class="code-wrap">
+        <div class="code-header"><span>app/main.py — FastAPI application entry</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <pre><code class="language-python">from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
+from contextlib import asynccontextmanager
+from app.core.database import engine
+from app.models.base import Base
+from app.api.v1.router import api_router
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: create tables, warm up redis pool
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+    # Shutdown: close connections
+    await engine.dispose()
+
+app = FastAPI(
+    title="KaziHub API",
+    description="Kenya's gig economy super-platform — API v1",
+    version="1.0.0",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    lifespan=lifespan,
+)
+
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://kazihub.co.ke", "https://app.kazihub.co.ke"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(api_router, prefix="/api/v1")
+
+@app.get("/health")
+async def health():
+    return {"status": "ok", "service": "kazihub-api", "version": "1.0.0"}</code></pre>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+// Init highlight.js
+hljs.highlightAll();
+
+// Init mermaid
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'dark',
+  themeVariables:{
+    background:'#0e1022',
+    mainBkg:'#131628',
+    nodeBorder:'#00e5ff',
+    clusterBkg:'#0e1022',
+    titleColor:'#f0eee8',
+    edgeLabelBackground:'#0e1022',
+    fontFamily:'JetBrains Mono, monospace',
+  }
+});
+
+// Sidebar scroll tracking
+function scrollTo(id){
+  const el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// Active sidebar link on scroll
+const sections = document.querySelectorAll('.doc-section[id]');
+const sbLinks  = document.querySelectorAll('.sb-link');
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      sbLinks.forEach(l=>l.classList.remove('active'));
+      const active=document.querySelector(`.sb-link[onclick*="${e.target.id}"]`);
+      if(active) active.classList.add('active');
+    }
+  });
+},{rootMargin:'-52px 0px -70% 0px'});
+sections.forEach(s=>observer.observe(s));
+
+// Copy code
+function copyCode(btn){
+  const code=btn.closest('.code-wrap').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(()=>{
+    const orig=btn.textContent;
+    btn.textContent='Copied!';
+    setTimeout(()=>btn.textContent=orig,1800);
+  });
+}
+</script>
+<!-- KAZIHUB CHATBOT -->
+<button id="kh-chat-btn" onclick="khChatToggle()" title="Chat with KaziHub">
+  🤖
+  <div class="kh-chat-unread" id="kh-unread">1</div>
+</button>
+<div id="kh-chat-panel">
+  <div class="kh-chat-head">
+    <div class="kh-chat-avatar">🤖</div>
+    <div>
+      <div class="kh-chat-title">KaziHub Assistant</div>
+      <div class="kh-chat-sub">● Online · Nairobi</div>
+    </div>
+    <button class="kh-chat-close" onclick="khChatToggle()">✕</button>
+  </div>
+  <div class="kh-chat-msgs" id="kh-msgs"></div>
+  <div class="kh-chips" id="kh-chips"></div>
+  <div class="kh-chat-foot">
+    <textarea class="kh-chat-input" id="kh-input" rows="1"
+      placeholder="Find a plumber, electrician…"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();khSend();}"></textarea>
+    <button class="kh-chat-send" id="kh-send-btn" onclick="khSend()">➤</button>
+  </div>
+</div>
+<script>
+(function(){
+var KH_PANEL,KH_MSGS,KH_INPUT,KH_SEND,KH_CHIPS,KH_UNREAD;
+var khOpen=false,khHistory=[],khBusy=false;
+
+function khServiceList(){
+  if(typeof DATA!=='undefined'){
+    return DATA.slice(0,100).map(function(d){return d.emoji+' '+d.label;}).join(', ');
+  }
+  return 'Electricians, Plumbers, Carpenters, House Cleaners, Photographers, Web Designers, Tailors, Event Caterers, Drivers, Security Guards, Fitness Trainers, Lawyers, Accountants, Nannies, Barbers, DJs, Plumbers, Masons, Solar Installers, and 240+ more';
+}
+
+var KH_SYS='You are KaziHub Assistant — a sharp, friendly AI for KaziHub, Kenya\'s gig economy marketplace in Nairobi.\nKaziHub connects customers with verified local professionals across 259 service categories.\nServices available: '+khServiceList()+'\n\nRules:\n- Keep replies SHORT (2-4 sentences max). No walls of text.\n- When a user describes a need, identify the best matching service and recommend it directly.\n- Always end service recommendations with a WhatsApp CTA on a new line in this exact format: [WA:ServiceName:Neighbourhood]\n  Example: [WA:Electrician:Westlands]\n- Typical prices in KES: small jobs 500-2000, medium 2000-8000, large 8000-50000+.\n- Payment is via M-Pesa STK Push after booking on WhatsApp.\n- If you need more info, ask ONE question only (area or urgency).\n- Never make up specific pro names or phone numbers.\n- If user writes in Swahili, respond in Swahili.';
+
+var STARTERS=['Find me a plumber 🪠','I need an electrician ⚡','House cleaning today 🧹','Event photographer 📸','Graphic designer 🎨'];
+
+function khInit(){
+  KH_PANEL=document.getElementById('kh-chat-panel');
+  KH_MSGS=document.getElementById('kh-msgs');
+  KH_INPUT=document.getElementById('kh-input');
+  KH_SEND=document.getElementById('kh-send-btn');
+  KH_CHIPS=document.getElementById('kh-chips');
+  KH_UNREAD=document.getElementById('kh-unread');
+  if(!KH_PANEL)return;
+  khAddMsg('bot','Hey! 👋 I\'m your KaziHub assistant. Tell me what service you need and I\'ll match you with a verified pro in Nairobi.');
+  STARTERS.forEach(function(s){
+    var c=document.createElement('button');
+    c.className='kh-chip';c.textContent=s;
+    c.onclick=function(){KH_INPUT.value=s;khSend();};
+    KH_CHIPS.appendChild(c);
+  });
+  setTimeout(function(){if(KH_UNREAD)KH_UNREAD.classList.add('show');},2000);
+  var inp=document.getElementById('kh-input');
+  if(inp){inp.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px';});}
+}
+
+function khChatToggle(){
+  if(!KH_PANEL)return;
+  khOpen=!khOpen;
+  KH_PANEL.classList.toggle('open',khOpen);
+  if(khOpen){
+    if(KH_UNREAD)KH_UNREAD.classList.remove('show');
+    setTimeout(function(){if(KH_INPUT)KH_INPUT.focus();},250);
+  }
+}
+
+function khAddMsg(role,content){
+  if(!KH_MSGS)return null;
+  var div=document.createElement('div');
+  div.className='kh-msg '+role;
+  var html=content.replace(/\[WA:([^\]]+)\]/g,function(_,p){
+    var pts=p.split(':'),svc=pts[0]||'service',loc=pts[1]||'Nairobi';
+    var msg=encodeURIComponent('Hi, I found you on KaziHub. I need '+svc+' in '+loc+'. Are you available?');
+    return '<br><a class="kh-wa-cta" href="https://wa.me/254700000000?text='+msg+'" target="_blank">💬 Book via WhatsApp — '+svc+'</a>';
+  });
+  html=html.replace(/\n/g,'<br>');
+  div.innerHTML=html;
+  KH_MSGS.appendChild(div);
+  KH_MSGS.scrollTop=KH_MSGS.scrollHeight;
+  return div;
+}
+
+function khRemove(el){if(el&&el.parentNode)el.parentNode.removeChild(el);}
+
+async function khSend(){
+  if(khBusy||!KH_INPUT)return;
+  var text=(KH_INPUT.value||'').trim();if(!text)return;
+  KH_INPUT.value='';KH_INPUT.style.height='';
+  if(KH_CHIPS)KH_CHIPS.innerHTML='';
+  khAddMsg('user',text);
+  khHistory.push({role:'user',content:text});
+  khBusy=true;if(KH_SEND)KH_SEND.disabled=true;
+  var thinking=khAddMsg('thinking','● thinking…');
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:300,
+        system:KH_SYS,
+        messages:khHistory
+      })
+    });
+    var data=await res.json();
+    var reply=(data.content&&data.content[0]&&data.content[0].text)||'Sorry, something went wrong. Try again.';
+    khRemove(thinking);
+    khAddMsg('bot',reply);
+    khHistory.push({role:'assistant',content:reply});
+    if(khHistory.length>20)khHistory=khHistory.slice(-20);
+  }catch(e){
+    khRemove(thinking);
+    khAddMsg('bot','Connection issue — please try again in a moment.');
+  }
+  khBusy=false;if(KH_SEND)KH_SEND.disabled=false;if(KH_INPUT)KH_INPUT.focus();
+}
+
+window.khChatToggle=khChatToggle;
+window.khSend=khSend;
+document.addEventListener('DOMContentLoaded',khInit);
+})();
+</script>
+</body>
+</html>

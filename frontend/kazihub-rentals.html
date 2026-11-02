@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KaziHub Rentals — Find Your Space in Nairobi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06080e;
+  --bg2:#0b0e18;
+  --bg3:#101420;
+  --surface:rgba(255,255,255,0.04);
+  --surface2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08);
+  --border2:rgba(255,255,255,0.14);
+  --text:#e8ddd0;
+  --text2:#b0a898;
+  --muted:#4e5266;
+  --amber:#f5a623;
+  --amber2:#ffbe00;
+  --green:#00c896;
+  --red:#ff4a5a;
+  --blue:#3d9fff;
+  --accent:#f5a623;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* atmospheric background */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 0% 100%, rgba(245,166,35,.06) 0%,transparent 65%),
+    radial-gradient(ellipse 50% 40% at 100% 0%, rgba(0,200,150,.04) 0%,transparent 60%),
+    radial-gradient(1px 1px at 25% 20%,rgba(255,255,255,.35) 0%,transparent 100%),
+    radial-gradient(1px 1px at 70% 12%,rgba(255,255,255,.2) 0%,transparent 100%),
+    radial-gradient(1px 1px at 88% 55%,rgba(255,255,255,.25) 0%,transparent 100%),
+    radial-gradient(1px 1px at 40% 85%,rgba(255,255,255,.15) 0%,transparent 100%);
+}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:300;
+  display:flex;align-items:center;gap:14px;
+  padding:10px 24px;
+  background:rgba(6,8,14,.95);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(24px);
+}
+.logo{
+  text-decoration:none;color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  font-size:18px;font-weight:600;letter-spacing:-.3px;
+  display:flex;align-items:center;gap:7px;
+}
+.logo-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber);animation:pd 2s ease-in-out infinite;}
+@keyframes pd{0%,100%{opacity:1}50%{opacity:.4}}
+.logo em{color:var(--amber);font-style:normal;}
+.nav-crumb{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.nav-crumb span{color:var(--text2);}
+.nav-mid{flex:1;display:flex;justify-content:center;}
+.hero-search-wrap{position:relative;width:420px;}
+.hero-search-wrap input{
+  width:100%;padding:9px 14px 9px 38px;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);border-radius:10px;
+  color:var(--text);font-family:'DM Sans',sans-serif;
+  font-size:13px;outline:none;transition:border-color .18s;
+}
+.hero-search-wrap input:focus{border-color:var(--amber);}
+.hero-search-wrap input::placeholder{color:var(--muted);}
+.hs-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;opacity:.5;}
+.nav-r{display:flex;gap:8px;align-items:center;}
+.btn{padding:7px 16px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2);}
+.btn-ghost:hover{border-color:var(--amber);color:var(--amber);}
+.btn-prime{background:var(--amber);color:#06080e;font-weight:700;}
+.btn-prime:hover{box-shadow:0 0 16px rgba(245,166,35,.4);transform:translateY(-1px);}
+.btn-sm{padding:6px 13px;font-size:11px;}
+.sep{width:1px;height:18px;background:var(--border);}
+
+/* ── HERO BANNER ── */
+.hero{
+  position:relative;z-index:1;
+  padding:44px 24px 32px;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg,rgba(245,166,35,.04) 0%,transparent 100%);
+}
+.hero-inner{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-end;justify-content:space-between;max-width:1200px;margin:auto;}
+.hero-text{}
+.hero-eyebrow{
+  font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:2px;
+  color:var(--amber);margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--amber);}
+.hero-h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,4vw,52px);font-weight:800;line-height:1.05;
+  letter-spacing:-1px;margin-bottom:12px;
+}
+.hero-h1 em{color:var(--amber);font-style:italic;}
+.hero-sub{font-size:13px;color:var(--text2);max-width:480px;line-height:1.7;}
+
+.hero-stats{display:flex;gap:0;border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.hs{padding:14px 22px;text-align:center;border-right:1px solid var(--border);}
+.hs:last-child{border-right:none;}
+.hs .hv{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;}
+.hs .hl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+
+/* ── NEIGHBOURHOOD STRIP ── */
+.hood-strip{
+  position:relative;z-index:1;
+  padding:14px 0;
+  border-bottom:1px solid var(--border);
+  background:var(--bg2);
+  overflow:hidden;
+}
+.hood-track{display:flex;gap:10px;padding:0 24px;overflow-x:auto;scrollbar-width:none;}
+.hood-track::-webkit-scrollbar{display:none;}
+.hood-pill{
+  flex-shrink:0;
+  padding:8px 16px;border-radius:10px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.03);
+  cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;gap:8px;
+}
+.hood-pill:hover,.hood-pill.on{border-color:var(--amber);background:rgba(245,166,35,.07);}
+.hood-pill .hp-name{font-size:12px;font-weight:600;color:var(--text);}
+.hood-pill .hp-from{font-size:10px;color:var(--muted);}
+.hood-pill .hp-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--green);flex-shrink:0;
+}
+.hood-pill .hp-count{
+  font-size:10px;font-weight:700;
+  font-family:'JetBrains Mono',monospace;
+  color:var(--amber);
+}
+
+/* ── PAGE LAYOUT ── */
+.page-wrap{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  min-height:calc(100vh - 180px);
+  position:relative;z-index:1;
+  max-width:1400px;margin:auto;
+}
+@media(max-width:900px){
+  .page-wrap{grid-template-columns:1fr;}
+  .filter-sidebar{display:none;}
+}
+
+/* ── FILTER SIDEBAR ── */
+.filter-sidebar{
+  border-right:1px solid var(--border);
+  padding:20px 16px;
+  position:sticky;top:53px;
+  height:calc(100vh - 53px);
+  overflow-y:auto;
+  background:rgba(6,8,14,.7);
+  backdrop-filter:blur(8px);
+}
+.filter-sidebar::-webkit-scrollbar{width:3px;}
+.filter-sidebar::-webkit-scrollbar-thumb{background:var(--border);}
+
+.fsec{margin-bottom:22px;}
+.fsec-title{
+  font-size:9px;font-weight:700;text-transform:uppercase;
+  letter-spacing:1.2px;color:var(--muted);margin-bottom:10px;
+}
+.fchips{display:flex;flex-wrap:wrap;gap:5px;}
+.fchip{
+  padding:5px 12px;border-radius:99px;
+  font-size:11px;font-weight:600;cursor:pointer;
+  border:1px solid var(--border);background:transparent;
+  color:var(--text2);transition:all .13s;
+}
+.fchip:hover{color:var(--text);}
+.fchip.on{background:var(--amber);color:#06080e;border-color:transparent;}
+
+.price-slider{width:100%;margin-top:6px;}
+.price-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:5px;}
+.price-labels b{color:var(--amber);font-family:'JetBrains Mono',monospace;}
+input[type=range]{
+  width:100%;height:3px;-webkit-appearance:none;appearance:none;
+  background:var(--border);border-radius:2px;outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:14px;height:14px;
+  border-radius:50%;background:var(--amber);cursor:pointer;
+  box-shadow:0 0 6px rgba(245,166,35,.5);
+}
+
+.ftoggle{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;
+}
+.ftoggle:last-child{border-bottom:none;}
+.ftoggle span{font-size:12px;color:var(--text2);}
+.toggle-sw{
+  width:32px;height:17px;border-radius:99px;
+  background:var(--border);position:relative;transition:background .15s;
+}
+.toggle-sw.on{background:var(--amber);}
+.toggle-sw::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:11px;height:11px;border-radius:50%;background:#fff;
+  transition:left .15s;
+}
+.toggle-sw.on::after{left:18px;}
+
+.reset-btn{
+  width:100%;padding:8px;border-radius:8px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;
+  font-size:11px;cursor:pointer;margin-top:12px;transition:all .13s;
+}
+.reset-btn:hover{color:var(--text);border-color:var(--border2);}
+
+/* ── LISTING AREA ── */
+.listing-area{padding:20px 24px 60px;}
+
+.listing-toolbar{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:18px;flex-wrap:wrap;
+}
+.lt-count{font-size:13px;color:var(--text2);}
+.lt-count b{color:var(--text);font-weight:600;}
+.lt-sort{
+  margin-left:auto;display:flex;gap:6px;
+}
+.sort-pill{
+  padding:6px 13px;border-radius:8px;font-size:11px;font-weight:600;
+  cursor:pointer;border:1px solid var(--border);background:transparent;
+  color:var(--muted);transition:all .13s;
+}
+.sort-pill:hover{color:var(--text);}
+.sort-pill.on{background:rgba(255,255,255,.07);color:var(--text);border-color:var(--border2);}
+.view-btns{display:flex;gap:3px;}
+.vb{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);transition:all .13s;}
+.vb.on{background:rgba(255,255,255,.07);color:var(--text);}
+
+/* ── LISTING GRID ── */
+.listing-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px;
+}
+.listing-grid.list-mode{grid-template-columns:1fr;gap:10px;}
+
+/* ── LISTING CARD ── */
+.lcard{
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;
+  cursor:pointer;transition:all .22s;
+  position:relative;
+  animation:fadeUp .35s ease both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.lcard:hover{
+  border-color:rgba(245,166,35,.35);
+  transform:translateY(-4px);
+  box-shadow:0 20px 48px rgba(0,0,0,.6),0 0 0 1px rgba(245,166,35,.1);
+}
+
+/* card visual */
+.lcard-visual{
+  height:170px;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.lcard-bg{
+  position:absolute;inset:0;
+  transition:transform .4s ease;
+}
+.lcard:hover .lcard-bg{transform:scale(1.06);}
+.lcard-emoji{
+  font-size:54px;position:relative;z-index:1;
+  filter:drop-shadow(0 4px 16px rgba(0,0,0,.5));
+  transition:transform .3s ease;
+}
+.lcard:hover .lcard-emoji{transform:scale(1.08) translateY(-3px);}
+
+/* badges on visual */
+.lcard-badges{position:absolute;top:10px;left:10px;display:flex;gap:5px;flex-wrap:wrap;z-index:2;}
+.badge{
+  padding:3px 9px;border-radius:99px;
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+  backdrop-filter:blur(8px);border:1px solid;
+}
+.badge-new{background:rgba(0,200,150,.12);color:var(--green);border-color:rgba(0,200,150,.25);}
+.badge-hot{background:rgba(255,74,90,.12);color:var(--red);border-color:rgba(255,74,90,.25);}
+.badge-avail{background:rgba(0,200,150,.15);color:#00e8a8;border-color:rgba(0,200,150,.3);}
+.badge-soon{background:rgba(245,166,35,.12);color:var(--amber);border-color:rgba(245,166,35,.25);}
+.badge-furnished{background:rgba(61,159,255,.12);color:var(--blue);border-color:rgba(61,159,255,.25);}
+.badge-shortterm{background:rgba(201,77,255,.12);color:#d966ff;border-color:rgba(201,77,255,.25);}
+
+.lcard-price-badge{
+  position:absolute;bottom:10px;right:10px;z-index:2;
+  background:rgba(6,8,14,.88);backdrop-filter:blur(10px);
+  border:1px solid rgba(245,166,35,.3);border-radius:8px;
+  padding:5px 10px;text-align:right;
+}
+.lpb-price{
+  font-family:'JetBrains Mono',monospace;
+  font-size:14px;font-weight:600;color:var(--amber);
+}
+.lpb-per{font-size:9px;color:var(--muted);margin-top:1px;}
+
+/* card body */
+.lcard-body{padding:14px 16px 16px;}
+.lcard-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
+.lcard-av{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;color:#06080e;
+  border:2px solid rgba(255,255,255,.08);
+}
+.lcard-info{flex:1;min-width:0;}
+.lcard-title{font-size:14px;font-weight:700;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lcard-type{font-size:11px;color:var(--amber);font-weight:600;}
+.lcard-loc{font-size:11px;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:4px;}
+
+.amenity-chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;}
+.ac{
+  padding:3px 8px;border-radius:6px;font-size:10px;font-weight:500;
+  background:rgba(255,255,255,.05);border:1px solid var(--border);
+  color:var(--text2);
+}
+.ac.good{background:rgba(0,200,150,.06);border-color:rgba(0,200,150,.15);color:#00c896;}
+
+.lcard-meta{
+  display:flex;gap:10px;font-size:11px;color:var(--muted);
+  margin-bottom:12px;flex-wrap:wrap;
+}
+.lcard-actions{display:flex;gap:7px;}
+.la-btn{
+  flex:1;padding:9px;border-radius:9px;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
+  cursor:pointer;border:none;transition:all .15s;
+}
+.la-enquire{background:var(--amber);color:#06080e;}
+.la-enquire:hover{box-shadow:0 0 14px rgba(245,166,35,.35);}
+.la-view{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);}
+.la-view:hover{border-color:var(--border2);}
+
+/* list mode */
+.lcard.list{
+  display:flex;align-items:stretch;
+  border-radius:12px;
+}
+.lcard.list .lcard-visual{
+  width:160px;flex-shrink:0;height:auto;min-height:120px;
+  border-radius:0;
+}
+.lcard.list .lcard-emoji{font-size:36px;}
+.lcard.list .lcard-body{padding:12px 14px;flex:1;display:flex;flex-direction:column;justify-content:space-between;}
+
+/* ── FEATURED STRIP ── */
+.featured-strip{
+  padding:16px 24px;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(90deg,rgba(245,166,35,.04),transparent);
+  position:relative;z-index:1;
+  max-width:1400px;margin:auto;
+}
+.fs-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--amber);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.fs-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(245,166,35,.3),transparent);}
+.fs-scroll{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
+.fs-scroll::-webkit-scrollbar{display:none;}
+.fs-card{
+  flex-shrink:0;width:200px;
+  background:var(--bg3);border:1px solid rgba(245,166,35,.15);
+  border-radius:12px;padding:12px;cursor:pointer;
+  transition:all .15s;
+}
+.fs-card:hover{border-color:rgba(245,166,35,.4);transform:translateY(-2px);}
+.fs-card-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.fs-emoji{font-size:22px;}
+.fs-title{font-size:12px;font-weight:700;line-height:1.3;}
+.fs-price{
+  font-family:'JetBrains Mono',monospace;
+  font-size:15px;font-weight:600;color:var(--amber);
+}
+.fs-loc{font-size:10px;color:var(--muted);}
+
+/* ── LISTING MODAL ── */
+.lmodal-bg{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.88);backdrop-filter:blur(16px);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:16px;overflow-y:auto;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.lmodal-bg.open{opacity:1;pointer-events:all;}
+.lmodal{
+  background:var(--bg2);
+  border:1px solid rgba(245,166,35,.15);
+  border-radius:22px;
+  width:min(780px,100%);
+  transform:translateY(18px);transition:transform .2s;
+  overflow:hidden;margin:auto;
+}
+.lmodal-bg.open .lmodal{transform:translateY(0);}
+
+/* modal gallery top */
+.lm-gallery{
+  display:grid;grid-template-columns:2fr 1fr 1fr;
+  grid-template-rows:1fr 1fr;
+  height:280px;gap:3px;
+  position:relative;
+}
+.lg-cell{
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;cursor:pointer;transition:filter .2s;
+  position:relative;overflow:hidden;
+}
+.lg-cell:hover{filter:brightness(1.2);}
+.lg-cell:first-child{grid-row:span 2;font-size:60px;}
+.lg-count{
+  position:absolute;bottom:10px;right:10px;
+  background:rgba(6,8,14,.8);border:1px solid rgba(255,255,255,.15);
+  border-radius:7px;padding:4px 10px;
+  font-size:11px;font-weight:600;color:var(--text);
+  backdrop-filter:blur(8px);
+}
+.lm-close{
+  position:absolute;top:12px;right:12px;z-index:10;
+  background:rgba(6,8,14,.75);border:1px solid rgba(255,255,255,.15);
+  color:var(--text2);width:32px;height:32px;border-radius:50%;
+  cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);transition:color .13s;
+}
+.lm-close:hover{color:var(--text);}
+
+/* modal body */
+.lm-body{
+  display:grid;grid-template-columns:1fr 280px;
+  gap:0;
+}
+@media(max-width:620px){.lm-body{grid-template-columns:1fr;}.lm-aside{border-top:1px solid var(--border)!important;border-left:none!important;}}
+
+.lm-main{padding:24px;}
+.lm-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:4px;}
+.lm-title{
+  font-family:'Playfair Display',serif;
+  font-size:22px;font-weight:800;line-height:1.2;
+}
+.lm-price-big{
+  font-family:'JetBrains Mono',monospace;
+  font-size:22px;font-weight:600;color:var(--amber);
+  text-align:right;flex-shrink:0;
+}
+.lm-price-big .per{font-size:11px;color:var(--muted);display:block;font-family:'DM Sans',sans-serif;}
+.lm-type-loc{font-size:12px;color:var(--text2);margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;}
+.lm-type-loc b{color:var(--amber);}
+
+.lm-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+
+/* description */
+.lm-desc{font-size:13px;color:var(--text2);line-height:1.75;margin-bottom:18px;}
+
+/* details grid */
+.lm-details{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  margin-bottom:18px;
+}
+.lm-det{
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:10px;padding:10px 12px;
+}
+.lm-det .dv{font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text);}
+.lm-det .dl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+
+/* amenities */
+.lm-section-title{
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted);margin-bottom:10px;
+}
+.amenity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:18px;}
+.am-item{
+  display:flex;align-items:center;gap:7px;
+  padding:7px 10px;border-radius:8px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.02);font-size:11px;
+}
+.am-item.yes{border-color:rgba(0,200,150,.18);background:rgba(0,200,150,.05);color:var(--green);}
+.am-item.no{opacity:.4;}
+.am-icon{font-size:13px;flex-shrink:0;}
+
+/* rules */
+.rules-list{display:flex;flex-direction:column;gap:5px;margin-bottom:18px;}
+.rule{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:8px;}
+.rule-dot{width:5px;height:5px;border-radius:50%;background:var(--amber);flex-shrink:0;}
+
+/* landlord */
+.landlord-card{
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:12px;padding:14px;margin-bottom:18px;
+  display:flex;align-items:center;gap:12px;
+}
+.ll-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#06080e;flex-shrink:0;}
+.ll-info{flex:1;}
+.ll-name{font-size:14px;font-weight:700;margin-bottom:2px;}
+.ll-meta{font-size:11px;color:var(--muted);}
+.ll-badge{font-size:10px;color:var(--green);display:flex;align-items:center;gap:4px;margin-top:3px;}
+
+/* modal aside */
+.lm-aside{
+  border-left:1px solid var(--border);
+  padding:20px 18px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.lm-aside-price{
+  background:linear-gradient(135deg,rgba(245,166,35,.1),rgba(245,166,35,.04));
+  border:1px solid rgba(245,166,35,.2);
+  border-radius:14px;padding:16px;text-align:center;
+}
+.lap-main{
+  font-family:'JetBrains Mono',monospace;
+  font-size:28px;font-weight:700;color:var(--amber);
+}
+.lap-per{font-size:11px;color:var(--muted);margin-bottom:10px;}
+.lap-deps{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px;}
+.lap-deps span:last-child{font-weight:600;font-family:'JetBrains Mono',monospace;color:var(--text);}
+
+.avail-tag{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 12px;border-radius:10px;
+  border:1px solid var(--border);
+}
+.avail-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+.wa-big{
+  width:100%;padding:13px;border-radius:10px;border:none;
+  background:#25d366;color:#fff;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .15s;
+}
+.wa-big:hover{background:#1ebe5b;box-shadow:0 4px 16px rgba(37,211,102,.35);}
+.wa-big-alt{
+  width:100%;padding:11px;border-radius:10px;
+  border:1px solid var(--border);
+  background:transparent;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:all .15s;
+}
+.wa-big-alt:hover{border-color:var(--amber);color:var(--amber);}
+.tour-input{
+  width:100%;padding:10px 12px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:9px;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:12px;outline:none;
+  transition:border-color .15s;
+}
+.tour-input:focus{border-color:var(--amber);}
+.lm-trust{display:flex;gap:8px;flex-wrap:wrap;}
+.trust-it{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:4px;}
+
+.similar-section{padding:20px 24px 32px;border-top:1px solid var(--border);}
+.similar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;}
+@media(max-width:520px){.similar-grid{grid-template-columns:1fr 1fr;}}
+
+/* ── EMPTY STATE ── */
+.empty-state{
+  grid-column:1/-1;text-align:center;padding:60px 20px;
+}
+.empty-state .es-icon{font-size:48px;margin-bottom:16px;}
+.empty-state h3{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:8px;}
+.empty-state p{font-size:13px;color:var(--muted);}
+
+/* ── LIST YOUR SPACE CTA ── */
+.list-space-cta{
+  position:relative;z-index:1;
+  padding:40px 24px;
+  border-top:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(245,166,35,.06),transparent);
+  text-align:center;
+  max-width:1400px;margin:auto;
+}
+.lsc-h{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(22px,3vw,38px);font-weight:800;margin-bottom:12px;
+}
+.lsc-h em{color:var(--amber);font-style:italic;}
+.lsc-p{font-size:13px;color:var(--text2);max-width:480px;margin:0 auto 24px;line-height:1.7;}
+.lsc-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+/* list modal */
+.list-modal-bg{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(0,0,0,.9);backdrop-filter:blur(16px);
+  display:flex;align-items:center;justify-content:center;
+  padding:16px;overflow-y:auto;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.list-modal-bg.open{opacity:1;pointer-events:all;}
+.list-modal{
+  background:var(--bg2);border:1px solid rgba(245,166,35,.15);
+  border-radius:20px;padding:28px;width:min(520px,100%);
+  transform:translateY(16px);transition:transform .2s;
+  margin:auto;
+}
+.list-modal-bg.open .list-modal{transform:translateY(0);}
+.lm-form-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.lm-form-head h2{font-family:'Playfair Display',serif;font-size:20px;}
+.ff{margin-bottom:14px;}
+.ff label{display:block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:5px;}
+.ff input,.ff select,.ff textarea{
+  width:100%;padding:10px 12px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:9px;color:var(--text);font-family:'DM Sans',sans-serif;
+  font-size:13px;outline:none;transition:border-color .15s;
+}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--amber);}
+.ff select option{background:var(--bg2);}
+.ff textarea{resize:none;min-height:80px;}
+.ff-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.udrop{border:2px dashed var(--border);border-radius:12px;padding:22px;text-align:center;cursor:pointer;transition:all .18s;}
+.udrop:hover{border-color:var(--amber);background:rgba(245,166,35,.04);}
+.udrop .ui{font-size:26px;margin-bottom:8px;}
+.udrop p{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* success */
+.success-overlay{
+  position:fixed;inset:0;z-index:700;
+  background:rgba(0,0,0,.9);backdrop-filter:blur(16px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.success-overlay.open{opacity:1;pointer-events:all;}
+.success-box{
+  background:var(--bg2);border:1px solid rgba(245,166,35,.25);
+  border-radius:20px;padding:40px 32px;text-align:center;max-width:360px;width:90%;
+}
+.sb-emoji{font-size:52px;margin-bottom:16px;}
+.sb-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;margin-bottom:8px;}
+.sb-sub{font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.6;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ── KAZIHUB CHATBOT ──────────────────────────────────────── */
+#kh-chat-btn{
+  position:fixed;bottom:22px;right:22px;z-index:200;
+  width:52px;height:52px;border-radius:50%;
+  background:var(--accent,#00ffb3);
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 24px rgba(0,255,179,.35);
+  transition:transform .2s, box-shadow .2s;
+  font-size:22px;
+}
+#kh-chat-btn:hover{transform:scale(1.08);box-shadow:0 6px 32px rgba(0,255,179,.5);}
+#kh-chat-btn .kh-chat-unread{
+  position:absolute;top:-2px;right:-2px;
+  width:16px;height:16px;border-radius:50%;
+  background:#ff3d5a;color:#fff;
+  font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;
+}
+#kh-chat-btn .kh-chat-unread.show{opacity:1;}
+#kh-chat-panel{
+  position:fixed;bottom:86px;right:22px;z-index:200;
+  width:340px;max-height:520px;
+  background:rgba(6,10,22,.97);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  display:flex;flex-direction:column;
+  box-shadow:0 16px 60px rgba(0,0,0,.7);
+  backdrop-filter:blur(24px);
+  transform:scale(.9) translateY(12px);
+  opacity:0;pointer-events:none;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), opacity .18s;
+  overflow:hidden;
+}
+#kh-chat-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
+.kh-chat-head{
+  padding:14px 16px 12px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.kh-chat-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#00ffb3,#00d4ff);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+}
+.kh-chat-title{font-size:13px;font-weight:700;color:#f0eee8;}
+.kh-chat-sub{font-size:10px;color:rgba(0,255,179,.8);margin-top:1px;}
+.kh-chat-close{
+  margin-left:auto;background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.35);font-size:16px;padding:2px 4px;transition:color .15s;
+}
+.kh-chat-close:hover{color:rgba(255,255,255,.7);}
+.kh-chat-msgs{
+  flex:1;overflow-y:auto;padding:12px;
+  display:flex;flex-direction:column;gap:8px;min-height:0;
+}
+.kh-chat-msgs::-webkit-scrollbar{width:3px;}
+.kh-chat-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+.kh-msg{max-width:86%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.55;}
+.kh-msg.bot{background:rgba(255,255,255,.06);color:#dde3f0;border-bottom-left-radius:4px;align-self:flex-start;}
+.kh-msg.user{background:#00ffb3;color:#04070f;font-weight:600;border-bottom-right-radius:4px;align-self:flex-end;}
+.kh-msg.thinking{background:rgba(255,255,255,.04);color:rgba(221,227,240,.45);font-style:italic;align-self:flex-start;}
+.kh-chips{display:flex;flex-wrap:wrap;gap:5px;padding:0 12px 10px;flex-shrink:0;}
+.kh-chip{
+  padding:4px 11px;border-radius:99px;font-size:10px;font-weight:700;cursor:pointer;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:rgba(221,227,240,.8);transition:all .15s;white-space:nowrap;
+}
+.kh-chip:hover{background:rgba(0,255,179,.12);border-color:rgba(0,255,179,.4);color:#00ffb3;}
+.kh-chat-foot{
+  padding:10px 12px;border-top:1px solid rgba(255,255,255,.06);
+  display:flex;gap:8px;align-items:center;flex-shrink:0;
+}
+.kh-chat-input{
+  flex:1;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);border-radius:10px;
+  padding:8px 12px;color:#dde3f0;font-size:12px;
+  font-family:inherit;outline:none;transition:border-color .15s;
+  resize:none;max-height:80px;
+}
+.kh-chat-input:focus{border-color:rgba(0,255,179,.5);}
+.kh-chat-input::placeholder{color:rgba(255,255,255,.25);}
+.kh-chat-send{
+  width:34px;height:34px;border-radius:10px;
+  background:#00ffb3;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .15s;color:#04070f;font-size:14px;
+}
+.kh-chat-send:hover{box-shadow:0 0 14px rgba(0,255,179,.4);}
+.kh-chat-send:disabled{opacity:.35;cursor:not-allowed;}
+.kh-wa-cta{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:8px;padding:7px 13px;border-radius:9px;
+  background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.35);
+  color:#25d366;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;
+  transition:all .15s;
+}
+.kh-wa-cta:hover{background:rgba(37,211,102,.25);}
+@media(max-width:400px){#kh-chat-panel{width:calc(100vw - 20px);right:10px;}}
+</style>
+
+<style id="kh-topbar-css">
+#kh-topbar{
+  position:fixed;top:0;left:0;right:0;z-index:9999;
+  background:rgba(4,6,14,.97);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(20px);
+  display:flex;align-items:center;height:40px;padding:0 20px;gap:0;
+  font-family:'Outfit','DM Sans',sans-serif;
+}
+#kh-topbar a.kh-logo{
+  font-size:16px;font-weight:800;
+  color:#f0eee8;text-decoration:none;
+  display:flex;align-items:center;gap:6px;margin-right:14px;
+  font-family:'Bebas Neue','Outfit',sans-serif;font-size:20px;
+}
+#kh-topbar a.kh-logo em{color:#00e5ff;font-style:normal;}
+.kh-tb-dot{width:6px;height:6px;border-radius:50%;background:#00e5ff;box-shadow:0 0 6px #00e5ff;animation:kh_pulse 2s ease-in-out infinite;}
+@keyframes kh_pulse{0%,100%{opacity:1}50%{opacity:.3}}
+#kh-topbar .kh-sep{width:1px;height:16px;background:rgba(255,255,255,.08);margin:0 12px;}
+#kh-topbar .kh-nav{display:flex;align-items:center;gap:2px;flex:1;}
+#kh-topbar .kh-link{
+  padding:4px 11px;border-radius:7px;font-size:11px;font-weight:600;
+  text-decoration:none;color:rgba(154,152,181,.85);
+  transition:all .13s;border:1px solid transparent;
+}
+#kh-topbar .kh-link:hover{color:#f0eee8;background:rgba(255,255,255,.05);}
+#kh-topbar .kh-link.kh-active{color:#f0eee8;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.1);}
+#kh-topbar .kh-link.kh-docs{color:#f5a623 !important;}
+#kh-topbar .kh-link.kh-docs:hover{background:rgba(245,166,35,.06);}
+#kh-topbar .kh-link.kh-docs.kh-active{border-color:rgba(245,166,35,.2);background:rgba(245,166,35,.07);}
+#kh-topbar .kh-link.kh-merch{color:#c8ff00 !important;}
+#kh-topbar .kh-link.kh-merch:hover{background:rgba(200,255,0,.06);}
+#kh-topbar .kh-link.kh-merch.kh-active{border-color:rgba(200,255,0,.2);background:rgba(200,255,0,.07);}
+body{padding-top:40px;}
+</style>
+
+</head>
+<body>
+<div id="kh-topbar">
+  <a class="kh-logo" href="kazihub-home.html"><div class="kh-tb-dot"></div>Kazi<em>Hub</em></a>
+  <div class="kh-sep"></div>
+  <div class="kh-nav">
+    <a class="kh-link" href="kazihub-home.html">Home</a>
+    <a class="kh-link" href="kazihub.html">🗺 Market</a>
+    <a class="kh-link" href="kazihub-store.html">👔 Hire a Pro</a>
+    <a class="kh-link kh-active" href="kazihub-rentals.html">🏠 Rentals</a>
+    <a class="kh-link" href="kazihub-footwear.html">👟 Footwear</a>
+    <a class="kh-link kh-merch" href="kazihub-tshirt.html">👕 Merch</a>
+  </div>
+</div>
+<!-- NAV -->
+<nav>
+  <a class="logo" href="kazihub.html">
+    <div class="logo-dot"></div>
+    Kazi<em>Hub</em>
+  </a>
+  <div class="sep"></div>
+  <div class="nav-crumb">
+    <span>🏠 Rentals</span>
+  </div>
+  <div class="nav-mid">
+    <div class="hero-search-wrap">
+      <span class="hs-icon">🔍</span>
+      <input type="text" id="gsearch" placeholder="Search by area, type, price range…" oninput="handleSearch(this.value)">
+    </div>
+  </div>
+  <div class="nav-r">
+    <a href="kazihub-store.html" style="text-decoration:none"><button class="btn btn-ghost btn-sm">👔 Hire a Pro</button></a>
+    <button class="btn btn-prime btn-sm" onclick="openListModal()">+ List Your Space</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-eyebrow">Nairobi Rentals & Vacancies</div>
+      <h1 class="hero-h1">Find Your <em>Next Space</em><br>No Agent Fees</h1>
+      <p class="hero-sub">Bedsitters, SQs, studios, 1–3 bedrooms, office space, short-stay rooms — all verified, all WhatsApp-direct. No middleman, no agent cut.</p>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><div class="hv" style="color:var(--amber)" id="h-total">847</div><div class="hl">Listings</div></div>
+      <div class="hs"><div class="hv" style="color:var(--green)" id="h-avail">312</div><div class="hl">Available Now</div></div>
+      <div class="hs"><div class="hv" style="color:var(--blue)">38</div><div class="hl">Neighbourhoods</div></div>
+      <div class="hs"><div class="hv" style="color:#d966ff">0</div><div class="hl">Agent Fees</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- NEIGHBOURHOOD STRIP -->
+<div class="hood-strip">
+  <div class="hood-track" id="hood-track"></div>
+</div>
+
+<!-- FEATURED STRIP -->
+<div class="featured-strip">
+  <div class="fs-label">⭐ Featured & Premium Listings</div>
+  <div class="fs-scroll" id="feat-scroll"></div>
+</div>
+
+<!-- MAIN PAGE -->
+<div class="page-wrap">
+  <!-- SIDEBAR -->
+  <aside class="filter-sidebar">
+    <div class="fsec">
+      <div class="fsec-title">Type of Space</div>
+      <div class="fchips" id="type-chips"></div>
+    </div>
+    <div class="fsec">
+      <div class="fsec-title">Monthly Rent</div>
+      <input type="range" min="1000" max="150000" step="500" value="150000" id="price-range" oninput="onPriceSlider(this.value)">
+      <div class="price-labels"><span>KES 1,000</span><span>Up to <b id="price-val">150,000</b></span></div>
+    </div>
+    <div class="fsec">
+      <div class="fsec-title">Neighbourhood</div>
+      <div class="fchips" id="area-chips"></div>
+    </div>
+    <div class="fsec">
+      <div class="fsec-title">Amenities</div>
+      <div class="ftoggle" onclick="toggleFilter('wifi',this)"><span>📶 WiFi Included</span><div class="toggle-sw" id="tog-wifi"></div></div>
+      <div class="ftoggle" onclick="toggleFilter('furnished',this)"><span>🛋️ Furnished</span><div class="toggle-sw" id="tog-furnished"></div></div>
+      <div class="ftoggle" onclick="toggleFilter('parking',this)"><span>🚗 Parking</span><div class="toggle-sw" id="tog-parking"></div></div>
+      <div class="ftoggle" onclick="toggleFilter('security',this)"><span>💂 24h Security</span><div class="toggle-sw" id="tog-security"></div></div>
+      <div class="ftoggle" onclick="toggleFilter('borehole',this)"><span>💧 Borehole Water</span><div class="toggle-sw" id="tog-borehole"></div></div>
+      <div class="ftoggle" onclick="toggleFilter('pets',this)"><span>🐾 Pets Allowed</span><div class="toggle-sw" id="tog-pets"></div></div>
+    </div>
+    <div class="fsec">
+      <div class="fsec-title">Availability</div>
+      <div class="fchips" id="avail-chips"></div>
+    </div>
+    <button class="reset-btn" onclick="resetFilters()">↺ Reset All Filters</button>
+  </aside>
+
+  <!-- LISTING AREA -->
+  <div class="listing-area">
+    <div class="listing-toolbar">
+      <span class="lt-count" id="lt-count"></span>
+      <div class="lt-sort">
+        <button class="sort-pill on" onclick="setSort('newest',this)">Newest</button>
+        <button class="sort-pill" onclick="setSort('price-asc',this)">Price ↑</button>
+        <button class="sort-pill" onclick="setSort('price-desc',this)">Price ↓</button>
+        <button class="sort-pill" onclick="setSort('size',this)">Biggest</button>
+      </div>
+      <div class="view-btns">
+        <button class="vb on" id="vb-grid" onclick="setViewMode('grid',this)" title="Grid">⊞</button>
+        <button class="vb" id="vb-list" onclick="setViewMode('list',this)" title="List">≡</button>
+      </div>
+    </div>
+    <div class="listing-grid" id="listing-grid"></div>
+    <div id="load-more-wrap" style="text-align:center;margin-top:28px;"></div>
+  </div>
+</div>
+
+<!-- LIST YOUR SPACE CTA -->
+<div class="list-space-cta">
+  <div class="lsc-h">Have a Space to <em>Rent Out?</em></div>
+  <p class="lsc-p">List your bedsitter, SQ, apartment or office space free of charge. Reach thousands of genuine tenants every day — no agent, no commission.</p>
+  <div class="lsc-btns">
+    <button class="btn btn-prime" style="padding:12px 28px;font-size:14px;border-radius:10px;" onclick="openListModal()">📋 List Your Space Free</button>
+    <button class="btn btn-ghost" style="padding:12px 28px;font-size:14px;border-radius:10px;" onclick="alert('Caretaker and agency accounts coming soon!')">🤝 I\'m a Caretaker / Agent</button>
+  </div>
+</div>
+
+<!-- LISTING MODAL -->
+<div class="lmodal-bg" id="lmodal-bg" onclick="maybeCloseLM(event)">
+  <div class="lmodal">
+    <div class="lm-gallery" id="lm-gallery">
+      <button class="lm-close" onclick="closeLModal()">✕</button>
+    </div>
+    <div class="lm-body">
+      <div class="lm-main" id="lm-main"></div>
+      <div class="lm-aside" id="lm-aside"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LIST YOUR SPACE MODAL -->
+<div class="list-modal-bg" id="list-modal-bg" onclick="maybeCloseListM(event)">
+  <div class="list-modal">
+    <div class="lm-form-head">
+      <h2>List Your Space</h2>
+      <button class="lm-close" style="position:static;" onclick="closeListModal()">✕</button>
+    </div>
+    <div class="ff-row">
+      <div class="ff"><label>Your Name</label><input type="text" placeholder="e.g. James Kamau"/></div>
+      <div class="ff"><label>WhatsApp Number</label><input type="text" placeholder="+254 7XX XXX XXX"/></div>
+    </div>
+    <div class="ff-row">
+      <div class="ff"><label>Type of Space</label><select id="lm-type-sel">
+        <option>Select type…</option>
+        <option>Bedsitter</option><option>Single Room (SQ)</option><option>Studio</option>
+        <option>1 Bedroom</option><option>2 Bedroom</option><option>3 Bedroom</option>
+        <option>Shared Room</option><option>Hostel Bed</option><option>Short-Stay Room</option>
+        <option>Office Space</option><option>Shop Space</option><option>Event Space</option>
+        <option>Vacant Land</option><option>Furnished Apartment</option>
+      </select></div>
+      <div class="ff"><label>Monthly Rent (KES)</label><input type="number" placeholder="e.g. 8000"/></div>
+    </div>
+    <div class="ff-row">
+      <div class="ff"><label>Area / Neighbourhood</label><input type="text" placeholder="e.g. Kasarani, Embakasi…"/></div>
+      <div class="ff"><label>Deposit Required</label><input type="text" placeholder="e.g. 2 months rent"/></div>
+    </div>
+    <div class="ff"><label>Key Features (separate with commas)</label><input type="text" placeholder="Borehole water, WiFi, Parking, Security, Furnished…"/></div>
+    <div class="ff"><label>Description</label><textarea placeholder="Describe the space — size, floor, compound, nearby matatu routes, who it suits…"></textarea></div>
+    <div class="ff"><label>Photos of the Space</label>
+      <div class="udrop"><div class="ui">📸</div><p>Drop clear photos of interior, exterior & bathroom.<br><b style="color:var(--text)">Good photos = faster bookings.</b></p></div>
+    </div>
+    <button class="btn btn-prime" style="width:100%;padding:13px;font-size:14px;border-radius:10px;" onclick="submitListing()">🚀 Publish Listing Free</button>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="success-overlay" onclick="closeSuccess()">
+  <div class="success-box" onclick="event.stopPropagation()">
+    <div class="sb-emoji" id="sb-emoji">🎉</div>
+    <div class="sb-title" id="sb-title">Listing Submitted!</div>
+    <div class="sb-sub" id="sb-sub">Your space will go live after a quick review. Tenants will reach you on WhatsApp.</div>
+    <button class="btn btn-prime" style="width:100%;padding:12px;font-size:14px;border-radius:10px;margin-top:4px;" onclick="closeSuccess()">Done</button>
+  </div>
+</div>
+
+<script>
+// ================================================================
+// DATA
+// ================================================================
+var TYPES=[
+  {id:'bedsitter',     label:'Bedsitter',          emoji:'🛏️', basePrice:[5000,12000]},
+  {id:'sq',            label:'Single Room / SQ',    emoji:'🚪', basePrice:[3000,7000]},
+  {id:'shared',        label:'Shared Room',         emoji:'🤝', basePrice:[2000,5000]},
+  {id:'hostel',        label:'Hostel Bed',          emoji:'🏨', basePrice:[1500,4000]},
+  {id:'studio',        label:'Studio',              emoji:'🏠', basePrice:[8000,20000]},
+  {id:'1br',           label:'1 Bedroom',           emoji:'🛋️', basePrice:[10000,28000]},
+  {id:'2br',           label:'2 Bedroom',           emoji:'🏡', basePrice:[18000,50000]},
+  {id:'3br',           label:'3 Bedroom',           emoji:'🏘️', basePrice:[30000,90000]},
+  {id:'short-stay',    label:'Short-Stay Room',     emoji:'🌙', basePrice:[1500,6000]},
+  {id:'furnished-apt', label:'Furnished Apartment', emoji:'✨', basePrice:[20000,80000]},
+  {id:'office',        label:'Office Space',        emoji:'💼', basePrice:[15000,80000]},
+  {id:'shop',          label:'Shop / Kiosk Space',  emoji:'🏪', basePrice:[8000,35000]},
+  {id:'event-space',   label:'Event Space',         emoji:'🎉', basePrice:[15000,120000]},
+  {id:'land',          label:'Vacant Land / Plot',  emoji:'🌍', basePrice:[5000,50000]},
+];
+
+var AREAS=[
+  {name:'Westlands',     from:'5k'},
+  {name:'Kilimani',      from:'12k'},
+  {name:'Kasarani',      from:'4k'},
+  {name:'Embakasi',      from:'5k'},
+  {name:'Mathare',       from:'2.5k'},
+  {name:'Langata',       from:'7k'},
+  {name:'Karen',         from:'25k'},
+  {name:'CBD',           from:'8k'},
+  {name:'Parklands',     from:'10k'},
+  {name:'Rongai',        from:'4.5k'},
+  {name:'Ngong Rd',      from:'6k'},
+  {name:'Thika Rd',      from:'4k'},
+  {name:'Ruiru',         from:'3.5k'},
+  {name:'Kitengela',     from:'3k'},
+  {name:'South C',       from:'9k'},
+  {name:'Eastleigh',     from:'5k'},
+  {name:'Githurai',      from:'2.5k'},
+  {name:'Umoja',         from:'6k'},
+  {name:'Donholm',       from:'7k'},
+  {name:'Buru Buru',     from:'7k'},
+  {name:'Zimmerman',     from:'4k'},
+  {name:'Roysambu',      from:'5k'},
+  {name:'Kahawa West',   from:'4.5k'},
+  {name:'Dagoretti',     from:'5k'},
+  {name:'South B',       from:'8k'},
+  {name:'Kabete',        from:'5.5k'},
+  {name:'Juja',          from:'3k'},
+  {name:'Kikuyu',        from:'4k'},
+  {name:'Adams Arcade',  from:'9k'},
+  {name:'Athi River',    from:'3.5k'},
+];
+
+var OWNER_NAMES=['Kamau J.','Wanjiku M.','Otieno P.','Achieng S.','Muthoni R.','James K.','Grace N.','Peter O.','Mary W.','David M.','Faith A.','Kevin N.','Lucy K.','Brian O.','Rose M.'];
+var OWNER_COLORS=['#f5a623','#00c896','#3d9fff','#ff3d9a','#c94dff','#ff6b2b','#00d4ff','#ffd000','#ff4a5a','#00d26a'];
+var MATATU_ROUTES=['Afya Centre','GPO','CBD','Railways','Odeon','Archives','Nation Centre','Fire Station','Kencom'];
+var FEATURES_POOL=['WiFi','Borehole Water','KPLC Prepaid','Security Guard','Parking','Furnished','Balcony','DSTV Ready','Generator','Swimming Pool','Gym','Rooftop','DSQ','Caretaker On-Site','Perimeter Wall','CCTV','Water Storage','Intercom','Lift','Backup Water'];
+var RULES_POOL=['No parties after 10pm','Rent payable 1st of month','Deposit = 2 months rent','Water included in rent','Electricity prepaid (KPLC)','No subletting without consent','No pets allowed','Pets allowed on request','Short-notice vacating requires 1 month notice','Quiet compound — working families preferred','Students welcome','Single occupancy only','Couples welcome','Children welcome'];
+var DESCS=[
+  'Spacious, clean and well-maintained. Located in a secure gated compound with a reliable caretaker. Easy access to matatus and walking distance to shops and schools.',
+  'A cosy space perfect for working professionals or students. The compound is quiet, well-lit at night and has a borehole so water is never an issue.',
+  'Modern finish, good natural light and ventilation. Close to a major matatu terminus. Security guard on duty 24/7 and CCTV throughout the compound.',
+  'Just been freshly painted and renovated. Tiles throughout, ceiling board, fitted kitchen. Ideal for a couple or single professional.',
+  'Great location — 5 minutes walk from the main road. Landlord is respectful and responsive. Long-term tenants preferred. Very quiet neighbourhood.',
+  'Own entrance, own compound access. Shared borehole water. KPLC prepaid meter. Reliable caretaker handles minor repairs quickly.',
+  'Best value for the location. Compound has a small garden area, clothesline and sufficient parking. Night askari on duty.',
+  'Available immediately. Fully furnished option available. Clean shared bathrooms, strong WiFi signal. Great for short stays or relocation.',
+];
+
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function pick(arr){return arr[rnd(0,arr.length-1)];}
+function rndBool(p){return Math.random()<(p||0.5);}
+
+var LISTINGS=[];
+(function generate(){
+  var id=1;
+  // distribute ~12–18 listings per type
+  TYPES.forEach(function(t){
+    var count=rnd(8,18);
+    for(var i=0;i<count;i++){
+      var area=pick(AREAS);
+      var price=rnd(t.basePrice[0],t.basePrice[1]);
+      // round to nearest 500
+      price=Math.round(price/500)*500;
+      var features=[];
+      FEATURES_POOL.forEach(function(f){
+        var prob=f==='KPLC Prepaid'?.8:f==='Borehole Water'?.55:f==='Security Guard'?.6:f==='Caretaker On-Site'?.65:.25;
+        if(rndBool(prob)) features.push(f);
+      });
+      var rules=[];
+      for(var r=0;r<rnd(3,6);r++) rules.push(pick(RULES_POOL));
+      rules=[...new Set(rules)];
+      var isNew=rndBool(.15);
+      var isHot=rndBool(.12);
+      var isFurnished=features.includes('Furnished');
+      var isShortTerm=t.id==='short-stay'||t.id==='hostel'||rndBool(.1);
+      var avail=rndBool(.6)?'now':(rndBool(.5)?'30days':'60days');
+      var ownIdx=rnd(0,OWNER_NAMES.length-1);
+      var daysListed=rnd(0,90);
+      var views=rnd(12,480);
+      var floorNum=t.id==='land'?null:rnd(0,4);
+      var sqft=t.id==='sq'?rnd(100,180):t.id==='bedsitter'?rnd(150,280):t.id==='1br'?rnd(280,450):t.id==='2br'?rnd(450,700):t.id==='3br'?rnd(700,1100):t.id==='studio'?rnd(200,350):rnd(120,500);
+      var deposit=price*rnd(1,3);
+      var matatu=pick(MATATU_ROUTES);
+      var matDist=rnd(2,25);
+      LISTINGS.push({
+        id:id++,
+        type:t,
+        area:area,
+        price:price,
+        deposit:deposit,
+        title:t.label+' in '+area.name,
+        features:features,
+        rules:rules,
+        desc:pick(DESCS),
+        isNew:isNew,
+        isHot:isHot,
+        isFurnished:isFurnished,
+        isShortTerm:isShortTerm,
+        avail:avail,
+        owner:OWNER_NAMES[ownIdx],
+        ownerColor:OWNER_COLORS[ownIdx%OWNER_COLORS.length],
+        ownerInit:OWNER_NAMES[ownIdx][0],
+        daysListed:daysListed,
+        views:views,
+        floorNum:floorNum,
+        sqft:sqft,
+        deposit:deposit,
+        matatu:matatu,
+        matDist:matDist,
+        beds:t.id==='3br'?3:t.id==='2br'?2:t.id==='1br'?1:t.id==='bedsitter'?1:0,
+        baths:t.id==='3br'?2:t.id==='2br'?rndBool(.5)?2:1:1,
+      });
+    }
+  });
+})();
+
+// ================================================================
+// STATE
+// ================================================================
+var state={
+  typeFilter:'all',
+  areaFilter:'all',
+  maxPrice:150000,
+  amenityFilters:{wifi:false,furnished:false,parking:false,security:false,borehole:false,pets:false},
+  availFilter:'all',
+  sort:'newest',
+  viewMode:'grid',
+  search:'',
+  page:1,
+  perPage:12,
+};
+
+// ================================================================
+// BUILD UI
+// ================================================================
+function buildHoodStrip(){
+  var el=document.getElementById('hood-track');
+  var counts={};
+  LISTINGS.forEach(function(l){
+    counts[l.area.name]=(counts[l.area.name]||0)+1;
+  });
+  var sorted=AREAS.slice().sort(function(a,b){return (counts[b.name]||0)-(counts[a.name]||0);});
+  el.innerHTML=sorted.map(function(a){
+    var c=counts[a.name]||0;
+    return '<div class="hood-pill" data-area="'+a.name+'" onclick="setArea(\''+a.name+'\',this)">'+
+      '<div class="hp-dot"></div>'+
+      '<div><div class="hp-name">'+a.name+'</div><div class="hp-from">From KES '+a.from+'/mo</div></div>'+
+      '<div class="hp-count">'+c+'</div>'+
+      '</div>';
+  }).join('');
+}
+
+function buildTypeChips(){
+  var el=document.getElementById('type-chips');
+  var allBtn='<button class="fchip on" data-t="all" onclick="setType(\'all\',this)">All</button>';
+  var chips=TYPES.map(function(t){
+    return '<button class="fchip" data-t="'+t.id+'" onclick="setType(\''+t.id+'\',this)">'+t.emoji+' '+t.label+'</button>';
+  }).join('');
+  el.innerHTML=allBtn+chips;
+}
+
+function buildAreaChips(){
+  var el=document.getElementById('area-chips');
+  var top=AREAS.slice(0,12);
+  el.innerHTML='<button class="fchip on" data-a="all" onclick="setArea(\'all\',this)">All</button>'+
+    top.map(function(a){return '<button class="fchip" data-a="'+a.name+'" onclick="setArea(\''+a.name+'\',this)">'+a.name+'</button>';}).join('');
+}
+
+function buildAvailChips(){
+  var el=document.getElementById('avail-chips');
+  el.innerHTML=[
+    {id:'all',label:'Any Time'},
+    {id:'now',label:'✅ Available Now'},
+    {id:'30days',label:'📅 Within 30 Days'},
+    {id:'60days',label:'🗓 Within 60 Days'},
+  ].map(function(a,i){
+    return '<button class="fchip'+(i===0?' on':'')+'" data-av="'+a.id+'" onclick="setAvail(\''+a.id+'\',this)">'+a.label+'</button>';
+  }).join('');
+}
+
+function buildFeatured(){
+  var featured=LISTINGS.filter(function(l){return l.isNew||l.isHot||l.price>30000;}).slice(0,12);
+  var el=document.getElementById('feat-scroll');
+  el.innerHTML=featured.map(function(l){
+    return '<div class="fs-card" onclick="openListing('+l.id+')">'+
+      '<div class="fs-card-top"><span class="fs-emoji">'+l.type.emoji+'</span>'+
+        '<div><div class="fs-title">'+l.title+'</div><div class="fs-loc">📍 '+l.area.name+'</div></div>'+
+      '</div>'+
+      '<div class="fs-price">KES '+l.price.toLocaleString()+'</div>'+
+      '<div class="fs-loc" style="margin-top:3px;">'+l.sqft+' sqft · '+(l.avail==='now'?'<span style="color:var(--green)">Available Now</span>':'Soon')+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+// ================================================================
+// FILTER LOGIC
+// ================================================================
+function getFiltered(){
+  var list=LISTINGS.slice();
+
+  if(state.typeFilter!=='all') list=list.filter(function(l){return l.type.id===state.typeFilter;});
+  if(state.areaFilter!=='all') list=list.filter(function(l){return l.area.name===state.areaFilter;});
+  list=list.filter(function(l){return l.price<=state.maxPrice;});
+  if(state.availFilter!=='all') list=list.filter(function(l){return l.avail===state.availFilter;});
+  if(state.search){
+    var q=state.search.toLowerCase();
+    list=list.filter(function(l){
+      return l.title.toLowerCase().indexOf(q)>-1||
+             l.area.name.toLowerCase().indexOf(q)>-1||
+             l.type.label.toLowerCase().indexOf(q)>-1||
+             l.features.join(' ').toLowerCase().indexOf(q)>-1;
+    });
+  }
+  // amenity toggles
+  Object.keys(state.amenityFilters).forEach(function(k){
+    if(!state.amenityFilters[k]) return;
+    var map={wifi:'WiFi',furnished:'Furnished',parking:'Parking',security:'Security Guard',borehole:'Borehole Water',pets:'Pets Allowed'};
+    var feat=map[k];
+    if(feat) list=list.filter(function(l){return l.features.indexOf(feat)>-1;});
+  });
+
+  // sort
+  if(state.sort==='newest') list.sort(function(a,b){return a.daysListed-b.daysListed;});
+  else if(state.sort==='price-asc') list.sort(function(a,b){return a.price-b.price;});
+  else if(state.sort==='price-desc') list.sort(function(a,b){return b.price-a.price;});
+  else if(state.sort==='size') list.sort(function(a,b){return b.sqft-a.sqft;});
+  return list;
+}
+
+// ================================================================
+// RENDER
+// ================================================================
+function formatPrice(p){return 'KES '+p.toLocaleString();}
+
+function listingCardHTML(l,listMode){
+  var avBadge=l.avail==='now'?'<span class="badge badge-avail">✅ Available Now</span>':
+              l.avail==='30days'?'<span class="badge badge-soon">📅 Available Soon</span>':'';
+  var newBadge=l.isNew?'<span class="badge badge-new">🆕 New</span>':'';
+  var hotBadge=l.isHot?'<span class="badge badge-hot">🔥 Hot</span>':'';
+  var furnBadge=l.isFurnished?'<span class="badge badge-furnished">🛋️ Furnished</span>':'';
+  var stBadge=l.isShortTerm?'<span class="badge badge-shortterm">🌙 Short-Stay</span>':'';
+
+  var topFeats=l.features.slice(0,5).map(function(f){
+    var good=['WiFi','Borehole Water','Security Guard','Parking','Furnished','Generator'];
+    return '<span class="ac'+(good.indexOf(f)>-1?' good':'')+'">'+f+'</span>';
+  }).join('');
+
+  var bgGrad='background:linear-gradient(135deg,'+l.ownerColor+'18,'+l.ownerColor+'06);';
+
+  if(listMode){
+    return '<div class="lcard list" onclick="openListing('+l.id+')">'+
+      '<div class="lcard-visual" style="width:140px;min-height:110px;flex-shrink:0;">'+
+        '<div class="lcard-bg" style="'+bgGrad+'inset:0;position:absolute;"></div>'+
+        '<div class="lcard-emoji">'+l.type.emoji+'</div>'+
+        '<div class="lcard-badges">'+newBadge+hotBadge+'</div>'+
+      '</div>'+
+      '<div class="lcard-body" style="flex:1;padding:12px 14px;">'+
+        '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:4px;">'+
+          '<div>'+
+            '<div class="lcard-title">'+l.title+'</div>'+
+            '<div class="lcard-type">'+l.type.emoji+' '+l.type.label+'</div>'+
+          '</div>'+
+          '<div style="text-align:right;flex-shrink:0;">'+
+            '<div class="lpb-price">'+formatPrice(l.price)+'</div>'+
+            '<div class="lpb-per">/month</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="lcard-loc">📍 '+l.area.name+'  ·  '+l.sqft+' sqft  ·  '+l.matDist+'min to '+l.matatu+' stage</div>'+
+        '<div class="amenity-chips">'+topFeats+'</div>'+
+        '<div style="display:flex;gap:8px;align-items:center;">'+
+          avBadge+furnBadge+stBadge+
+          '<button class="la-btn la-enquire" style="max-width:120px;" onclick="event.stopPropagation();openEnquiry('+l.id+')">💬 Enquire</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }
+
+  return '<div class="lcard" onclick="openListing('+l.id+')" style="animation-delay:'+Math.random()*.2+'s">'+
+    '<div class="lcard-visual">'+
+      '<div class="lcard-bg" style="'+bgGrad+'inset:0;position:absolute;"></div>'+
+      '<div class="lcard-emoji">'+l.type.emoji+'</div>'+
+      '<div class="lcard-badges">'+newBadge+hotBadge+avBadge+'</div>'+
+      '<div class="lcard-price-badge">'+
+        '<div class="lpb-price">'+formatPrice(l.price)+'</div>'+
+        '<div class="lpb-per">/month</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="lcard-body">'+
+      '<div class="lcard-top">'+
+        '<div class="lcard-av" style="background:'+l.ownerColor+'">'+l.ownerInit+'</div>'+
+        '<div class="lcard-info">'+
+          '<div class="lcard-title">'+l.title+'</div>'+
+          '<div class="lcard-type">'+l.type.emoji+' '+l.type.label+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="lcard-loc">📍 '+l.area.name+'  ·  '+l.matDist+'min to matatu</div>'+
+      '<div class="amenity-chips">'+topFeats+'</div>'+
+      '<div class="lcard-meta">'+
+        '<span>📐 '+l.sqft+' sqft</span>'+
+        (l.floorNum!==null?'<span>🏢 Floor '+l.floorNum+'</span>':'')+
+        '<span>👁 '+l.views+' views</span>'+
+        '<span>🗓 '+l.daysListed+' days ago</span>'+
+      '</div>'+
+      '<div style="display:flex;gap:5px;margin-bottom:10px;">'+furnBadge+stBadge+'</div>'+
+      '<div class="lcard-actions">'+
+        '<button class="la-btn la-enquire" onclick="event.stopPropagation();openEnquiry('+l.id+')">💬 WhatsApp</button>'+
+        '<button class="la-btn la-view" onclick="event.stopPropagation();openListing('+l.id+')">View Details</button>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+}
+
+var _page=1;
+function renderListings(){
+  var filtered=getFiltered();
+  var end=_page*state.perPage;
+  var slice=filtered.slice(0,end);
+
+  var grid=document.getElementById('listing-grid');
+  var isList=state.viewMode==='list';
+  grid.className='listing-grid'+(isList?' list-mode':'');
+
+  if(slice.length===0){
+    grid.innerHTML='<div class="empty-state"><div class="es-icon">🏠</div><h3>No listings match your filters</h3><p>Try adjusting your price range, type or area.</p></div>';
+  } else {
+    grid.innerHTML=slice.map(function(l){return listingCardHTML(l,isList);}).join('');
+  }
+
+  document.getElementById('lt-count').innerHTML='<b>'+filtered.length+'</b> listings found';
+  document.getElementById('h-total').textContent=LISTINGS.length;
+  document.getElementById('h-avail').textContent=LISTINGS.filter(function(l){return l.avail==='now';}).length;
+
+  var lmw=document.getElementById('load-more-wrap');
+  lmw.innerHTML=filtered.length>end?
+    '<button class="btn btn-ghost" onclick="loadMore()" style="padding:12px 32px;font-size:13px;">Load More ('+filtered.length+' total)</button>':'';
+}
+
+function loadMore(){_page++;renderListings();}
+
+// ================================================================
+// FILTER CONTROLS
+// ================================================================
+function setType(t,btn){
+  document.querySelectorAll('#type-chips .fchip').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  state.typeFilter=t;_page=1;renderListings();
+}
+function setArea(a,btn){
+  // handle both sidebar chips and hood strip
+  document.querySelectorAll('#area-chips .fchip').forEach(function(b){b.classList.remove('on');});
+  document.querySelectorAll('.hood-pill').forEach(function(b){b.classList.remove('on');});
+  if(btn.classList.contains('fchip')) btn.classList.add('on');
+  else btn.classList.add('on');
+  state.areaFilter=a;_page=1;renderListings();
+}
+function setAvail(a,btn){
+  document.querySelectorAll('#avail-chips .fchip').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  state.availFilter=a;_page=1;renderListings();
+}
+function onPriceSlider(v){
+  state.maxPrice=parseInt(v);
+  document.getElementById('price-val').textContent=parseInt(v).toLocaleString();
+  _page=1;renderListings();
+}
+function toggleFilter(k,row){
+  state.amenityFilters[k]=!state.amenityFilters[k];
+  var sw=document.getElementById('tog-'+k);
+  if(sw) sw.classList.toggle('on',state.amenityFilters[k]);
+  _page=1;renderListings();
+}
+function setSort(s,btn){
+  document.querySelectorAll('.sort-pill').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  state.sort=s;_page=1;renderListings();
+}
+function setViewMode(m,btn){
+  state.viewMode=m;
+  document.getElementById('vb-grid').classList.toggle('on',m==='grid');
+  document.getElementById('vb-list').classList.toggle('on',m==='list');
+  renderListings();
+}
+function handleSearch(q){state.search=q;_page=1;renderListings();}
+function resetFilters(){
+  state.typeFilter='all';state.areaFilter='all';state.maxPrice=150000;
+  state.availFilter='all';state.search='';
+  Object.keys(state.amenityFilters).forEach(function(k){state.amenityFilters[k]=false;});
+  document.querySelectorAll('.fchip').forEach(function(b,i){
+    b.classList.toggle('on',b.dataset.t==='all'||b.dataset.a==='all'||b.dataset.av==='all');
+  });
+  document.querySelectorAll('.toggle-sw').forEach(function(sw){sw.classList.remove('on');});
+  document.getElementById('price-range').value=150000;
+  document.getElementById('price-val').textContent='150,000';
+  document.getElementById('gsearch').value='';
+  document.querySelectorAll('.hood-pill').forEach(function(b){b.classList.remove('on');});
+  _page=1;renderListings();
+}
+
+// ================================================================
+// LISTING MODAL
+// ================================================================
+function openListing(id){
+  var l=LISTINGS.find(function(x){return x.id===id;});
+  if(!l) return;
+
+  // Build gallery
+  var gal=document.getElementById('lm-gallery');
+  var cells=['🏠','🛏️','🚿','🪟','🌿','🚗'].map(function(e,i){
+    var bg='background:linear-gradient(135deg,'+l.ownerColor+(i===0?'30':'18')+','+l.ownerColor+'08);';
+    return '<div class="lg-cell" style="'+bg+'" onclick="viewGalleryImg(\''+e+'\',\''+l.title+'\')">'+
+      '<span style="font-size:'+(i===0?'60px':'32px')+'">'+e+'</span>'+
+      (i===4?'<div class="lg-count">+12 photos</div>':'')+
+    '</div>';
+  }).join('');
+  gal.innerHTML='<button class="lm-close" onclick="closeLModal()">✕</button>'+cells;
+
+  // Amenity grid
+  var keyAmenities=[
+    {icon:'📶',label:'WiFi'},
+    {icon:'💧',label:'Borehole Water'},
+    {icon:'⚡',label:'KPLC Prepaid'},
+    {icon:'💂',label:'Security Guard'},
+    {icon:'🚗',label:'Parking'},
+    {icon:'🛋️',label:'Furnished'},
+    {icon:'📡',label:'DSTV Ready'},
+    {icon:'🔋',label:'Generator'},
+    {icon:'🏊',label:'Swimming Pool'},
+    {icon:'🏋️',label:'Gym'},
+    {icon:'🌿',label:'Garden'},
+    {icon:'🐾',label:'Pets Allowed'},
+  ];
+  var amenityHTML=keyAmenities.map(function(a){
+    var has=l.features.indexOf(a.label)>-1;
+    return '<div class="am-item'+(has?' yes':' no')+'"><span class="am-icon">'+a.icon+'</span>'+a.label+'</div>';
+  }).join('');
+
+  // Details grid
+  var details=[
+    {v:formatPrice(l.price),l:'Monthly Rent'},
+    {v:formatPrice(l.deposit),l:'Deposit'},
+    {v:l.sqft+' sqft',l:'Floor Area'},
+    {v:l.floorNum!==null?'Floor '+l.floorNum:'N/A',l:'Floor Level'},
+    {v:l.matDist+'min',l:'To Matatu Stage'},
+    {v:l.avail==='now'?'✅ Now':l.avail==='30days'?'📅 ~30 days':'🗓 ~60 days',l:'Availability'},
+  ];
+  var detHTML=details.map(function(d){
+    return '<div class="lm-det"><div class="dv">'+d.v+'</div><div class="dl">'+d.l+'</div></div>';
+  }).join('');
+
+  // Rules
+  var rulesHTML=l.rules.map(function(r){
+    return '<div class="rule"><div class="rule-dot"></div>'+r+'</div>';
+  }).join('');
+
+  // Main content
+  document.getElementById('lm-main').innerHTML=
+    '<div class="lm-title-row">'+
+      '<div class="lm-title">'+l.title+'</div>'+
+      '<div class="lm-price-big">'+formatPrice(l.price)+'<span class="per">per month</span></div>'+
+    '</div>'+
+    '<div class="lm-type-loc">'+
+      '<span>'+l.type.emoji+' <b>'+l.type.label+'</b></span>'+
+      '<span>📍 '+l.area.name+'</span>'+
+      '<span>🚌 '+l.matDist+' min to '+l.matatu+'</span>'+
+      (l.beds>0?'<span>🛏 '+l.beds+' bed</span>':'')+
+      (l.baths>0?'<span>🚿 '+l.baths+' bath</span>':'')+
+    '</div>'+
+    '<div class="lm-badges">'+
+      (l.avail==='now'?'<span class="badge badge-avail">✅ Available Now</span>':l.avail==='30days'?'<span class="badge badge-soon">📅 Soon</span>':'')+
+      (l.isFurnished?'<span class="badge badge-furnished">🛋️ Furnished</span>':'')+
+      (l.isShortTerm?'<span class="badge badge-shortterm">🌙 Short-Stay OK</span>':'')+
+      (l.isNew?'<span class="badge badge-new">🆕 New Listing</span>':'')+
+      (l.isHot?'<span class="badge badge-hot">🔥 High Demand</span>':'')+
+    '</div>'+
+    '<p class="lm-desc">'+l.desc+'</p>'+
+    '<div class="lm-section-title">Property Details</div>'+
+    '<div class="lm-details">'+detHTML+'</div>'+
+    '<div class="lm-section-title">Amenities & Features</div>'+
+    '<div class="amenity-grid">'+amenityHTML+'</div>'+
+    '<div class="lm-section-title">House Rules</div>'+
+    '<div class="rules-list">'+rulesHTML+'</div>'+
+    '<div class="lm-section-title">Contact Owner</div>'+
+    '<div class="landlord-card">'+
+      '<div class="ll-av" style="background:'+l.ownerColor+'">'+l.ownerInit+'</div>'+
+      '<div class="ll-info">'+
+        '<div class="ll-name">'+l.owner+'</div>'+
+        '<div class="ll-meta">Property Owner · Listed '+l.daysListed+' days ago · '+l.views+' views</div>'+
+        '<div class="ll-badge">✅ WhatsApp Verified</div>'+
+      '</div>'+
+    '</div>';
+
+  // Aside
+  document.getElementById('lm-aside').innerHTML=
+    '<div class="lm-aside-price">'+
+      '<div class="lap-main">'+formatPrice(l.price)+'</div>'+
+      '<div class="lap-per">per month</div>'+
+      '<div class="lap-deps"><span>Deposit:</span><span>'+formatPrice(l.deposit)+'</span></div>'+
+      '<div class="lap-deps"><span>Min Stay:</span><span>'+(l.isShortTerm?'1 night':'1 month')+'</span></div>'+
+    '</div>'+
+    '<div class="avail-tag">'+
+      '<div class="avail-dot" style="background:'+(l.avail==='now'?'#00ff88':'#ffd000');+'"></div>'+
+      '<div>'+
+        '<div style="font-size:12px;font-weight:600;">'+(l.avail==='now'?'Available Immediately':'Available Soon')+'</div>'+
+        '<div style="font-size:10px;color:var(--muted);">'+(l.avail==='now'?'Move in now':'Ready in ~'+( l.avail==='30days'?'30':'60')+' days')+'</div>'+
+      '</div>'+
+    '</div>'+
+    '<input class="tour-input" type="text" placeholder="Your name"/>'+
+    '<input class="tour-input" type="text" placeholder="Your WhatsApp number"/>'+
+    '<textarea class="tour-input" style="min-height:65px;resize:none;" placeholder="When would you like to view? Any questions?"></textarea>'+
+    '<button class="wa-big" onclick="bookTour('+l.id+')"><span style="font-size:16px">💬</span> Book a Viewing via WhatsApp</button>'+
+    '<button class="wa-big-alt" onclick="openEnquiry('+l.id+')">📞 Just Ask a Question</button>'+
+    '<div class="lm-trust">'+
+      '<span class="trust-it">🔒 No Fees</span>'+
+      '<span class="trust-it">✅ Owner Verified</span>'+
+      '<span class="trust-it">💬 WhatsApp Direct</span>'+
+    '</div>';
+
+  document.getElementById('lmodal-bg').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeLModal(){
+  document.getElementById('lmodal-bg').classList.remove('open');
+  document.body.style.overflow='';
+}
+function maybeCloseLM(e){if(e.target===document.getElementById('lmodal-bg'))closeLModal();}
+
+function bookTour(id){
+  var l=LISTINGS.find(function(x){return x.id===id;});
+  if(!l) return;
+  document.getElementById('sb-emoji').textContent='🏠';
+  document.getElementById('sb-title').textContent='Viewing Booked!';
+  document.getElementById('sb-sub').textContent=
+    'Your viewing request for "'+l.title+'" has been sent to '+l.owner+
+    '. They will contact you on WhatsApp to confirm the time.';
+  document.getElementById('success-overlay').classList.add('open');
+}
+
+function openEnquiry(id){
+  var l=LISTINGS.find(function(x){return x.id===id;});
+  if(!l) return;
+  alert('Opening WhatsApp chat with '+l.owner+' about "'+l.title+'"…\n\n(In production: wa.me/+254XXXXXXXXX)');
+}
+
+function viewGalleryImg(emoji,label){
+  // simple full-screen view
+  alert(emoji+'\n\n'+label+'\n\n(In production: shows actual uploaded photo)');
+}
+
+// ================================================================
+// LIST YOUR SPACE
+// ================================================================
+function openListModal(){
+  document.getElementById('list-modal-bg').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeListModal(){
+  document.getElementById('list-modal-bg').classList.remove('open');
+  document.body.style.overflow='';
+}
+function maybeCloseListM(e){if(e.target===document.getElementById('list-modal-bg'))closeListModal();}
+function submitListing(){
+  closeListModal();
+  document.getElementById('sb-emoji').textContent='🎉';
+  document.getElementById('sb-title').textContent='Space Listed!';
+  document.getElementById('sb-sub').textContent='Your listing is under review and will go live within 24 hours. Tenants will reach you directly on WhatsApp — no fees, no commission.';
+  document.getElementById('success-overlay').classList.add('open');
+}
+function closeSuccess(){
+  document.getElementById('success-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// ================================================================
+// BOOT
+// ================================================================
+buildHoodStrip();
+buildTypeChips();
+buildAreaChips();
+buildAvailChips();
+buildFeatured();
+renderListings();
+</script>
+<!-- KAZIHUB CHATBOT -->
+<button id="kh-chat-btn" onclick="khChatToggle()" title="Chat with KaziHub">
+  🤖
+  <div class="kh-chat-unread" id="kh-unread">1</div>
+</button>
+<div id="kh-chat-panel">
+  <div class="kh-chat-head">
+    <div class="kh-chat-avatar">🤖</div>
+    <div>
+      <div class="kh-chat-title">KaziHub Assistant</div>
+      <div class="kh-chat-sub">● Online · Nairobi</div>
+    </div>
+    <button class="kh-chat-close" onclick="khChatToggle()">✕</button>
+  </div>
+  <div class="kh-chat-msgs" id="kh-msgs"></div>
+  <div class="kh-chips" id="kh-chips"></div>
+  <div class="kh-chat-foot">
+    <textarea class="kh-chat-input" id="kh-input" rows="1"
+      placeholder="Find a plumber, electrician…"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();khSend();}"></textarea>
+    <button class="kh-chat-send" id="kh-send-btn" onclick="khSend()">➤</button>
+  </div>
+</div>
+<script>
+(function(){
+var KH_PANEL,KH_MSGS,KH_INPUT,KH_SEND,KH_CHIPS,KH_UNREAD;
+var khOpen=false,khHistory=[],khBusy=false;
+
+function khServiceList(){
+  if(typeof DATA!=='undefined'){
+    return DATA.slice(0,100).map(function(d){return d.emoji+' '+d.label;}).join(', ');
+  }
+  return 'Electricians, Plumbers, Carpenters, House Cleaners, Photographers, Web Designers, Tailors, Event Caterers, Drivers, Security Guards, Fitness Trainers, Lawyers, Accountants, Nannies, Barbers, DJs, Plumbers, Masons, Solar Installers, and 240+ more';
+}
+
+var KH_SYS='You are KaziHub Assistant — a sharp, friendly AI for KaziHub, Kenya\'s gig economy marketplace in Nairobi.\nKaziHub connects customers with verified local professionals across 259 service categories.\nServices available: '+khServiceList()+'\n\nRules:\n- Keep replies SHORT (2-4 sentences max). No walls of text.\n- When a user describes a need, identify the best matching service and recommend it directly.\n- Always end service recommendations with a WhatsApp CTA on a new line in this exact format: [WA:ServiceName:Neighbourhood]\n  Example: [WA:Electrician:Westlands]\n- Typical prices in KES: small jobs 500-2000, medium 2000-8000, large 8000-50000+.\n- Payment is via M-Pesa STK Push after booking on WhatsApp.\n- If you need more info, ask ONE question only (area or urgency).\n- Never make up specific pro names or phone numbers.\n- If user writes in Swahili, respond in Swahili.';
+
+var STARTERS=['Find me a plumber 🪠','I need an electrician ⚡','House cleaning today 🧹','Event photographer 📸','Graphic designer 🎨'];
+
+function khInit(){
+  KH_PANEL=document.getElementById('kh-chat-panel');
+  KH_MSGS=document.getElementById('kh-msgs');
+  KH_INPUT=document.getElementById('kh-input');
+  KH_SEND=document.getElementById('kh-send-btn');
+  KH_CHIPS=document.getElementById('kh-chips');
+  KH_UNREAD=document.getElementById('kh-unread');
+  if(!KH_PANEL)return;
+  khAddMsg('bot','Hey! 👋 I\'m your KaziHub assistant. Tell me what service you need and I\'ll match you with a verified pro in Nairobi.');
+  STARTERS.forEach(function(s){
+    var c=document.createElement('button');
+    c.className='kh-chip';c.textContent=s;
+    c.onclick=function(){KH_INPUT.value=s;khSend();};
+    KH_CHIPS.appendChild(c);
+  });
+  setTimeout(function(){if(KH_UNREAD)KH_UNREAD.classList.add('show');},2000);
+  var inp=document.getElementById('kh-input');
+  if(inp){inp.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px';});}
+}
+
+function khChatToggle(){
+  if(!KH_PANEL)return;
+  khOpen=!khOpen;
+  KH_PANEL.classList.toggle('open',khOpen);
+  if(khOpen){
+    if(KH_UNREAD)KH_UNREAD.classList.remove('show');
+    setTimeout(function(){if(KH_INPUT)KH_INPUT.focus();},250);
+  }
+}
+
+function khAddMsg(role,content){
+  if(!KH_MSGS)return null;
+  var div=document.createElement('div');
+  div.className='kh-msg '+role;
+  var html=content.replace(/\[WA:([^\]]+)\]/g,function(_,p){
+    var pts=p.split(':'),svc=pts[0]||'service',loc=pts[1]||'Nairobi';
+    var msg=encodeURIComponent('Hi, I found you on KaziHub. I need '+svc+' in '+loc+'. Are you available?');
+    return '<br><a class="kh-wa-cta" href="https://wa.me/254700000000?text='+msg+'" target="_blank">💬 Book via WhatsApp — '+svc+'</a>';
+  });
+  html=html.replace(/\n/g,'<br>');
+  div.innerHTML=html;
+  KH_MSGS.appendChild(div);
+  KH_MSGS.scrollTop=KH_MSGS.scrollHeight;
+  return div;
+}
+
+function khRemove(el){if(el&&el.parentNode)el.parentNode.removeChild(el);}
+
+async function khSend(){
+  if(khBusy||!KH_INPUT)return;
+  var text=(KH_INPUT.value||'').trim();if(!text)return;
+  KH_INPUT.value='';KH_INPUT.style.height='';
+  if(KH_CHIPS)KH_CHIPS.innerHTML='';
+  khAddMsg('user',text);
+  khHistory.push({role:'user',content:text});
+  khBusy=true;if(KH_SEND)KH_SEND.disabled=true;
+  var thinking=khAddMsg('thinking','● thinking…');
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:300,
+        system:KH_SYS,
+        messages:khHistory
+      })
+    });
+    var data=await res.json();
+    var reply=(data.content&&data.content[0]&&data.content[0].text)||'Sorry, something went wrong. Try again.';
+    khRemove(thinking);
+    khAddMsg('bot',reply);
+    khHistory.push({role:'assistant',content:reply});
+    if(khHistory.length>20)khHistory=khHistory.slice(-20);
+  }catch(e){
+    khRemove(thinking);
+    khAddMsg('bot','Connection issue — please try again in a moment.');
+  }
+  khBusy=false;if(KH_SEND)KH_SEND.disabled=false;if(KH_INPUT)KH_INPUT.focus();
+}
+
+window.khChatToggle=khChatToggle;
+window.khSend=khSend;
+document.addEventListener('DOMContentLoaded',khInit);
+})();
+</script>
+</body>
+</html>

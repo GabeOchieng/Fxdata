@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KaziHub — Portfolios & Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04070f;
+  --bg2:#080d1a;
+  --bg3:#0d1525;
+  --surface:rgba(255,255,255,0.04);
+  --surface2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08);
+  --border2:rgba(255,255,255,0.13);
+  --text:#dde3f0;
+  --muted:#4a5470;
+  --accent:#00ffb3;
+  --accent2:#00ccff;
+  --gold:#ffbe00;
+  --red:#ff3d5a;
+  --tech:#00d4ff;
+  --beauty:#ff3d9a;
+  --food:#ff6b2b;
+  --home:#7c5cff;
+  --edu:#00ffb3;
+  --events:#ffd000;
+  --transport:#2b8fff;
+  --health:#ff3d5a;
+  --construction:#ff8c00;
+  --creative:#c94dff;
+  --finance:#00d26a;
+  --security:#6a8aaa;
+  --wellness:#ff5fa0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Space Grotesk',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 40% at 10% 0%,rgba(0,212,255,.05) 0%,transparent 70%),
+    radial-gradient(ellipse 60% 50% at 90% 100%,rgba(201,77,255,.04) 0%,transparent 70%),
+    radial-gradient(1px 1px at 20% 15%,rgba(255,255,255,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 55% 8%,rgba(255,255,255,.25) 0%,transparent 100%),
+    radial-gradient(1px 1px at 78% 22%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 92% 60%,rgba(255,255,255,.2) 0%,transparent 100%),
+    radial-gradient(1px 1px at 35% 80%,rgba(255,255,255,.25) 0%,transparent 100%);
+}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:200;
+  display:flex;align-items:center;gap:12px;
+  padding:10px 24px;
+  background:rgba(4,7,15,.92);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(24px);
+}
+.logo{
+  font-size:18px;font-weight:700;letter-spacing:-.3px;
+  display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--text);
+}
+.logo-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:pdot 2s ease-in-out infinite;}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+.logo em{color:var(--accent);font-style:normal;}
+.nav-sep{width:1px;height:18px;background:var(--border);}
+.nav-page{font-size:13px;font-weight:600;color:var(--muted);}
+.nav-page b{color:var(--text);}
+
+.nav-mid{flex:1;display:flex;justify-content:center;}
+.global-search{
+  position:relative;width:380px;
+}
+.global-search input{
+  width:100%;padding:9px 14px 9px 38px;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);border-radius:10px;
+  color:var(--text);font-family:'Space Grotesk',sans-serif;
+  font-size:13px;outline:none;transition:border-color .18s;
+}
+.global-search input:focus{border-color:var(--accent);}
+.global-search input::placeholder{color:var(--muted);}
+.gs-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;opacity:.5;}
+
+.nav-r{display:flex;gap:8px;align-items:center;}
+.btn{padding:7px 16px;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-prime{background:var(--accent);color:#04070f;font-weight:700;}
+.btn-prime:hover{box-shadow:0 0 16px rgba(0,255,179,.4);transform:translateY(-1px);}
+.btn-sm{padding:5px 12px;font-size:11px;}
+
+/* ── NAV TABS ── */
+.nav-tabs{
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  display:flex;gap:0;
+  background:rgba(4,7,15,.8);
+  backdrop-filter:blur(12px);
+  position:sticky;top:53px;z-index:190;
+}
+.ntab{
+  padding:11px 18px;font-size:12px;font-weight:600;
+  cursor:pointer;color:var(--muted);
+  border-bottom:2px solid transparent;
+  transition:all .15s;white-space:nowrap;
+}
+.ntab:hover{color:var(--text);}
+.ntab.on{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* ── HERO SECTION ── */
+.hero{
+  padding:40px 24px 32px;
+  display:flex;flex-wrap:wrap;gap:24px;
+  align-items:flex-end;justify-content:space-between;
+  position:relative;z-index:1;
+}
+.hero-text h1{
+  font-size:clamp(26px,4vw,44px);font-weight:700;
+  line-height:1.08;letter-spacing:-1px;margin-bottom:10px;
+}
+.hero-text h1 em{color:var(--accent);font-style:normal;}
+.hero-text p{font-size:13px;color:var(--muted);max-width:480px;line-height:1.7;}
+.hero-stats{
+  display:flex;gap:16px;flex-wrap:wrap;
+}
+.hstat{
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);border-radius:12px;
+  padding:12px 18px;text-align:center;min-width:90px;
+}
+.hstat .hv{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;}
+.hstat .hl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+
+/* ── FILTER BAR ── */
+.filter-bar{
+  padding:14px 24px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  position:relative;z-index:1;
+  border-bottom:1px solid var(--border);
+}
+.fb-label{font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap;}
+.cat-pill{
+  padding:5px 13px;border-radius:99px;font-size:11px;font-weight:600;
+  cursor:pointer;border:1px solid var(--border);
+  background:rgba(255,255,255,.03);color:var(--muted);
+  transition:all .15s;white-space:nowrap;
+}
+.cat-pill:hover{color:var(--text);}
+.cat-pill.on{border-color:transparent;color:#04070f;}
+
+.sort-group{margin-left:auto;display:flex;gap:6px;align-items:center;}
+.sort-btn{
+  padding:5px 12px;border-radius:8px;font-size:11px;font-weight:600;
+  cursor:pointer;border:1px solid var(--border);
+  background:transparent;color:var(--muted);transition:all .15s;
+}
+.sort-btn:hover{color:var(--text);}
+.sort-btn.on{background:rgba(255,255,255,.07);color:var(--text);}
+
+.view-toggle{display:flex;gap:3px;}
+.vbtn{
+  width:28px;height:28px;border-radius:6px;border:1px solid var(--border);
+  background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:var(--muted);transition:all .15s;
+}
+.vbtn.on{background:rgba(255,255,255,.07);color:var(--text);}
+
+/* ── MAIN CONTENT ── */
+.content{
+  padding:20px 24px 60px;
+  position:relative;z-index:1;
+}
+
+/* ── GRID VIEW ── */
+.pro-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:16px;
+}
+.pro-grid.list-view{
+  grid-template-columns:1fr;
+  gap:10px;
+}
+
+/* ── PRO CARD ── */
+.pro-card{
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;
+  cursor:pointer;transition:all .2s;
+  position:relative;
+}
+.pro-card:hover{
+  border-color:rgba(255,255,255,.18);
+  transform:translateY(-3px);
+  box-shadow:0 16px 48px rgba(0,0,0,.5);
+}
+.pro-card.list-card{
+  display:flex;align-items:center;gap:16px;
+  padding:14px 16px;border-radius:12px;
+}
+.pro-card.list-card:hover{transform:translateX(3px) translateY(0);}
+
+/* card cover / portfolio preview */
+.card-cover{
+  position:relative;height:160px;overflow:hidden;
+}
+.card-cover-bg{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:56px;
+  transition:transform .4s ease;
+}
+.pro-card:hover .card-cover-bg{transform:scale(1.08);}
+
+.cover-badge{
+  position:absolute;top:10px;right:10px;
+  padding:3px 9px;border-radius:99px;
+  font-size:9px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.5px;backdrop-filter:blur(8px);
+}
+.cover-level{
+  position:absolute;bottom:10px;left:10px;
+  display:flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:99px;
+  font-size:9px;font-weight:700;
+  background:rgba(4,7,15,.75);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.1);
+}
+.cover-wa{
+  position:absolute;bottom:10px;right:10px;
+  width:30px;height:30px;border-radius:50%;
+  background:#25d366;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;transition:transform .15s;
+}
+.pro-card:hover .cover-wa{transform:scale(1.15);}
+
+/* card body */
+.card-body{padding:14px 16px 16px;}
+.card-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.pro-avatar{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:800;color:#04070f;
+  border:2px solid rgba(255,255,255,.1);
+}
+.pro-info{flex:1;min-width:0;}
+.pro-name{font-size:14px;font-weight:700;margin-bottom:1px;}
+.pro-role{font-size:11px;color:var(--muted);}
+.pro-rating{
+  display:flex;align-items:center;gap:4px;
+  font-size:11px;font-weight:600;
+}
+.pro-rating .stars{color:var(--gold);}
+.pro-rating .cnt{color:var(--muted);}
+
+.pro-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.tag{
+  padding:3px 9px;border-radius:99px;
+  font-size:10px;font-weight:600;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);color:var(--muted);
+}
+.tag.skill{background:rgba(0,255,179,.06);border-color:rgba(0,255,179,.15);color:rgba(0,255,179,.8);}
+
+.pro-bio{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:12px;}
+
+.pro-meta{
+  display:flex;gap:12px;font-size:11px;color:var(--muted);
+  margin-bottom:12px;flex-wrap:wrap;
+}
+.pm-item{display:flex;align-items:center;gap:4px;}
+
+.xp-row{margin-bottom:12px;}
+.xp-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px;}
+.xp-bar{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
+.xp-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--gold));}
+
+.card-actions{display:flex;gap:8px;}
+.ca-btn{
+  flex:1;padding:9px;border-radius:9px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:12px;font-weight:600;cursor:pointer;border:none;
+  transition:all .15s;text-align:center;
+}
+.ca-hire{background:var(--accent);color:#04070f;}
+.ca-hire:hover{box-shadow:0 0 14px rgba(0,255,179,.35);}
+.ca-view{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);}
+.ca-view:hover{border-color:rgba(255,255,255,.2);}
+
+/* list card extras */
+.list-av{
+  width:56px;height:56px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:800;color:#04070f;
+}
+.list-info{flex:1;min-width:0;}
+.list-name{font-size:15px;font-weight:700;margin-bottom:2px;}
+.list-role{font-size:12px;color:var(--muted);margin-bottom:6px;}
+.list-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:5px;}
+.list-meta{display:flex;gap:14px;font-size:11px;color:var(--muted);}
+.list-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
+
+/* ── PORTFOLIO MODAL (full screen profile) ── */
+.pmodal-bg{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.85);backdrop-filter:blur(14px);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:20px;overflow-y:auto;
+  opacity:0;pointer-events:none;transition:opacity .22s;
+}
+.pmodal-bg.open{opacity:1;pointer-events:all;}
+
+.pmodal{
+  background:var(--bg2);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:22px;
+  width:min(860px,100%);
+  transform:translateY(20px);transition:transform .22s;
+  overflow:hidden;
+  margin:auto;
+}
+.pmodal-bg.open .pmodal{transform:translateY(0);}
+
+/* modal top cover */
+.pmodal-cover{
+  height:180px;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  font-size:72px;
+}
+.pmodal-cover-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(4,7,15,0) 0%,rgba(4,7,15,.7) 100%);
+}
+.pmodal-close{
+  position:absolute;top:14px;right:14px;
+  background:rgba(4,7,15,.7);border:1px solid rgba(255,255,255,.15);
+  color:var(--muted);width:32px;height:32px;border-radius:50%;
+  cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);z-index:2;transition:color .15s;
+}
+.pmodal-close:hover{color:var(--text);}
+
+/* profile header */
+.pmodal-header{
+  padding:0 28px 20px;
+  display:flex;gap:18px;align-items:flex-end;
+  border-bottom:1px solid var(--border);
+  position:relative;margin-top:-40px;
+}
+.pmodal-av{
+  width:72px;height:72px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:800;color:#04070f;
+  border:3px solid var(--bg2);
+  box-shadow:0 4px 20px rgba(0,0,0,.5);
+  position:relative;z-index:1;
+}
+.pmodal-hinfo{flex:1;padding-bottom:4px;}
+.pmodal-name{font-size:22px;font-weight:700;margin-bottom:2px;}
+.pmodal-role{
+  font-size:12px;color:var(--muted);margin-bottom:8px;
+}
+.pmodal-badges{display:flex;gap:6px;flex-wrap:wrap;}
+.pbadge{
+  padding:3px 10px;border-radius:99px;
+  font-size:10px;font-weight:700;
+  border:1px solid;
+}
+.pmodal-hactions{display:flex;gap:8px;align-items:flex-end;flex-shrink:0;padding-bottom:4px;}
+
+/* modal body layout */
+.pmodal-body{
+  display:grid;
+  grid-template-columns:1fr 300px;
+}
+@media(max-width:640px){.pmodal-body{grid-template-columns:1fr;}}
+
+.pmodal-main{padding:24px 28px;border-right:1px solid var(--border);}
+.pmodal-aside{padding:20px;}
+
+/* TABS inside modal */
+.pm-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;}
+.pmtab{
+  padding:8px 16px;font-size:12px;font-weight:600;
+  cursor:pointer;color:var(--muted);
+  border-bottom:2px solid transparent;transition:all .15s;
+}
+.pmtab:hover{color:var(--text);}
+.pmtab.on{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* Portfolio gallery */
+.portfolio-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;margin-bottom:20px;
+}
+.pg-item{
+  border-radius:10px;overflow:hidden;
+  aspect-ratio:1;position:relative;cursor:pointer;
+  background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+  border:1px solid var(--border);
+}
+.pg-item:hover{border-color:rgba(255,255,255,.2);transform:scale(1.02);}
+.pg-item .pg-emoji{font-size:32px;transition:transform .2s;}
+.pg-item:hover .pg-emoji{transform:scale(1.15);}
+.pg-item .pg-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(4,7,15,.85) 0%,transparent 60%);
+  opacity:0;transition:opacity .2s;
+  display:flex;align-items:flex-end;padding:8px;
+}
+.pg-item:hover .pg-overlay{opacity:1;}
+.pg-label{font-size:10px;font-weight:600;color:rgba(255,255,255,.9);}
+
+.pg-item.large{grid-column:span 2;grid-row:span 2;}
+.pg-item.wide{grid-column:span 2;}
+
+/* services / packages */
+.packages{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.pkg{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:14px 16px;
+  display:flex;align-items:center;gap:14px;
+  cursor:pointer;transition:all .15s;
+}
+.pkg:hover{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.06);}
+.pkg.featured{border-color:rgba(0,255,179,.2);background:rgba(0,255,179,.04);}
+.pkg-icon{font-size:22px;flex-shrink:0;}
+.pkg-info{flex:1;}
+.pkg-name{font-size:13px;font-weight:700;margin-bottom:2px;}
+.pkg-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+.pkg-price{
+  font-family:'JetBrains Mono',monospace;
+  font-size:14px;font-weight:600;
+  text-align:right;flex-shrink:0;
+}
+.pkg-price .per{font-size:9px;color:var(--muted);display:block;}
+.pkg-badge-featured{
+  display:inline-block;
+  padding:2px 7px;border-radius:99px;
+  font-size:9px;font-weight:700;
+  background:rgba(0,255,179,.12);
+  color:var(--accent);
+  border:1px solid rgba(0,255,179,.2);
+  margin-top:3px;
+}
+
+/* reviews */
+.reviews{display:flex;flex-direction:column;gap:12px;}
+.review-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:14px;
+}
+.rc-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.rc-av{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;flex-shrink:0;
+}
+.rc-name{font-size:12px;font-weight:600;}
+.rc-date{font-size:10px;color:var(--muted);}
+.rc-stars{margin-left:auto;font-size:11px;color:var(--gold);}
+.rc-text{font-size:12px;color:var(--muted);line-height:1.6;}
+.rc-verified{font-size:10px;color:var(--accent);margin-top:6px;display:flex;align-items:center;gap:4px;}
+
+/* ASIDE — order panel */
+.order-panel{
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--border);
+  border-radius:14px;padding:16px;
+  margin-bottom:16px;
+}
+.op-title{font-size:12px;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px;}
+.op-pkg-select{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.op-opt{
+  padding:10px 12px;border-radius:9px;
+  border:1px solid var(--border);
+  cursor:pointer;transition:all .15s;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.op-opt:hover{border-color:rgba(255,255,255,.2);}
+.op-opt.sel{border-color:var(--accent);background:rgba(0,255,179,.06);}
+.op-opt .on{font-size:12px;font-weight:600;}
+.op-opt .op{font-size:11px;color:var(--muted);}
+.op-opt .pr{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;}
+
+.op-note{
+  width:100%;min-height:70px;padding:10px 12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);border-radius:9px;
+  color:var(--text);font-family:'Space Grotesk',sans-serif;
+  font-size:12px;outline:none;resize:none;
+  transition:border-color .15s;margin-bottom:12px;
+}
+.op-note:focus{border-color:var(--accent);}
+.op-note::placeholder{color:var(--muted);}
+
+.op-total{
+  display:flex;justify-content:space-between;
+  font-size:12px;margin-bottom:6px;
+}
+.op-total b{font-family:'JetBrains Mono',monospace;font-size:15px;}
+
+.wa-order{
+  width:100%;padding:12px;border-radius:10px;border:none;
+  background:#25d366;color:#fff;
+  font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;
+  cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.wa-order:hover{background:#1ebe5b;box-shadow:0 4px 16px rgba(37,211,102,.35);}
+.wa-order-alt{
+  width:100%;padding:10px;border-radius:10px;
+  border:1px solid var(--border);
+  background:transparent;color:var(--text);
+  font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .15s;margin-top:7px;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.wa-order-alt:hover{border-color:var(--accent);color:var(--accent);}
+
+.trust-row{
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;
+}
+.trust-item{
+  font-size:10px;color:var(--muted);
+  display:flex;align-items:center;gap:4px;
+}
+
+/* aside stats */
+.aside-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.asg{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:10px;text-align:center;
+}
+.asg .av2{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:600;}
+.asg .al{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:2px;}
+
+/* availability */
+.avail-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:10px 12px;margin-bottom:14px;
+}
+.avail-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.avail-dot.green{background:#00ff88;box-shadow:0 0 6px #00ff88;}
+.avail-dot.yellow{background:#ffd000;box-shadow:0 0 6px #ffd000;}
+.avail-dot.red{background:#ff3d5a;}
+
+/* image viewer overlay */
+.img-viewer{
+  position:fixed;inset:0;z-index:800;
+  background:rgba(0,0,0,.95);backdrop-filter:blur(20px);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:16px;
+  opacity:0;pointer-events:none;transition:opacity .18s;
+}
+.img-viewer.open{opacity:1;pointer-events:all;}
+.iv-close{
+  position:absolute;top:16px;right:16px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  color:var(--text);width:36px;height:36px;border-radius:50%;
+  cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+}
+.iv-content{
+  font-size:120px;text-align:center;
+  animation:iv-in .3s ease;
+}
+@keyframes iv-in{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.iv-label{font-size:16px;font-weight:600;color:var(--text);}
+.iv-sub{font-size:12px;color:var(--muted);}
+
+/* ORDER SUCCESS */
+.order-success{
+  position:fixed;inset:0;z-index:900;
+  background:rgba(0,0,0,.9);backdrop-filter:blur(16px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.order-success.open{opacity:1;pointer-events:all;}
+.os-box{
+  background:var(--bg2);border:1px solid rgba(0,255,179,.25);
+  border-radius:20px;padding:40px 32px;text-align:center;
+  max-width:360px;width:90%;
+  animation:os-in .3s ease;
+}
+@keyframes os-in{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.os-emoji{font-size:56px;margin-bottom:16px;}
+.os-title{font-size:22px;font-weight:700;margin-bottom:8px;}
+.os-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6;}
+.os-wa{
+  padding:12px 24px;border-radius:10px;border:none;
+  background:#25d366;color:#fff;
+  font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  transition:all .15s;
+}
+.os-wa:hover{background:#1ebe5b;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit:scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* responsive */
+@media(max-width:600px){
+  .hero{padding:20px 16px;}
+  .filter-bar,.content{padding-left:16px;padding-right:16px;}
+  .portfolio-grid{grid-template-columns:repeat(2,1fr);}
+  .wcards{grid-template-columns:1fr;}
+  .pmodal-header{margin-top:-20px;}
+  .pmodal-body{grid-template-columns:1fr;}
+  .pmodal-aside{border-top:1px solid var(--border);}
+  .global-search{width:200px;}
+}
+
+/* ── KAZIHUB CHATBOT ──────────────────────────────────────── */
+#kh-chat-btn{
+  position:fixed;bottom:22px;right:22px;z-index:200;
+  width:52px;height:52px;border-radius:50%;
+  background:var(--accent,#00ffb3);
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 24px rgba(0,255,179,.35);
+  transition:transform .2s, box-shadow .2s;
+  font-size:22px;
+}
+#kh-chat-btn:hover{transform:scale(1.08);box-shadow:0 6px 32px rgba(0,255,179,.5);}
+#kh-chat-btn .kh-chat-unread{
+  position:absolute;top:-2px;right:-2px;
+  width:16px;height:16px;border-radius:50%;
+  background:#ff3d5a;color:#fff;
+  font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;
+}
+#kh-chat-btn .kh-chat-unread.show{opacity:1;}
+#kh-chat-panel{
+  position:fixed;bottom:86px;right:22px;z-index:200;
+  width:340px;max-height:520px;
+  background:rgba(6,10,22,.97);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  display:flex;flex-direction:column;
+  box-shadow:0 16px 60px rgba(0,0,0,.7);
+  backdrop-filter:blur(24px);
+  transform:scale(.9) translateY(12px);
+  opacity:0;pointer-events:none;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), opacity .18s;
+  overflow:hidden;
+}
+#kh-chat-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
+.kh-chat-head{
+  padding:14px 16px 12px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.kh-chat-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#00ffb3,#00d4ff);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+}
+.kh-chat-title{font-size:13px;font-weight:700;color:#f0eee8;}
+.kh-chat-sub{font-size:10px;color:rgba(0,255,179,.8);margin-top:1px;}
+.kh-chat-close{
+  margin-left:auto;background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.35);font-size:16px;padding:2px 4px;transition:color .15s;
+}
+.kh-chat-close:hover{color:rgba(255,255,255,.7);}
+.kh-chat-msgs{
+  flex:1;overflow-y:auto;padding:12px;
+  display:flex;flex-direction:column;gap:8px;min-height:0;
+}
+.kh-chat-msgs::-webkit-scrollbar{width:3px;}
+.kh-chat-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+.kh-msg{max-width:86%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.55;}
+.kh-msg.bot{background:rgba(255,255,255,.06);color:#dde3f0;border-bottom-left-radius:4px;align-self:flex-start;}
+.kh-msg.user{background:#00ffb3;color:#04070f;font-weight:600;border-bottom-right-radius:4px;align-self:flex-end;}
+.kh-msg.thinking{background:rgba(255,255,255,.04);color:rgba(221,227,240,.45);font-style:italic;align-self:flex-start;}
+.kh-chips{display:flex;flex-wrap:wrap;gap:5px;padding:0 12px 10px;flex-shrink:0;}
+.kh-chip{
+  padding:4px 11px;border-radius:99px;font-size:10px;font-weight:700;cursor:pointer;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:rgba(221,227,240,.8);transition:all .15s;white-space:nowrap;
+}
+.kh-chip:hover{background:rgba(0,255,179,.12);border-color:rgba(0,255,179,.4);color:#00ffb3;}
+.kh-chat-foot{
+  padding:10px 12px;border-top:1px solid rgba(255,255,255,.06);
+  display:flex;gap:8px;align-items:center;flex-shrink:0;
+}
+.kh-chat-input{
+  flex:1;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);border-radius:10px;
+  padding:8px 12px;color:#dde3f0;font-size:12px;
+  font-family:inherit;outline:none;transition:border-color .15s;
+  resize:none;max-height:80px;
+}
+.kh-chat-input:focus{border-color:rgba(0,255,179,.5);}
+.kh-chat-input::placeholder{color:rgba(255,255,255,.25);}
+.kh-chat-send{
+  width:34px;height:34px;border-radius:10px;
+  background:#00ffb3;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .15s;color:#04070f;font-size:14px;
+}
+.kh-chat-send:hover{box-shadow:0 0 14px rgba(0,255,179,.4);}
+.kh-chat-send:disabled{opacity:.35;cursor:not-allowed;}
+.kh-wa-cta{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:8px;padding:7px 13px;border-radius:9px;
+  background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.35);
+  color:#25d366;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;
+  transition:all .15s;
+}
+.kh-wa-cta:hover{background:rgba(37,211,102,.25);}
+@media(max-width:400px){#kh-chat-panel{width:calc(100vw - 20px);right:10px;}}
+</style>
+
+<style id="kh-topbar-css">
+#kh-topbar{
+  position:fixed;top:0;left:0;right:0;z-index:9999;
+  background:rgba(4,6,14,.97);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(20px);
+  display:flex;align-items:center;height:40px;padding:0 20px;gap:0;
+  font-family:'Outfit','DM Sans',sans-serif;
+}
+#kh-topbar a.kh-logo{
+  font-size:16px;font-weight:800;
+  color:#f0eee8;text-decoration:none;
+  display:flex;align-items:center;gap:6px;margin-right:14px;
+  font-family:'Bebas Neue','Outfit',sans-serif;font-size:20px;
+}
+#kh-topbar a.kh-logo em{color:#00e5ff;font-style:normal;}
+.kh-tb-dot{width:6px;height:6px;border-radius:50%;background:#00e5ff;box-shadow:0 0 6px #00e5ff;animation:kh_pulse 2s ease-in-out infinite;}
+@keyframes kh_pulse{0%,100%{opacity:1}50%{opacity:.3}}
+#kh-topbar .kh-sep{width:1px;height:16px;background:rgba(255,255,255,.08);margin:0 12px;}
+#kh-topbar .kh-nav{display:flex;align-items:center;gap:2px;flex:1;}
+#kh-topbar .kh-link{
+  padding:4px 11px;border-radius:7px;font-size:11px;font-weight:600;
+  text-decoration:none;color:rgba(154,152,181,.85);
+  transition:all .13s;border:1px solid transparent;
+}
+#kh-topbar .kh-link:hover{color:#f0eee8;background:rgba(255,255,255,.05);}
+#kh-topbar .kh-link.kh-active{color:#f0eee8;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.1);}
+#kh-topbar .kh-link.kh-docs{color:#f5a623 !important;}
+#kh-topbar .kh-link.kh-docs:hover{background:rgba(245,166,35,.06);}
+#kh-topbar .kh-link.kh-docs.kh-active{border-color:rgba(245,166,35,.2);background:rgba(245,166,35,.07);}
+#kh-topbar .kh-link.kh-merch{color:#c8ff00 !important;}
+#kh-topbar .kh-link.kh-merch:hover{background:rgba(200,255,0,.06);}
+#kh-topbar .kh-link.kh-merch.kh-active{border-color:rgba(200,255,0,.2);background:rgba(200,255,0,.07);}
+body{padding-top:40px;}
+</style>
+
+</head>
+<body>
+<div id="kh-topbar">
+  <a class="kh-logo" href="kazihub-home.html"><div class="kh-tb-dot"></div>Kazi<em>Hub</em></a>
+  <div class="kh-sep"></div>
+  <div class="kh-nav">
+    <a class="kh-link" href="kazihub-home.html">Home</a>
+    <a class="kh-link" href="kazihub.html">🗺 Market</a>
+    <a class="kh-link kh-active" href="kazihub-store.html">👔 Hire a Pro</a>
+    <a class="kh-link" href="kazihub-rentals.html">🏠 Rentals</a>
+    <a class="kh-link" href="kazihub-footwear.html">👟 Footwear</a>
+    <a class="kh-link kh-merch" href="kazihub-tshirt.html">👕 Merch</a>
+  </div>
+</div>
+<!-- NAV -->
+<nav>
+  <a class="logo" href="kazihub.html">
+    <div class="logo-dot"></div>
+    Kazi<em>Hub</em>
+  </a>
+  <div class="nav-sep"></div>
+  <span class="nav-page">Portfolios &amp; <b>Store</b></span>
+
+  <div class="nav-mid">
+    <div class="global-search">
+      <span class="gs-icon">🔍</span>
+      <input type="text" id="gsearch" placeholder="Search pros, skills, services…" oninput="handleSearch(this.value)">
+    </div>
+  </div>
+
+  <div class="nav-r">
+    <button class="btn btn-ghost btn-sm" onclick="openUpload()">📂 Upload Work</button>
+    <button class="btn btn-prime btn-sm" onclick="openUpload()">+ List Service</button>
+  </div>
+</nav>
+
+<!-- PAGE TABS -->
+<div class="nav-tabs">
+  <div class="ntab on" data-view="all" onclick="switchView('all',this)">All Pros</div>
+  <div class="ntab" data-view="featured" onclick="switchView('featured',this)">⭐ Featured</div>
+  <div class="ntab" data-view="new" onclick="switchView('new',this)">🆕 New Arrivals</div>
+  <div class="ntab" data-view="trending" onclick="switchView('trending',this)">🔥 Trending</div>
+  <div class="ntab" data-view="legend" onclick="switchView('legend',this)">💎 Legends</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-text">
+    <h1>Kenya's Skilled Pros<br><em>Open for Business</em></h1>
+    <p>Browse portfolios, see real work samples, compare packages and connect via WhatsApp — no middleman, zero commission.</p>
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hv" style="color:var(--accent)" id="h-pros">2,847</div><div class="hl">Active Pros</div></div>
+    <div class="hstat"><div class="hv" style="color:var(--gold)">4.7★</div><div class="hl">Avg Rating</div></div>
+    <div class="hstat"><div class="hv" style="color:#2b8fff">14,392</div><div class="hl">Jobs Done</div></div>
+    <div class="hstat"><div class="hv" style="color:var(--wellness)" id="h-online">184</div><div class="hl">Online Now</div></div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <span class="fb-label">Industry:</span>
+  <div id="cat-filters"></div>
+  <div class="sort-group">
+    <span class="fb-label">Sort:</span>
+    <button class="sort-btn on" onclick="setSort('top',this)">Top Rated</button>
+    <button class="sort-btn" onclick="setSort('new',this)">Newest</button>
+    <button class="sort-btn" onclick="setSort('jobs',this)">Most Jobs</button>
+    <button class="sort-btn" onclick="setSort('price',this)">Price ↑</button>
+    <div class="view-toggle" style="margin-left:8px;">
+      <button class="vbtn on" id="vbtn-grid" onclick="setViewMode('grid',this)" title="Grid">⊞</button>
+      <button class="vbtn" id="vbtn-list" onclick="setViewMode('list',this)" title="List">≡</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+  <div class="pro-grid" id="pro-grid"></div>
+  <div id="load-more-wrap" style="text-align:center;margin-top:28px;"></div>
+</div>
+
+<!-- PORTFOLIO MODAL -->
+<div class="pmodal-bg" id="pmodal-bg" onclick="maybeClosePM(event)">
+  <div class="pmodal" id="pmodal">
+    <div class="pmodal-cover" id="pm-cover">
+      <div class="pmodal-cover-overlay"></div>
+      <button class="pmodal-close" onclick="closePModal()">✕</button>
+    </div>
+    <div class="pmodal-header">
+      <div class="pmodal-av" id="pm-av"></div>
+      <div class="pmodal-hinfo">
+        <div class="pmodal-name" id="pm-name"></div>
+        <div class="pmodal-role" id="pm-role"></div>
+        <div class="pmodal-badges" id="pm-badges"></div>
+      </div>
+      <div class="pmodal-hactions" id="pm-actions"></div>
+    </div>
+    <div class="pmodal-body">
+      <div class="pmodal-main" id="pm-main"></div>
+      <div class="pmodal-aside" id="pm-aside"></div>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE VIEWER -->
+<div class="img-viewer" id="iv" onclick="closeIV()">
+  <button class="iv-close" onclick="closeIV()">✕</button>
+  <div class="iv-content" id="iv-content"></div>
+  <div class="iv-label" id="iv-label"></div>
+  <div class="iv-sub" id="iv-sub"></div>
+</div>
+
+<!-- ORDER SUCCESS -->
+<div class="order-success" id="os" onclick="closeOS()">
+  <div class="os-box" onclick="event.stopPropagation()">
+    <div class="os-emoji">🎉</div>
+    <div class="os-title">Order Sent!</div>
+    <div class="os-sub" id="os-sub"></div>
+    <button class="os-wa" onclick="closeOS()">📲 Open WhatsApp</button>
+  </div>
+</div>
+
+<script>
+// ================================================================
+// DATA
+// ================================================================
+var CATS = {
+  tech:         {label:'Tech & Devices',    icon:'💻', color:'#00d4ff'},
+  beauty:       {label:'Beauty',             icon:'💅', color:'#ff3d9a'},
+  food:         {label:'Food & Catering',    icon:'🍽',  color:'#ff6b2b'},
+  home:         {label:'Home Services',      icon:'🏠', color:'#7c5cff'},
+  education:    {label:'Education',          icon:'📚', color:'#00ffb3'},
+  events:       {label:'Events',             icon:'🎉', color:'#ffd000'},
+  transport:    {label:'Transport',          icon:'🚗', color:'#2b8fff'},
+  health:       {label:'Health & Care',      icon:'❤️',  color:'#ff3d5a'},
+  construction: {label:'Construction',       icon:'🔨', color:'#ff8c00'},
+  creative:     {label:'Creative & Media',   icon:'🎨', color:'#c94dff'},
+  finance:      {label:'Finance & Legal',    icon:'💰', color:'#00d26a'},
+  security:     {label:'Security',           icon:'🔒', color:'#6a8aaa'},
+  wellness:     {label:'Wellness & Sport',   icon:'🧘', color:'#ff5fa0'},
+  rental:       {label:'Rentals & Stays',    icon:'🏡', color:'#00e5ff'},
+  artisan:      {label:'Artisan & Jua Kali', icon:'🪚', color:'#ff7043'},
+  digital:      {label:'Digital Hustle',     icon:'📲', color:'#7c4dff'},
+  legal:        {label:'Legal & Admin',      icon:'⚖️',  color:'#546e7a'},
+  farm:         {label:'Agri & Farm',        icon:'🌾', color:'#66bb6a'},
+  kids:         {label:'Kids & Family',      icon:'👧', color:'#ff80ab'},
+  culture:      {label:'Culture & Talent',   icon:'🎭', color:'#ffa726'},
+  civil:        {label:'Civil & Community',  icon:'🏛️',  color:'#78909c'}
+};
+
+var LEVELS = [
+  {name:'Rookie',   xp:0,     color:'#4a5470'},
+  {name:'Skilled',  xp:1500,  color:'#00d26a'},
+  {name:'Expert',   xp:3500,  color:'#00d4ff'},
+  {name:'Master',   xp:6500,  color:'#ffd000'},
+  {name:'Legend',   xp:9000,  color:'#ff3d9a'}
+];
+
+function getLevel(xp){
+  var l=LEVELS[0];
+  for(var i=0;i<LEVELS.length;i++){if(xp>=LEVELS[i].xp)l=LEVELS[i];}
+  return l;
+}
+
+var RAW=[
+  /* ── TECH & DEVICES ── */
+  {id:'computer-repair',     label:'Computer Repair',          cat:'tech',         emoji:'💻'},
+  {id:'phone-repairs',       label:'Phone Repair (iPhone/Tecno/Infinix)', cat:'tech', emoji:'📲'},
+  {id:'laptop-recovery',     label:'Laptop Repair & Data Recovery', cat:'tech',     emoji:'💾'},
+  {id:'tv-mounting',         label:'TV & Home Theatre Setup',   cat:'tech',         emoji:'📺'},
+  {id:'tv-repair',           label:'TV Repair',                 cat:'tech',         emoji:'📡'},
+  {id:'cad-design',          label:'CAD Design',                cat:'tech',         emoji:'🖥️'},
+  {id:'computer-networking', label:'Computer Networking',       cat:'tech',         emoji:'🌐'},
+  {id:'dstv',                label:'DSTV Installers',           cat:'tech',         emoji:'📡'},
+  {id:'smart-home',          label:'Smart Home Installs',       cat:'tech',         emoji:'🏠'},
+  {id:'cctv-tech',           label:'CCTV & Security Systems',   cat:'tech',         emoji:'📷'},
+  {id:'audio-repair',        label:'Audio System Repair',       cat:'tech',         emoji:'🔊'},
+  {id:'mobile-app-dev',      label:'Mobile App Developer',      cat:'tech',         emoji:'📱'},
+  {id:'software-dev',        label:'Software Developer',        cat:'tech',         emoji:'⌨️'},
+  {id:'web-designer',        label:'Web Designer',              cat:'tech',         emoji:'🌐'},
+  {id:'it-specialist',       label:'IT Specialist',             cat:'tech',         emoji:'🖧'},
+  {id:'wifi-setup',          label:'Wi-Fi & Router Setup',      cat:'tech',         emoji:'📶'},
+  {id:'battery-charger-tech',label:'Battery & Charger Technician', cat:'tech',      emoji:'🔋'},
+  {id:'smart-lock',          label:'Smart Lock Installs',       cat:'tech',         emoji:'🔐'},
+  {id:'game-console-repair', label:'Game Console Repair (PS/Xbox)', cat:'tech',     emoji:'🎮'},
+
+  /* ── BEAUTY ── */
+  {id:'beauty-salons',       label:'Beauty Salons',             cat:'beauty',       emoji:'💅'},
+  {id:'hair-braiding',       label:'Hair Braiding & Locs',      cat:'beauty',       emoji:'💇'},
+  {id:'hair-cut',            label:'Barber & Kinyozi',          cat:'beauty',       emoji:'✂️'},
+  {id:'mobile-barber',       label:'Mobile Barber',             cat:'beauty',       emoji:'💈'},
+  {id:'bridal-hair',         label:'Bridal Hair Stylist',       cat:'beauty',       emoji:'👰'},
+  {id:'makeup',              label:'Makeup Artist',             cat:'beauty',       emoji:'💋'},
+  {id:'manicure',            label:'Nail Technician',           cat:'beauty',       emoji:'💅'},
+  {id:'wig-install',         label:'Wig Installation',          cat:'beauty',       emoji:'💁'},
+  {id:'salons-spas',         label:'Salons & Spas',             cat:'beauty',       emoji:'💆'},
+  {id:'lash-tech',           label:'Lash Technician',           cat:'beauty',       emoji:'👁️'},
+  {id:'beauty-classes',      label:'Beauty Salon Classes',      cat:'beauty',       emoji:'💄'},
+  {id:'massage-therapy',     label:'Massage Therapist (Home)', cat:'beauty',       emoji:'🛁'},
+  {id:'natural-hair',        label:'Natural Hair Specialist',   cat:'beauty',       emoji:'🌿'},
+
+  /* ── FOOD & CATERING ── */
+  {id:'cooks-chefs',         label:'Cooks & Private Chefs',     cat:'food',         emoji:'👨‍🍳'},
+  {id:'event-catering',      label:'Event Caterer',             cat:'food',         emoji:'🍴'},
+  {id:'corporate-catering',  label:'Corporate Catering',        cat:'food',         emoji:'🍱'},
+  {id:'buffet-caterers',     label:'Buffet Caterers',           cat:'food',         emoji:'🍽️'},
+  {id:'nyama-choma',         label:'Nyama Choma Grill',         cat:'food',         emoji:'🍖'},
+  {id:'baking',              label:'Baking & Pastries',         cat:'food',         emoji:'🍰'},
+  {id:'wedding-cake',        label:'Wedding Cake Artist',       cat:'food',         emoji:'🎂'},
+  {id:'barista',             label:'Barista',                   cat:'food',         emoji:'☕'},
+  {id:'meal-prep',           label:'Meal Prep for Busy Homes',  cat:'food',         emoji:'🥘'},
+  {id:'street-food',         label:'Street Food (Smokie-Mayai/Chips)', cat:'food',  emoji:'🌭'},
+  {id:'office-catering',     label:'Office Catering',           cat:'food',         emoji:'🧆'},
+
+  /* ── HOME SERVICES ── */
+  {id:'house-cleaning',      label:'House Cleaning Pro',        cat:'home',         emoji:'🧹'},
+  {id:'deep-cleaning',       label:'Deep Cleaning',             cat:'home',         emoji:'🧴'},
+  {id:'airbnb-cleaning',     label:'Airbnb Cleaning & Turnover',cat:'home',         emoji:'🏨'},
+  {id:'carpet-cleaning',     label:'Carpet Cleaning',           cat:'home',         emoji:'🧽'},
+  {id:'sofa-cleaning',       label:'Sofa & Steam Cleaning',     cat:'home',         emoji:'🛋️'},
+  {id:'mama-fua',            label:'Mama Fua / Laundry',        cat:'home',         emoji:'👕'},
+  {id:'laundry-pickup',      label:'Laundry & Ironing Pick-Up', cat:'home',         emoji:'👔'},
+  {id:'window-cleaning',     label:'Window Cleaning',           cat:'home',         emoji:'🪟'},
+  {id:'pest-fumigation',     label:'Pest Fumigation',           cat:'home',         emoji:'🪲'},
+  {id:'handyman',            label:'Handyman',                  cat:'home',         emoji:'🔨'},
+  {id:'appliance-repair',    label:'Appliance Repair',          cat:'home',         emoji:'🔧'},
+  {id:'fridge-repairs',      label:'Fridge Repairs',            cat:'home',         emoji:'🧊'},
+  {id:'furniture-repairs',   label:'Furniture Repairs',         cat:'home',         emoji:'🛋️'},
+  {id:'curtain-install',     label:'Curtain Installation',      cat:'home',         emoji:'🪟'},
+  {id:'cabinet-install',     label:'Cabinet Installation',      cat:'home',         emoji:'🚪'},
+  {id:'wallpaper',           label:'Wallpaper Installs',        cat:'home',         emoji:'🖼️'},
+  {id:'gas-supplier',        label:'Gas Supplier & Delivery',   cat:'home',         emoji:'🔥'},
+  {id:'water-delivery',      label:'Water Delivery',            cat:'home',         emoji:'💧'},
+  {id:'water-tank-cleaning', label:'Water Tank Cleaning',       cat:'home',         emoji:'🚿'},
+  {id:'garbage-collection',  label:'Garbage Collection',        cat:'home',         emoji:'🗑️'},
+  {id:'errand-runner',       label:'Errand Runners',            cat:'home',         emoji:'🏃'},
+  {id:'air-conditioner',     label:'Air Conditioner Service',   cat:'home',         emoji:'❄️'},
+
+  /* ── EDUCATION ── */
+  {id:'math-tutor',          label:'Math Tutoring',             cat:'education',    emoji:'➗'},
+  {id:'english-classes',     label:'English Classes',           cat:'education',    emoji:'📖'},
+  {id:'coding-tutor',        label:'Coding Tutor',              cat:'education',    emoji:'👨‍💻'},
+  {id:'biology-tutor',       label:'Biology Tutoring',          cat:'education',    emoji:'🔬'},
+  {id:'chemistry-tutor',     label:'Chemistry Tutoring',        cat:'education',    emoji:'⚗️'},
+  {id:'physics-tutor',       label:'Physics Tutoring',          cat:'education',    emoji:'⚛️'},
+  {id:'baking-classes',      label:'Baking Classes',            cat:'education',    emoji:'🧁'},
+  {id:'beauty-training',     label:'Beauty School Classes',     cat:'education',    emoji:'💄'},
+  {id:'kids-dance',          label:'Kids Dance Classes',        cat:'education',    emoji:'🩰'},
+  {id:'adult-literacy',      label:'Adult Literacy Tutor',      cat:'education',    emoji:'📝'},
+  {id:'music-teacher',       label:'Music Teacher',             cat:'education',    emoji:'🎵'},
+  {id:'canva-photoshop',     label:'Digital Skills Coach (Canva/Photoshop)', cat:'education', emoji:'🖌️'},
+  {id:'mobile-photo-coach',  label:'Mobile Photography Coach',  cat:'education',    emoji:'📸'},
+  {id:'learning-aid',        label:'Learning Aid (Dyslexia/ADHD)', cat:'education', emoji:'🧩'},
+  {id:'chinese-classes',     label:'Chinese Classes',           cat:'education',    emoji:'🈵'},
+
+  /* ── EVENTS ── */
+  {id:'event-dj',            label:'Events DJ',                 cat:'events',       emoji:'🎧'},
+  {id:'emcees',              label:'MC / Emcee',                cat:'events',       emoji:'🎤'},
+  {id:'wedding-planner',     label:'Wedding Planner',           cat:'events',       emoji:'💍'},
+  {id:'party-decorators',    label:'Party Decorators',          cat:'events',       emoji:'🎊'},
+  {id:'florist',             label:'Florist & Floral Arch',     cat:'events',       emoji:'💐'},
+  {id:'children-entertainer',label:'Kids Party Entertainer',    cat:'events',       emoji:'🎪'},
+  {id:'bands',               label:'Bands For Hire',            cat:'events',       emoji:'🎸'},
+  {id:'dance-classes',       label:'Dance Classes',             cat:'events',       emoji:'💃'},
+  {id:'balloon-artist',      label:'Balloon Artist & Cake Table', cat:'events',     emoji:'🎈'},
+  {id:'chair-table-rentals', label:'Chairs, Tables & Canopy Rental', cat:'events',  emoji:'⛺'},
+  {id:'stage-decorator',     label:'Stage Decorator & Event Stylist', cat:'events', emoji:'🎆'},
+  {id:'photo-booth',         label:'Photo Booth Hire',          cat:'events',       emoji:'📷'},
+  {id:'sound-system',        label:'Sound Equipment Rental',    cat:'events',       emoji:'🔈'},
+  {id:'tent-rental',         label:'Tent & Mobile Toilet Rentals', cat:'events',    emoji:'🏕️'},
+
+  /* ── TRANSPORT ── */
+  {id:'drivers',             label:'Drivers For Hire',          cat:'transport',    emoji:'🚘'},
+  {id:'personal-driver',     label:'Personal Driver',           cat:'transport',    emoji:'🚖'},
+  {id:'taxi-driver',         label:'Taxi Driver',               cat:'transport',    emoji:'🚕'},
+  {id:'executive-cars',      label:'Executive Cars & Chauffeur',cat:'transport',    emoji:'🚙'},
+  {id:'delivery-rider',      label:'Delivery Rider (Boda)',     cat:'transport',    emoji:'📦'},
+  {id:'tuk-tuk',             label:'Tuk Tuk Delivery',          cat:'transport',    emoji:'🛺'},
+  {id:'water-tanker',        label:'Water Tanker',              cat:'transport',    emoji:'🚚'},
+  {id:'help-moving',         label:'Help Moving',               cat:'transport',    emoji:'📦'},
+  {id:'safari-agents',       label:'Safari & Tour Driver',      cat:'transport',    emoji:'🦁'},
+  {id:'tour-guide',         label:'Tour Guide & Local Host',    cat:'transport',    emoji:'🦁'},
+  {id:'airport-transfer',    label:'Airport Transfer',          cat:'transport',    emoji:'✈️'},
+  {id:'truck-hire',          label:'Truck Hire Services',       cat:'transport',    emoji:'🚛'},
+  {id:'auto-locksmith',      label:'Auto Locksmith',            cat:'transport',    emoji:'🔑'},
+  {id:'auto-mechanics',      label:'Auto Mechanics',            cat:'transport',    emoji:'🔩'},
+  {id:'car-cleaner',         label:'Car Cleaner',               cat:'transport',    emoji:'🧹'},
+  {id:'mobile-tyre',         label:'Mobile Tyre Fitters',       cat:'transport',    emoji:'🔧'},
+  {id:'bike-tech',           label:'Bike Technician',           cat:'transport',    emoji:'🚲'},
+  {id:'emergency-towing',    label:'Emergency Jumpstart & Towing', cat:'transport', emoji:'⛽'},
+  {id:'boda-errands',        label:'Boda Boda Errands',         cat:'transport',    emoji:'🏍️'},
+
+  /* ── HEALTH & CARE ── */
+  {id:'caregiver',           label:'Caregiver',                 cat:'health',       emoji:'🩺'},
+  {id:'daycare',             label:'Day Care Services',         cat:'health',       emoji:'🏥'},
+  {id:'elderly-care',        label:'Elderly Care Giver',        cat:'health',       emoji:'👴'},
+  {id:'home-nurse',          label:'Home-Based Nurse',          cat:'health',       emoji:'🏥'},
+  {id:'physio',              label:'Physiotherapist (Home)',    cat:'health',       emoji:'🦽'},
+  {id:'dietitians',          label:'Dietitian & Nutritionist',  cat:'health',       emoji:'🥗'},
+  {id:'ambulance',           label:'Ambulance Services',        cat:'health',       emoji:'🚑'},
+  {id:'psychiatrists',       label:'Psychiatrist',              cat:'health',       emoji:'🧬'},
+  {id:'medication-delivery', label:'Medication Pick-Up Assistant', cat:'health',    emoji:'💊'},
+  {id:'doula',               label:'Doula & Postpartum Support',cat:'health',       emoji:'🤱'},
+  {id:'veterinary',          label:'Veterinary Services',       cat:'health',       emoji:'🐾'},
+
+  /* ── CONSTRUCTION ── */
+  {id:'electricians',        label:'Electricians',              cat:'construction', emoji:'⚡'},
+  {id:'plumber',             label:'Plumber',                   cat:'construction', emoji:'🪠'},
+  {id:'mason',               label:'Mason',                     cat:'construction', emoji:'🧱'},
+  {id:'carpenter',           label:'Carpenter',                 cat:'construction', emoji:'🪚'},
+  {id:'exterior-painter',    label:'Exterior Painter',          cat:'construction', emoji:'🖌️'},
+  {id:'interior-painter',    label:'Interior Painter',          cat:'construction', emoji:'🪣'},
+  {id:'solar',               label:'Solar Installation',        cat:'construction', emoji:'☀️'},
+  {id:'roof-install',        label:'Roof Installation & Repairs', cat:'construction', emoji:'🏘️'},
+  {id:'floor-tiles',         label:'Tilers & Pavers',           cat:'construction', emoji:'🪨'},
+  {id:'gypsum-ceiling',      label:'Gypsum Ceiling',            cat:'construction', emoji:'🏛️'},
+  {id:'fencing',             label:'Fencing & Perimeter Walls', cat:'construction', emoji:'🏚️'},
+  {id:'general-contractors', label:'General Contractors',       cat:'construction', emoji:'🏗️'},
+  {id:'building-contractors',label:'Building Contractors (Fundi)', cat:'construction', emoji:'🏗️'},
+  {id:'architects',          label:'Architects',                cat:'construction', emoji:'📐'},
+  {id:'land-surveyors',      label:'Land Surveyors & Valuers',  cat:'construction', emoji:'📏'},
+  {id:'biodigester',         label:'Biodigester Install',       cat:'construction', emoji:'♻️'},
+  {id:'borehole',            label:'Borehole Drilling',         cat:'construction', emoji:'💧'},
+  {id:'gate-repairs',        label:'Gate & Grill Fabricators',  cat:'construction', emoji:'🚧'},
+  {id:'scaffolding',         label:'Scaffolding & Formwork',    cat:'construction', emoji:'🏗️'},
+  {id:'plastering',          label:'Plastering & Skimming',     cat:'construction', emoji:'🧱'},
+  {id:'site-supervisor',     label:'Site Supervisor / Clerk of Works', cat:'construction', emoji:'📋'},
+  {id:'wiring',              label:'Wiring Installation',       cat:'construction', emoji:'🔌'},
+  {id:'water-tank-install',  label:'Water Tank Install',        cat:'construction', emoji:'🏗️'},
+  {id:'greenhouse',          label:'Greenhouse Installation',   cat:'farm',         emoji:'🌱'},
+  {id:'compound-wall',       label:'Compound & Perimeter Builders', cat:'construction', emoji:'🧱'},
+
+  /* ── CREATIVE & MEDIA ── */
+  {id:'photographer',        label:'Photographer',              cat:'creative',     emoji:'📸'},
+  {id:'videographers',       label:'Videographer',              cat:'creative',     emoji:'🎥'},
+  {id:'drone-operator',      label:'Drone Operator',            cat:'creative',     emoji:'🚁'},
+  {id:'graphic-designer',    label:'Graphic Designer & Logo',   cat:'creative',     emoji:'🎭'},
+  {id:'interior-design',     label:'Interior Designer & Decor', cat:'creative',     emoji:'🛋️'},
+  {id:'fashion-design',      label:'Fashion Designer',          cat:'creative',     emoji:'👘'},
+  {id:'tailor',              label:'Tailor',                    cat:'creative',     emoji:'🧵'},
+  {id:'clothing-alterations',label:'Mobile Tailor (Repairs/Adjustments)', cat:'creative', emoji:'🪡'},
+  {id:'clothing-designers',  label:'Clothing Designers',        cat:'creative',     emoji:'👗'},
+  {id:'voice-over',          label:'Voiceover & Swahili Narrator', cat:'creative',  emoji:'🎙️'},
+  {id:'blog-writers',        label:'Blog & Caption Writers',    cat:'creative',     emoji:'✍️'},
+  {id:'content-creator',     label:'Content Creator (TikTok/Reels)', cat:'creative',emoji:'📱'},
+  {id:'video-editing',       label:'Video Editing Services',    cat:'creative',     emoji:'🎬'},
+  {id:'podcast-production',  label:'Podcast Production',        cat:'creative',     emoji:'🎙️'},
+  {id:'realestate-video',    label:'Real Estate Videography',   cat:'creative',     emoji:'🎬'},
+  {id:'signage-maker',       label:'Signage Makers for Shops',  cat:'creative',     emoji:'🪧'},
+  {id:'mural-artist',        label:'Interior Mural & Wall Art', cat:'creative',     emoji:'🖼️'},
+  {id:'transcriber',         label:'Transcribers & Typists',    cat:'creative',     emoji:'⌨️'},
+  {id:'pitch-deck-writer',   label:'Business Proposal Writer',  cat:'creative',     emoji:'📊'},
+  {id:'art',                 label:'Visual Art',                cat:'creative',     emoji:'🎨'},
+
+  /* ── FINANCE & LEGAL ── */
+  {id:'accountant',          label:'Accountant',                cat:'finance',      emoji:'📊'},
+  {id:'accountant-cpa',      label:'CPA Accountant',            cat:'finance',      emoji:'🧾'},
+  {id:'bookkeeping',         label:'Bookkeeper for Small Biz',  cat:'finance',      emoji:'📒'},
+  {id:'tax-prep',            label:'KRA Filing & Tax Prep',     cat:'finance',      emoji:'📋'},
+  {id:'business-consultant', label:'Business Consultant',       cat:'finance',      emoji:'💼'},
+  {id:'real-estate',         label:'Real Estate Agent',         cat:'finance',      emoji:'🏘️'},
+  {id:'appraisers',          label:'Valuers & Appraisers',      cat:'finance',      emoji:'🏷️'},
+  {id:'business-reg',        label:'Business Registration Agents', cat:'legal',     emoji:'📑'},
+  {id:'mpesa-setup',         label:'M-Pesa Shop Setup Services', cat:'finance',     emoji:'📱'},
+  {id:'social-media-mgr',    label:'Social Media Manager (SMEs)', cat:'digital',    emoji:'📲'},
+  {id:'whatsapp-biz',        label:'WhatsApp Business Page Setup', cat:'digital',   emoji:'💬'},
+
+  /* ── SECURITY ── */
+  {id:'security-guards',     label:'Security Guards',           cat:'security',     emoji:'💂'},
+  {id:'business-security',   label:'Business Security',         cat:'security',     emoji:'🏢'},
+  {id:'event-security',      label:'Bouncers & Event Security', cat:'security',     emoji:'🛡️'},
+  {id:'cctv',                label:'CCTV Installs',             cat:'security',     emoji:'📷'},
+  {id:'investigators',       label:'Private Investigators',     cat:'security',     emoji:'🕵️'},
+  {id:'locksmith',           label:'Locksmith',                 cat:'security',     emoji:'🔓'},
+
+  /* ── WELLNESS & SPORT ── */
+  {id:'fitness-trainer',     label:'Fitness Trainer',           cat:'wellness',     emoji:'🏋️'},
+  {id:'fitness-instructor',  label:'Fitness Instructor',        cat:'wellness',     emoji:'🏃'},
+  {id:'swimming',            label:'Swimming Lessons',          cat:'wellness',     emoji:'🏊'},
+  {id:'counselors',          label:'Counselors & Therapists',   cat:'wellness',     emoji:'🧠'},
+  {id:'life-coaching',       label:'Life Coaching',             cat:'wellness',     emoji:'🌟'},
+  {id:'dog-trainer',         label:'Dog Trainer',               cat:'wellness',     emoji:'🐕'},
+  {id:'dog-walker',          label:'Dog Walker',                cat:'wellness',     emoji:'🦮'},
+  {id:'landscaping',         label:'Landscaping & Lawn Care',   cat:'wellness',     emoji:'🌿'},
+  {id:'nutrition-coach',     label:'Nutrition Coach (Local Diet)', cat:'wellness',  emoji:'🥑'},
+  {id:'therapists',          label:'Mental Health Therapist',   cat:'wellness',     emoji:'🧘'},
+  {id:'urban-garden',        label:'Urban Gardening Expert',    cat:'wellness',     emoji:'🪴'},
+  {id:'tree-cutting',        label:'Tree Cutting & Trimming',   cat:'wellness',     emoji:'🌳'},
+  {id:'compound-maintenance',label:'Compound & Garden Maintenance', cat:'wellness', emoji:'🌱'},
+  {id:'pet-boarding',        label:'Pet Boarding & Walking',    cat:'wellness',     emoji:'🐾'},
+  {id:'family-therapist',    label:'Family Therapist & Parenting Coach', cat:'wellness', emoji:'👨‍👩‍👧'},
+
+  /* ── RENTALS & STAYS ── */
+  {id:'furnished-apartment', label:'Furnished Apartment Host',  cat:'rental',       emoji:'🏢'},
+  {id:'short-stay-rooms',    label:'Short-Stay Room Rentals (SQ/Bedsitter)', cat:'rental', emoji:'🛏️'},
+  {id:'event-stays',         label:'Event-Based Stays (Weddings/Funerals)', cat:'rental', emoji:'🏡'},
+  {id:'caretaker',           label:'Caretakers & Key Handlers', cat:'rental',       emoji:'🗝️'},
+  {id:'airbnb-host',         label:'Airbnb Host Management',    cat:'rental',       emoji:'🏘️'},
+  {id:'luxury-car-rental',   label:'Luxury Car Rentals',        cat:'rental',       emoji:'🚗'},
+  {id:'van-bus-hire',        label:'Vans & Buses Hire',         cat:'rental',       emoji:'🚌'},
+
+  /* ── ARTISAN & JUA KALI ── */
+  {id:'furniture-maker',     label:'Furniture Maker & Refinisher', cat:'artisan',   emoji:'🪑'},
+  {id:'jua-kali-metal',      label:'Jua Kali (Metal & Wood)',   cat:'artisan',      emoji:'⚙️'},
+  {id:'welder',              label:'Welder & Gate Fabricator',  cat:'artisan',      emoji:'⚒️'},
+  {id:'sofa-reupholstery',   label:'Sofa Reupholstery',         cat:'artisan',      emoji:'🛋️'},
+  {id:'shoemaker',           label:'Shoemaker & Leather Repair',cat:'artisan',      emoji:'👟'},
+  {id:'instrument-repair',   label:'Instrument Repair (Guitar/Keyboard)', cat:'artisan', emoji:'🎸'},
+  {id:'mobile-kiosk',        label:'Mobile Kiosk Setup',        cat:'artisan',      emoji:'🏪'},
+  {id:'aluminum-doors',      label:'Aluminum Doors & Partitions', cat:'artisan',    emoji:'🪟'},
+  {id:'glass-repair',        label:'Window Glass Repair',       cat:'artisan',      emoji:'🔲'},
+  {id:'brick-maker',         label:'Brick Makers & Clay Oven Builders', cat:'artisan', emoji:'🧱'},
+
+  /* ── DIGITAL HUSTLE ── */
+  {id:'youtube-coach',       label:'YouTube & TikTok Coach',    cat:'digital',      emoji:'▶️'},
+  {id:'digital-skills',      label:'Digital Skills Coach',      cat:'digital',      emoji:'🖥️'},
+  {id:'app-tester',          label:'Mobile App Tester',         cat:'digital',      emoji:'📱'},
+  {id:'hashtag-pro',         label:'Hashtag & Reach Strategy',  cat:'digital',      emoji:'#️⃣'},
+
+  /* ── LEGAL & ADMIN ── */
+  {id:'commissioner-oaths',  label:'Commissioner for Oaths',    cat:'legal',        emoji:'📜'},
+  {id:'nssf-nhif',           label:'NSSF & NHIF Application Assistant', cat:'legal',emoji:'🏛️'},
+  {id:'property-agreement',  label:'Property Agreement Drafter',cat:'legal',        emoji:'📋'},
+  {id:'birth-death-cert',    label:'Birth/Death Certificate Agent', cat:'civil',    emoji:'📄'},
+  {id:'huduma-assistant',    label:'Huduma Center Assistant',   cat:'civil',        emoji:'🏛️'},
+  {id:'chama-treasurer',     label:'Chama Record-Keeper / Treasurer', cat:'civil',  emoji:'💰'},
+  {id:'chiefs-letter',       label:'Chiefs Letter Runner',      cat:'civil',        emoji:'✉️'},
+  {id:'kra-pin',             label:'KRA Filing & PIN Registration', cat:'legal',    emoji:'📋'},
+
+  /* ── AGRI & FARM ── */
+  {id:'shamba-boy',          label:'Shamba Boy & Farm Laborer', cat:'farm',         emoji:'🌾'},
+  {id:'irrigation-install',  label:'Irrigation System Installation', cat:'farm',    emoji:'💧'},
+  {id:'beekeeping',          label:'Beekeeping Trainer',        cat:'farm',         emoji:'🐝'},
+  {id:'compost-provider',    label:'Organic Compost Provider',  cat:'farm',         emoji:'♻️'},
+  {id:'livestock-vet',       label:'Livestock Vaccination & Care', cat:'farm',      emoji:'🐄'},
+  {id:'poultry-housing',     label:'Poultry Housing Technician',cat:'farm',         emoji:'🐓'},
+  {id:'fish-pond',           label:'Fish Pond Constructor & Tilapia Expert', cat:'farm', emoji:'🐟'},
+  {id:'urban-farming',       label:'Urban Farming Consultant',  cat:'farm',         emoji:'🥬'},
+
+  /* ── KIDS & FAMILY ── */
+  {id:'babysitting',         label:'Babysitting',               cat:'kids',         emoji:'👶'},
+  {id:'nanny',               label:'Nanny & Daycare Helper',    cat:'kids',         emoji:'🧒'},
+  {id:'homework-helper',     label:'Homework Helper & Babysitter', cat:'kids',      emoji:'📚'},
+  {id:'kids-party-planner',  label:'Birthday & Kids Party Planner', cat:'kids',     emoji:'🎂'},
+  {id:'kids-party-decor',    label:'Party Décor for Kids Events',cat:'kids',        emoji:'🎈'},
+  {id:'doula-postpartum',    label:'Doula & Postpartum Support',cat:'kids',         emoji:'🤱'},
+
+  /* ── CULTURE & TALENT ── */
+  {id:'traditional-dancers', label:'Traditional Dancers & Drummers', cat:'culture', emoji:'🥁'},
+  {id:'fashion-stylist',     label:'Fashion Stylist & Wardrobe Planner', cat:'culture', emoji:'👗'},
+  {id:'comedian',            label:'MCs & Comedians',           cat:'culture',      emoji:'🎭'},
+  {id:'choir-trainer',       label:'Choir Trainer & Live Band', cat:'culture',      emoji:'🎶'},
+  {id:'swahili-translator',  label:'Swahili Translator & Scriptwriter', cat:'culture', emoji:'🗣️'},
+  {id:'wedding-dowry-mc',    label:'MC for Wedding & Dowry Ceremony', cat:'culture',emoji:'💍'},
+  {id:'church-mc',           label:'Church Event & Harambee MC',cat:'culture',      emoji:'⛪'},
+  {id:'funeral-support',     label:'Funeral Support (Tents, Transport, Ushers)', cat:'culture', emoji:'🕊️'},
+
+  /* ── CIVIL & COMMUNITY ── */
+  {id:'funeral-organizer',   label:'Funeral Organizer',         cat:'civil',        emoji:'🕯️'},
+  {id:'water-pump-install',  label:'Water Pump Installers',     cat:'civil',        emoji:'🚿'},
+  {id:'fence-install',       label:'Fence Installation (Chainlink/Live/Wooden)', cat:'construction', emoji:'🏗️'},
+  {id:'personal-stylist',    label:'Personal Stylist (Events)', cat:'culture',      emoji:'✨'},
+  {id:'mtumba-stylist',      label:'Thrift (Mtumba) Stylist',   cat:'culture',      emoji:'👔'},
+  {id:'dry-cleaning',        label:'Dry Cleaning Pick-Up & Drop-Off', cat:'home',   emoji:'🧺'},
+  {id:'market-errands',      label:'Market Errand Runner (Gikomba/Toi)', cat:'home',emoji:'🛒'}
+];
+
+
+var NAIROBI=['Westlands','Kilimani','Kasarani','Embakasi','Mathare','Langata','Karen','CBD','Parklands','Rongai','Ngong Rd','Thika Rd','Ruiru','Kiambu Rd','South C','Eastleigh','Githurai','Umoja','Donholm','Kitengela','Juja','Kikuyu','Limuru','Athi River','Kayole','Buru Buru','Zimmerman','Roysambu','Mwiki','Kahawa West','Dagoretti','South B','Kabete'];
+var FNAMES=['Wanjiku','Otieno','Kamau','Achieng','Muthoni','Kipchoge','Njoroge','Omondi','Waweru','Chebet','Njuguna','Adhiambo','Macharia','Kerubo','Kimani','Kariuki','Wairimu','Mwangi','Onyango','Nyambura'];
+var SNAMES=['M.','J.','P.','S.','R.','B.','K.','V.','T.','A.','C.','L.','D.','F.','G.'];
+
+var PORTFOLIO_ITEMS = {
+  tech:['App Screenshot','UI Design','Code Review','Dashboard','Mobile UI','Website','Network Setup','Smart Home','Security System','Repair Job'],
+  beauty:['Bridal Look','Nail Art','Hair Style','Makeup Look','Braids','Lashes','Natural Locs','Kinyozi Cut','Facial','Massage Setup'],
+  food:['Signature Dish','Wedding Cake','Buffet Setup','Plating Art','Pastries','Street Food','Meal Prep','Nyama Choma','Event Spread','Dessert Table'],
+  home:['Before & After','Cleaning Job','Deep Clean','Pest Treatment','Sofa Clean','Laundry Done','Curtain Install','Window Shine','Appliance Fix','Errand Complete'],
+  education:['Student Results','Class Session','Study Materials','Certificate','Lesson Plan','Workshop','Online Class','Coding Project','Language Class','Learning Aid'],
+  events:['Event Setup','Stage Design','DJ Booth','Floral Arch','Décor','Photo Booth','Balloon Art','Tent Setup','Wedding Décor','Kids Party'],
+  transport:['Clean Ride','Vehicle Fleet','Safari Trip','Airport Run','Boda Delivery','Moving Job','Truck Load','Chauffeur Service','Tuk Tuk Delivery','Tyre Change'],
+  health:['Care Session','Medical Kit','Therapy Room','Home Visit','Wellness Check','Baby Care','Elderly Support','Physio Session','Nutrition Plan','Med Delivery'],
+  construction:['Completed Build','Foundation Work','Roofing','Electrical','Plumbing','Blueprint','Tiling','Solar Install','Gate Fabrication','Plastering'],
+  creative:['Logo Design','Photography','Illustration','Brand Kit','Poster','Video Edit','Drone Shot','TikTok Reel','Podcast Cover','Mural'],
+  finance:['Financial Report','Tax Filing','Audit Summary','Budget Plan','Investment Brief','KRA Filing','Business Reg','M-Pesa Setup','Bookkeeping','Property Valuation'],
+  security:['CCTV Setup','Patrol Route','Access Control','Guard Post','Alarm Install','Smart Lock','Investigation','Event Security'],
+  wellness:['Yoga Session','Fitness Plan','Meditation','Nutrition Chart','Garden Job','Dog Training','Swim Lesson','Pet Care','Tree Trim','Urban Garden'],
+  rental:['Furnished Room','Apartment View','Airbnb Setup','Guest Review','Key Handover','Car Rental','Bus Hire','Event Stay','Bedsitter Tour','SQ Room'],
+  artisan:['Custom Furniture','Metal Fabrication','Welded Gate','Reupholstered Sofa','Shoe Repair','Instrument Fix','Kiosk Build','Aluminum Door','Glass Install','Brick Work'],
+  digital:['TikTok Growth','YouTube Setup','Social Media Stats','App Test Report','Canva Design','WhatsApp Biz Page','Video Reel','Podcast Episode','Hashtag Strategy','Digital Class'],
+  legal:['Affidavit Signed','NSSF Application','Business Certificate','Property Agreement','KRA Certificate','Company Reg','Legal Document','Oath Commission'],
+  farm:['Shamba Work','Irrigation System','Beehive Setup','Compost Delivery','Livestock Care','Poultry House','Fish Pond','Urban Garden','Greenhouse','Harvest Day'],
+  kids:['Babysitting','Kids Party','Homework Help','Party Décor','Newborn Care','Doula Session','Learning Aid','Activity Day','Baby Shower','Family Fun'],
+  culture:['Traditional Dance','Styled Outfit','MC Performance','Choir Session','Translation Work','Wedding Ceremony','Church Event','Funeral Setup','Mtumba Look','Stage Décor'],
+  civil:['Birth Certificate','Huduma Visit','Chama Records','Chiefs Letter','Water Pump Install','Funeral Support','Document Delivery','Government Liaison','Community Service','Record Keeping']
+};
+
+var BIOS = [
+  'Trained through hands-on apprenticeship with 3+ years of field experience. I take pride in quality work and timely delivery.',
+  'Self-taught and industry-certified. Every project I take is an opportunity to exceed expectations.',
+  'Former corporate professional turned full-time freelancer. I bring structure, professionalism and real skill to every job.',
+  'Started in a local workshop and grew my skills over 5 years. My portfolio speaks for itself — quality is non-negotiable.',
+  'Passionate about my craft since childhood. I have served 200+ clients across Nairobi and surroundings.',
+  'Reliable, punctual and skilled. I believe every client deserves excellence, no matter the budget.',
+  'Apprenticed under one of Nairobi\'s best. Now running my own service with a growing loyal client base.',
+  'Ex-call centre worker who upskilled and never looked back. Let my work tell my story.'
+];
+
+var REVIEW_TEXTS = [
+  'Excellent work, very professional and finished on time. Will definitely hire again!',
+  'Great value for money. The quality exceeded my expectations. Highly recommend.',
+  'Very clean work and good communication throughout. Made everything easy.',
+  'Fast, reliable and skilled. My go-to person for this kind of work in Nairobi.',
+  'Impressed with the attention to detail. Really knows their craft well.',
+  'Came on time, did the job perfectly and left the place clean. Five stars.',
+  'Very patient with my requests and delivered exactly what I asked for. Top pro!',
+  'Found them on KaziHub and it was the best decision. Super professional.',
+  'Reasonable pricing and outstanding quality. Booked them again already.',
+  'The portfolio was accurate — real skill. Worth every shilling.'
+];
+
+var REVIEWER_NAMES=['James K.','Sarah W.','Peter O.','Grace M.','David N.','Faith A.','Brian M.','Lucy W.','Kevin O.','Mary N.'];
+
+var SERVICE_CATS = Object.keys(CATS);
+
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function rndF(a,b){return parseFloat((a+Math.random()*(b-a)).toFixed(1));}
+function pick(arr){return arr[rnd(0,arr.length-1)];}
+function seededRnd(seed,a,b){var x=Math.sin(seed)*10000;return a+Math.floor((x-Math.floor(x))*(b-a+1));}
+
+// Generate a rich pro dataset
+var PROS = [];
+var CAT_SERVICES = {
+  tech:['Software Developer','Web Designer','IT Specialist','Computer Repair','Phone Repairs','CCTV Installs','Smart Home Tech','Network Engineer','Wi-Fi Setup','Laptop Recovery','Game Console Repair','Battery Technician'],
+  beauty:['Hair Braiding Pro','Makeup Artist','Nail Technician','Bridal Stylist','Barber & Kinyozi','Salon Stylist','Wig Specialist','Lash Technician','Mobile Barber','Natural Hair Specialist','Massage Therapist'],
+  food:['Private Chef','Pastry Chef','Event Caterer','Barista','Nyama Choma Grill','Buffet Caterer','Wedding Cake Artist','Personal Cook','Meal Prep Pro','Street Food Vendor','Office Caterer'],
+  home:['House Cleaner','Deep Clean Specialist','Appliance Repair','Handyman','Carpet Cleaner','Pest Control','Sofa Cleaner','Curtain Installer','Laundry & Ironing','Window Cleaner','Mama Fua','Errand Runner','Garbage Collection'],
+  education:['Math Tutor','Coding Instructor','English Teacher','Science Tutor','Music Teacher','Baking Trainer','Dance Coach','Adult Literacy Tutor','Digital Skills Coach','Mobile Photography Coach','Learning Aid Specialist'],
+  events:['Events DJ','Wedding Planner','Party Decorator','MC / Emcee','Florist','Kids Entertainer','Band For Hire','Balloon Artist','Tent Rental','Stage Decorator','Sound System Rental','Photo Booth'],
+  transport:['Personal Driver','Delivery Rider','Safari Driver','Tuk Tuk Rider','Executive Chauffeur','Moving Assistant','Airport Transfer','Truck Hire','Mobile Tyre Fitter','Boda Boda Errands','Emergency Towing'],
+  health:['Caregiver','Dietitian','Physiotherapist','Home Nurse','Mental Health Counselor','Elderly Caregiver','Ambulance Driver','Doula & Postpartum','Medication Delivery','Veterinarian'],
+  construction:['Electrician','Plumber','Mason','Carpenter','Painter','Roofer','Solar Installer','General Contractor','Site Supervisor','Plasterer','Scaffolding Pro','Land Surveyor'],
+  creative:['Photographer','Videographer','Graphic Designer','Fashion Designer','Voice Over Artist','Content Creator','Video Editor','Podcast Producer','Signage Maker','Mural Artist','Transcriber','Pitch Deck Writer'],
+  finance:['Accountant','Bookkeeper','Tax Consultant','Financial Advisor','Real Estate Agent','CPA','M-Pesa Setup Pro','KRA Filing Agent','Business Consultant','Appraiser'],
+  security:['Security Guard','CCTV Installer','Locksmith','Private Investigator','Business Security Consultant','Event Bouncer','Smart Lock Installer'],
+  wellness:['Fitness Trainer','Yoga Instructor','Life Coach','Dog Trainer','Landscape Gardener','Nutrition Coach','Therapist','Swim Coach','Urban Gardener','Tree Cutter','Pet Boarder','Family Therapist'],
+  rental:['Airbnb Host','Furnished Apartment Host','Short-Stay Room Host','Caretaker & Key Handler','Luxury Car Host','Event-Based Stay Host','Van & Bus Hire'],
+  artisan:['Furniture Maker','Jua Kali Metal Worker','Welder & Fabricator','Sofa Reupholsterer','Shoemaker','Instrument Repair Tech','Mobile Kiosk Builder','Aluminum Fitter','Glass Repair Tech','Brick Maker'],
+  digital:['TikTok & YouTube Coach','Social Media Manager','WhatsApp Business Setup','App Tester','Digital Skills Trainer','Hashtag & Reach Strategist'],
+  legal:['Commissioner for Oaths','NSSF & NHIF Assistant','Business Registration Agent','Property Agreement Drafter','KRA Filing Agent','Tax Consultant'],
+  farm:['Shamba Boy / Farm Laborer','Irrigation Installer','Beekeeper Trainer','Compost Provider','Livestock Care Specialist','Poultry Housing Technician','Fish Pond Constructor','Urban Farming Consultant','Greenhouse Installer'],
+  kids:['Nanny & Daycare Helper','Babysitter','Homework Helper','Kids Party Planner','Party Décor Specialist','Doula & Postpartum Support'],
+  culture:['Traditional Dancer & Drummer','Fashion Stylist','MC & Comedian','Choir Trainer','Swahili Translator','Wedding & Dowry MC','Church Event MC','Funeral Support Organizer','Mtumba Stylist','Personal Stylist'],
+  civil:['Birth/Death Certificate Agent','Huduma Center Assistant','Chama Record-Keeper','Chiefs Letter Runner','Water Pump Installer','Funeral Organizer']
+};
+
+var PACKAGES_BY_CAT = {
+  default:[
+    {name:'Basic',desc:'Entry-level service, standard quality',price:'KES 500',icon:'📦'},
+    {name:'Standard',desc:'Full professional service with follow-up',price:'KES 1,500',icon:'⭐',featured:true},
+    {name:'Premium',desc:'All-inclusive premium experience',price:'KES 3,500',icon:'💎'}
+  ],
+  food:[
+    {name:'Tasting Plate',desc:'Sample menu for 2 persons',price:'KES 800',icon:'🍽️'},
+    {name:'Full Service',desc:'Complete meal prep, up to 20 guests',price:'KES 4,500',icon:'👨‍🍳',featured:true},
+    {name:'Event Catering',desc:'Large event, full buffet setup',price:'KES 15,000',icon:'🎪'}
+  ],
+  beauty:[
+    {name:'Quick Fix',desc:'30-min service, one style',price:'KES 300',icon:'💅'},
+    {name:'Full Session',desc:'Complete beauty treatment, 2 hrs',price:'KES 1,200',icon:'💆',featured:true},
+    {name:'Bridal Package',desc:'Full day bridal prep, trials included',price:'KES 8,000',icon:'👰'}
+  ],
+  construction:[
+    {name:'Assessment',desc:'Site visit and quote only',price:'KES 500',icon:'📋'},
+    {name:'Half Day Job',desc:'4-hour focused work session',price:'KES 2,500',icon:'🔧',featured:true},
+    {name:'Full Project',desc:'End-to-end project management',price:'KES 12,000',icon:'🏗️'}
+  ],
+  tech:[
+    {name:'Quick Fix',desc:'1-hour remote or on-site support',price:'KES 800',icon:'💻'},
+    {name:'Build & Deploy',desc:'Full feature development',price:'KES 5,000',icon:'⌨️',featured:true},
+    {name:'Retainer',desc:'Monthly ongoing tech support',price:'KES 15,000/mo',icon:'🔄'}
+  ],
+  creative:[
+    {name:'Starter',desc:'1 deliverable, 2 revisions',price:'KES 1,500',icon:'🎨'},
+    {name:'Pro',desc:'3 deliverables, unlimited revisions',price:'KES 4,500',icon:'📸',featured:true},
+    {name:'Campaign',desc:'Full content campaign, all formats',price:'KES 12,000',icon:'🎬'}
+  ],
+  rental:[
+    {name:'One Night',desc:'Single night stay, self check-in',price:'KES 2,000',icon:'🛏️'},
+    {name:'Weekend',desc:'Fri–Sun, includes welcome pack',price:'KES 5,500',icon:'🏡',featured:true},
+    {name:'Weekly',desc:'7-day stay, fully serviced',price:'KES 18,000',icon:'🏠'}
+  ],
+  artisan:[
+    {name:'Repair',desc:'Single item repair or fix',price:'KES 600',icon:'🔧'},
+    {name:'Custom Build',desc:'Made-to-order single piece',price:'KES 4,000',icon:'🪚',featured:true},
+    {name:'Full Project',desc:'Multi-piece or large custom order',price:'KES 12,000',icon:'🏭'}
+  ],
+  digital:[
+    {name:'Setup',desc:'One-time account/page setup',price:'KES 1,000',icon:'📲'},
+    {name:'Monthly Mgmt',desc:'Full social media management/mo',price:'KES 4,500',icon:'📊',featured:true},
+    {name:'Growth Campaign',desc:'Ads + content + analytics, 3 months',price:'KES 15,000',icon:'🚀'}
+  ],
+  legal:[
+    {name:'Single Doc',desc:'One document drafted or certified',price:'KES 500',icon:'📄'},
+    {name:'Full Application',desc:'Complete application process handled',price:'KES 2,000',icon:'📋',featured:true},
+    {name:'Business Package',desc:'Registration + compliance + docs',price:'KES 8,000',icon:'🏛️'}
+  ],
+  farm:[
+    {name:'Day Labour',desc:'One full day of farm work',price:'KES 800',icon:'🌾'},
+    {name:'Weekly Help',desc:'5-day intensive farm support',price:'KES 3,500',icon:'🚜',featured:true},
+    {name:'Full Installation',desc:'Irrigation/greenhouse full install',price:'KES 15,000',icon:'🌱'}
+  ],
+  kids:[
+    {name:'Half Day',desc:'4-hour childcare session',price:'KES 700',icon:'🧒'},
+    {name:'Full Day',desc:'8-hour childcare, meals included',price:'KES 1,500',icon:'👶',featured:true},
+    {name:'Weekly',desc:'Monday–Friday full-time nannying',price:'KES 6,000',icon:'🏠'}
+  ],
+  culture:[
+    {name:'Single Gig',desc:'2-hour performance or styling session',price:'KES 3,000',icon:'🎭'},
+    {name:'Full Event',desc:'Half-day event coverage',price:'KES 8,000',icon:'🎉',featured:true},
+    {name:'Premium',desc:'Full-day premium performance package',price:'KES 18,000',icon:'👑'}
+  ],
+  civil:[
+    {name:'Single Errand',desc:'One document or errand run',price:'KES 500',icon:'🏃'},
+    {name:'Application',desc:'Full application handled end-to-end',price:'KES 1,500',icon:'📋',featured:true},
+    {name:'Community Package',desc:'Bulk services for estates/groups',price:'KES 5,000',icon:'🏘️'}
+  ]
+};
+
+function getPackages(cat){
+  return PACKAGES_BY_CAT[cat]||PACKAGES_BY_CAT.default;
+}
+
+(function generatePros(){
+  var id=1;
+  SERVICE_CATS.forEach(function(cat){
+    var services=CAT_SERVICES[cat]||['Professional'];
+    var count=rnd(14,22);
+    for(var i=0;i<count;i++){
+      var fname=pick(FNAMES), sname=pick(SNAMES);
+      var xp=Math.floor(Math.pow(Math.random(),1.6)*10000);
+      var lv=getLevel(xp);
+      var rating=rndF(3.5,5.0);
+      var jobs=rnd(3,380);
+      var isNew=(Math.random()<0.12);
+      var isFeatured=(xp>5000&&Math.random()<0.3);
+      var portfolioItems=PORTFOLIO_ITEMS[cat]||PORTFOLIO_ITEMS.tech;
+      // shuffle portfolio items
+      var shuffled=portfolioItems.slice().sort(function(){return Math.random()-.5;});
+      PROS.push({
+        id:id++,
+        name:fname+' '+sname,
+        initials:fname[0]+sname[0],
+        service:pick(services),
+        cat:cat,
+        color:CATS[cat].color,
+        area:pick(NAIROBI),
+        xp:xp,level:lv,
+        rating:rating,
+        jobs:jobs,
+        reviews:rnd(2,Math.min(jobs,120)),
+        isNew:isNew,
+        isFeatured:isFeatured,
+        isOnline:(Math.random()<0.35),
+        responseTime:pick(['~5 min','~15 min','~1 hr','~2 hrs']),
+        bio:pick(BIOS),
+        portfolioItems:shuffled,
+        packages:getPackages(cat),
+        startingPrice:rnd(300,5000),
+        joinedDays:rnd(1,730)
+      });
+    }
+  });
+})();
+
+// ================================================================
+// STATE
+// ================================================================
+var state={
+  filter:'all',
+  view:'all',
+  sort:'top',
+  viewMode:'grid',
+  search:'',
+  page:1,
+  perPage:12
+};
+
+// ================================================================
+// FILTER BAR
+// ================================================================
+function buildCatFilters(){
+  var el=document.getElementById('cat-filters');
+  var html='<button class="cat-pill on" data-cat="all" onclick="setCat(\'all\',this)">All</button>';
+  Object.keys(CATS).forEach(function(k){
+    html+='<button class="cat-pill" data-cat="'+k+'" onclick="setCat(\''+k+'\',this)">'+CATS[k].icon+' '+CATS[k].label+'</button>';
+  });
+  el.innerHTML=html;
+}
+
+function setCat(cat,btn){
+  document.querySelectorAll('.cat-pill').forEach(function(b){
+    b.classList.remove('on');b.style.background='';b.style.color='';
+  });
+  btn.classList.add('on');
+  var c=CATS[cat];
+  if(c){btn.style.background=c.color;btn.style.color='#04070f';}
+  state.filter=cat; state.page=1; renderGrid();
+}
+
+function setSort(s,btn){
+  document.querySelectorAll('.sort-btn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  state.sort=s; state.page=1; renderGrid();
+}
+
+function setViewMode(m,btn){
+  state.viewMode=m;
+  document.getElementById('vbtn-grid').classList.toggle('on',m==='grid');
+  document.getElementById('vbtn-list').classList.toggle('on',m==='list');
+  renderGrid();
+}
+
+function switchView(v,el){
+  document.querySelectorAll('.ntab').forEach(function(t){t.classList.remove('on');});
+  el.classList.add('on');
+  state.view=v; state.page=1; renderGrid();
+}
+
+function handleSearch(q){
+  state.search=q.toLowerCase(); state.page=1; renderGrid();
+}
+
+// ================================================================
+// FILTER + SORT LOGIC
+// ================================================================
+function getFilteredPros(){
+  var pros=PROS.slice();
+
+  // view filter
+  if(state.view==='featured') pros=pros.filter(function(p){return p.isFeatured;});
+  else if(state.view==='new') pros=pros.filter(function(p){return p.isNew||p.joinedDays<=60;});
+  else if(state.view==='trending') pros=pros.filter(function(p){return p.jobs>50;});
+  else if(state.view==='legend') pros=pros.filter(function(p){return p.level.name==='Legend'||p.level.name==='Master';});
+
+  // category filter
+  if(state.filter!=='all') pros=pros.filter(function(p){return p.cat===state.filter;});
+
+  // search
+  if(state.search){
+    pros=pros.filter(function(p){
+      return p.name.toLowerCase().indexOf(state.search)>-1||
+             p.service.toLowerCase().indexOf(state.search)>-1||
+             p.cat.toLowerCase().indexOf(state.search)>-1||
+             p.area.toLowerCase().indexOf(state.search)>-1;
+    });
+  }
+
+  // sort
+  if(state.sort==='top') pros.sort(function(a,b){return b.rating-a.rating||(b.jobs-a.jobs);});
+  else if(state.sort==='new') pros.sort(function(a,b){return a.joinedDays-b.joinedDays;});
+  else if(state.sort==='jobs') pros.sort(function(a,b){return b.jobs-a.jobs;});
+  else if(state.sort==='price') pros.sort(function(a,b){return a.startingPrice-b.startingPrice;});
+
+  return pros;
+}
+
+// ================================================================
+// RENDER GRID
+// ================================================================
+function starStr(r){var f=Math.round(r);return '★'.repeat(f)+'☆'.repeat(5-f);}
+
+function proCardHTML(p, listMode){
+  var cat=CATS[p.cat];
+  var items=p.portfolioItems;
+
+  if(listMode){
+    return '<div class="pro-card list-card" onclick="openProfile('+p.id+')">'+
+      '<div class="list-av" style="background:'+p.color+'">'+p.initials+'</div>'+
+      '<div class="list-info">'+
+        '<div class="list-name">'+p.name+
+          (p.isOnline?'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#00ff88;box-shadow:0 0 5px #00ff88;margin-left:7px;vertical-align:middle;"></span>':'')+
+        '</div>'+
+        '<div class="list-role">'+p.service+' · 📍 '+p.area+'</div>'+
+        '<div class="list-tags">'+
+          '<span class="tag skill">'+cat.icon+' '+cat.label+'</span>'+
+          '<span class="tag" style="color:'+p.level.color+';border-color:'+p.level.color+'33">'+p.level.name+'</span>'+
+          (p.isFeatured?'<span class="tag" style="color:var(--gold);border-color:rgba(255,190,0,.25)">⭐ Featured</span>':'')+
+        '</div>'+
+        '<div class="list-meta">'+
+          '<span>'+starStr(p.rating)+' '+p.rating+'</span>'+
+          '<span>'+p.jobs+' jobs</span>'+
+          '<span>From <b style="color:var(--accent);font-family:JetBrains Mono">KES '+p.startingPrice.toLocaleString()+'</b></span>'+
+          '<span>⚡ '+p.responseTime+'</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="list-actions">'+
+        '<button class="ca-btn ca-hire" onclick="event.stopPropagation();openProfile('+p.id+')">Hire Now</button>'+
+        '<button class="ca-btn ca-view" style="font-size:11px;" onclick="event.stopPropagation();openWA(\''+p.name+'\')">💬 WhatsApp</button>'+
+      '</div>'+
+    '</div>';
+  }
+
+  // grid card
+  var bgStyle='background:linear-gradient(135deg,'+p.color+'22,'+p.color+'08);';
+
+  return '<div class="pro-card" onclick="openProfile('+p.id+')">'+
+    '<div class="card-cover">'+
+      '<div class="card-cover-bg" style="'+bgStyle+'">'+cat.icon+'</div>'+
+      (p.isFeatured?'<div class="cover-badge" style="background:rgba(255,190,0,.15);color:var(--gold);border:1px solid rgba(255,190,0,.3);">⭐ Featured</div>':
+       p.isNew?'<div class="cover-badge" style="background:rgba(0,255,179,.12);color:var(--accent);border:1px solid rgba(0,255,179,.25);">🆕 New</div>':'')+
+      '<div class="cover-level">'+
+        '<div style="width:6px;height:6px;border-radius:50%;background:'+p.level.color+';box-shadow:0 0 4px '+p.level.color+'"></div>'+
+        '<span style="color:'+p.level.color+';font-size:9px;font-weight:700;">'+p.level.name+'</span>'+
+      '</div>'+
+      '<div class="cover-wa" onclick="event.stopPropagation();openWA(\''+p.name+'\')" title="WhatsApp">💬</div>'+
+    '</div>'+
+    '<div class="card-body">'+
+      '<div class="card-top">'+
+        '<div class="pro-avatar" style="background:'+p.color+'">'+p.initials+'</div>'+
+        '<div class="pro-info">'+
+          '<div class="pro-name">'+p.name+
+            (p.isOnline?'<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#00ff88;box-shadow:0 0 4px #00ff88;margin-left:6px;vertical-align:middle;"></span>':'')+
+          '</div>'+
+          '<div class="pro-role">'+p.service+'</div>'+
+        '</div>'+
+        '<div class="pro-rating">'+
+          '<span class="stars">'+starStr(p.rating)+'</span>'+
+          '<span class="cnt">('+p.reviews+')</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="pro-tags">'+
+        '<span class="tag skill">'+cat.icon+' '+cat.label+'</span>'+
+        '<span class="tag">📍 '+p.area+'</span>'+
+        '<span class="tag">⚡ '+p.responseTime+'</span>'+
+      '</div>'+
+      '<div class="xp-row">'+
+        '<div class="xp-labels"><span style="color:'+p.level.color+'">'+p.level.name+' · '+p.xp.toLocaleString()+' XP</span><span>Lv '+(Math.floor(p.xp/2000)+1)+'</span></div>'+
+        '<div class="xp-bar"><div class="xp-fill" style="width:'+(p.xp/10000*100).toFixed(1)+'%;background:linear-gradient(90deg,'+p.level.color+','+p.color+')"></div></div>'+
+      '</div>'+
+      '<div class="pro-meta">'+
+        '<span class="pm-item">🧾 '+p.jobs+' jobs done</span>'+
+        '<span class="pm-item" style="color:var(--accent);font-family:JetBrains Mono;font-weight:600;">From KES '+p.startingPrice.toLocaleString()+'</span>'+
+      '</div>'+
+      '<div class="card-actions">'+
+        '<button class="ca-btn ca-hire" onclick="event.stopPropagation();openProfile('+p.id+')">View Portfolio</button>'+
+        '<button class="ca-btn ca-view" onclick="event.stopPropagation();openProfile('+p.id+',\'order\')">Order Now</button>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+}
+
+var visibleCount=0;
+
+function renderGrid(){
+  var pros=getFilteredPros();
+  var grid=document.getElementById('pro-grid');
+  var end=state.page*state.perPage;
+  var slice=pros.slice(0,end);
+  visibleCount=slice.length;
+
+  var isList=state.viewMode==='list';
+  grid.className='pro-grid'+(isList?' list-view':'');
+
+  grid.innerHTML=slice.map(function(p){return proCardHTML(p,isList);}).join('');
+
+  // load more
+  var lmw=document.getElementById('load-more-wrap');
+  if(pros.length>end){
+    lmw.innerHTML='<button class="btn btn-ghost" onclick="loadMore()" style="padding:12px 32px;font-size:13px;">Load More ('+pros.length+' total)</button>';
+  } else {
+    lmw.innerHTML=pros.length>0?
+      '<p style="font-size:12px;color:var(--muted);">Showing all '+pros.length+' professionals</p>':
+      '<div style="text-align:center;padding:60px 20px;"><div style="font-size:48px;margin-bottom:16px;">🔍</div><div style="font-size:16px;font-weight:600;margin-bottom:8px;">No results found</div><div style="font-size:13px;color:var(--muted);">Try different search terms or filters</div></div>';
+  }
+
+  // update hero count
+  document.getElementById('h-pros').textContent=pros.length.toLocaleString();
+}
+
+function loadMore(){
+  state.page++; renderGrid();
+  // scroll to show new content
+  var grid=document.getElementById('pro-grid');
+  if(grid) grid.lastElementChild && grid.lastElementChild.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+// ================================================================
+// PROFILE MODAL
+// ================================================================
+var currentPro=null;
+var activeTab='portfolio';
+var selectedPkg=0;
+
+function openProfile(id, tab){
+  var p=PROS.find(function(x){return x.id===id;});
+  if(!p) return;
+  currentPro=p;
+  activeTab=tab||'portfolio';
+  selectedPkg=1; // default to standard/mid package
+
+  var cat=CATS[p.cat];
+  var bg=document.getElementById('pmodal-bg');
+  var cover=document.getElementById('pm-cover');
+
+  // Cover
+  cover.style.background='linear-gradient(135deg,'+p.color+'40,'+p.color+'15,rgba(4,7,15,0.6))';
+  cover.querySelector('.pmodal-cover-overlay').innerHTML='';
+  cover.querySelector('.pmodal-cover-overlay').style.cssText='position:absolute;inset:0;background:linear-gradient(to bottom,rgba(4,7,15,0) 0%,rgba(8,13,26,.75) 100%)';
+  // add big emoji
+  var existEmoji=cover.querySelector('.cover-main-emoji');
+  if(existEmoji) existEmoji.remove();
+  var em=document.createElement('div');
+  em.className='cover-main-emoji';
+  em.style.cssText='font-size:80px;position:relative;z-index:1;text-shadow:0 0 60px '+p.color+'66;';
+  em.textContent=cat.icon;
+  cover.insertBefore(em,cover.querySelector('.pmodal-close'));
+
+  // Avatar
+  var av=document.getElementById('pm-av');
+  av.style.background=p.color;
+  av.textContent=p.initials;
+
+  // Name + role
+  document.getElementById('pm-name').textContent=p.name;
+  document.getElementById('pm-role').textContent=p.service+' · 📍 '+p.area;
+
+  // Badges
+  var badges='<span class="pbadge" style="color:'+p.level.color+';border-color:'+p.level.color+'44">'+p.level.name+'</span>';
+  if(p.isFeatured) badges+='<span class="pbadge" style="color:var(--gold);border-color:rgba(255,190,0,.3)">⭐ Featured</span>';
+  if(p.isOnline) badges+='<span class="pbadge" style="color:#00ff88;border-color:rgba(0,255,136,.3)">🟢 Online Now</span>';
+  if(p.reviews>=50) badges+='<span class="pbadge" style="color:var(--accent);border-color:rgba(0,255,179,.3)">💬 Top Reviewed</span>';
+  document.getElementById('pm-badges').innerHTML=badges;
+
+  // Header actions
+  document.getElementById('pm-actions').innerHTML=
+    '<button class="btn btn-ghost btn-sm" onclick="openWA(\''+p.name+'\')">💬 WhatsApp</button>'+
+    '<button class="btn btn-prime btn-sm" onclick="scrollToOrder()">Order Now</button>';
+
+  renderPMTabs();
+  renderPMAside();
+  bg.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function renderPMTabs(){
+  var tabs=['portfolio','services','reviews'];
+  var tabLabels={portfolio:'🖼 Portfolio',services:'📦 Services',reviews:'⭐ Reviews'};
+  var html='<div class="pm-tabs">';
+  tabs.forEach(function(t){
+    html+='<div class="pmtab'+(t===activeTab?' on':'')+'" onclick="switchPMTab(\''+t+'\')">'+tabLabels[t]+'</div>';
+  });
+  html+='</div>';
+  html+=getPMTabContent();
+  document.getElementById('pm-main').innerHTML=html;
+}
+
+function switchPMTab(t){
+  activeTab=t;
+  renderPMTabs();
+}
+
+function getPMTabContent(){
+  var p=currentPro;
+  if(!p) return '';
+  var cat=CATS[p.cat];
+
+  if(activeTab==='portfolio'){
+    // Gallery grid
+    var items=p.portfolioItems;
+    // Expand to 8 items (repeat if needed)
+    while(items.length<8) items=items.concat(p.portfolioItems);
+    items=items.slice(0,8);
+
+    var html='<p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.7;">'+p.bio+'</p>';
+    html+='<div class="portfolio-grid">';
+    items.forEach(function(item,i){
+      var extraClass=i===0?' large':'';
+      var emoji=cat.icon;
+      var hue=i*37;
+      var bg='background:linear-gradient(135deg,'+p.color+'20,'+p.color+'08);';
+      html+='<div class="pg-item'+extraClass+'" '+bg+' onclick="openImageViewer(\''+cat.icon+'\',\''+item+'\',\''+p.name+'\')" style="'+bg+'">'+
+        '<div class="pg-emoji">'+emoji+'</div>'+
+        '<div class="pg-overlay"><div class="pg-label">'+item+'</div></div>'+
+        '</div>';
+    });
+    html+='</div>';
+
+    // Skills section
+    html+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px;">Skills &amp; Specialisations</div>';
+    html+='<div style="display:flex;gap:7px;flex-wrap:wrap;">';
+    var skills=cat.label;
+    var skillTags=p.portfolioItems.slice(0,6);
+    skillTags.forEach(function(s){
+      html+='<span class="tag skill">'+s+'</span>';
+    });
+    html+='</div>';
+
+    return html;
+  }
+
+  if(activeTab==='services'){
+    var pkgs=p.packages;
+    var html='<div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7;">'+
+      'Choose a service package below and place your order. All prices are negotiable — just chat on WhatsApp.</div>';
+    html+='<div class="packages">';
+    pkgs.forEach(function(pkg,i){
+      var sel=(i===selectedPkg);
+      html+='<div class="pkg'+(pkg.featured?' featured':'')+(sel?' pkg-selected':'')+'" onclick="selectPkg('+i+')" style="'+(sel?'border-color:var(--accent);':'')+'">'+
+        '<div class="pkg-icon">'+pkg.icon+'</div>'+
+        '<div class="pkg-info">'+
+          '<div class="pkg-name">'+pkg.name+'</div>'+
+          '<div class="pkg-desc">'+pkg.desc+'</div>'+
+          (pkg.featured?'<span class="pkg-badge-featured">Most Popular</span>':'')+
+        '</div>'+
+        '<div class="pkg-price">'+pkg.price+'<span class="per">per service</span></div>'+
+        '</div>';
+    });
+    html+='</div>';
+    return html;
+  }
+
+  if(activeTab==='reviews'){
+    // Generate reviews
+    var revCount=Math.min(p.reviews,8);
+    if(revCount<3) revCount=3;
+    var html='<div style="display:flex;align-items:center;gap:16px;margin-bottom:18px;">'+
+      '<div style="text-align:center;">'+
+        '<div style="font-size:40px;font-weight:700;font-family:JetBrains Mono;color:var(--gold)">'+p.rating+'</div>'+
+        '<div style="font-size:14px;color:var(--gold)">'+starStr(p.rating)+'</div>'+
+        '<div style="font-size:10px;color:var(--muted);margin-top:2px;">'+p.reviews+' reviews</div>'+
+      '</div>'+
+      '<div style="flex:1;">'+
+        [5,4,3,2,1].map(function(s){
+          var pct=s===Math.round(p.rating)?62:s===Math.round(p.rating)-1?22:s===5?45:rnd(5,18);
+          return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">'+
+            '<div style="font-size:11px;color:var(--gold);width:16px;">'+s+'★</div>'+
+            '<div style="flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;">'+
+              '<div style="width:'+pct+'%;height:100%;background:var(--gold);border-radius:2px;"></div>'+
+            '</div>'+
+            '<div style="font-size:10px;color:var(--muted);width:28px;text-align:right;">'+pct+'%</div>'+
+          '</div>';
+        }).join('')+
+      '</div>'+
+    '</div>';
+
+    html+='<div class="reviews">';
+    for(var i=0;i<revCount;i++){
+      var rv=REVIEWER_NAMES[i%REVIEWER_NAMES.length];
+      var rt=rndF(p.rating-0.5,5.0);
+      if(rt>5)rt=5.0; if(rt<1)rt=1.0;
+      var daysAgo=rnd(1,180);
+      html+='<div class="review-card">'+
+        '<div class="rc-top">'+
+          '<div class="rc-av">'+rv[0]+'</div>'+
+          '<div>'+
+            '<div class="rc-name">'+rv+'</div>'+
+            '<div class="rc-date">'+daysAgo+' days ago</div>'+
+          '</div>'+
+          '<div class="rc-stars">'+starStr(rt)+' '+rt.toFixed(1)+'</div>'+
+        '</div>'+
+        '<div class="rc-text">'+pick(REVIEW_TEXTS)+'</div>'+
+        '<div class="rc-verified">✅ Verified via WhatsApp booking</div>'+
+        '</div>';
+    }
+    html+='</div>';
+    return html;
+  }
+  return '';
+}
+
+function selectPkg(i){
+  selectedPkg=i;
+  renderPMTabs();
+  renderPMAside();
+}
+
+function renderPMAside(){
+  var p=currentPro; if(!p) return;
+  var pkgs=p.packages;
+  var pkg=pkgs[selectedPkg]||pkgs[0];
+
+  // Stats
+  var html='<div class="aside-stat-grid">'+
+    '<div class="asg"><div class="av2" style="color:var(--accent)">'+p.jobs+'</div><div class="al">Jobs Done</div></div>'+
+    '<div class="asg"><div class="av2" style="color:var(--gold)">'+p.rating+'★</div><div class="al">Rating</div></div>'+
+    '<div class="asg"><div class="av2" style="color:'+p.level.color+'">'+p.level.name+'</div><div class="al">Level</div></div>'+
+    '<div class="asg"><div class="av2" style="color:#2b8fff">'+p.responseTime+'</div><div class="al">Response</div></div>'+
+    '</div>';
+
+  // Availability
+  var avStatus=p.isOnline?{dot:'green',text:'Available Now',sub:'Responds in '+p.responseTime}:{dot:'yellow',text:'Usually Available',sub:'Will respond within 2 hrs'};
+  html+='<div class="avail-row">'+
+    '<div style="display:flex;align-items:center;gap:8px;flex:1;">'+
+      '<div class="avail-dot '+avStatus.dot+'"></div>'+
+      '<div>'+
+        '<div style="font-size:12px;font-weight:600;">'+avStatus.text+'</div>'+
+        '<div style="font-size:10px;color:var(--muted);">'+avStatus.sub+'</div>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+
+  // ORDER PANEL
+  html+='<div class="order-panel" id="order-panel">'+
+    '<div class="op-title">Place Order</div>'+
+    '<div class="op-pkg-select" id="op-pkgs">';
+
+  pkgs.forEach(function(pkg2,i){
+    var sel=(i===selectedPkg);
+    html+='<div class="op-opt'+(sel?' sel':'')+'" onclick="selectPkg('+i+')">'+
+      '<div><div class="on">'+pkg2.icon+' '+pkg2.name+'</div><div class="op">'+pkg2.desc.slice(0,28)+'…</div></div>'+
+      '<div class="pr">'+pkg2.price+'</div>'+
+    '</div>';
+  });
+
+  html+='</div>';
+  html+='<textarea class="op-note" placeholder="Describe what you need, your location, preferred date…" id="op-note"></textarea>';
+  html+='<div class="op-total"><span>Selected Package</span><b style="color:var(--accent)">'+pkg.price+'</b></div>';
+  html+='<button class="wa-order" onclick="placeOrder()">'+
+    '<span style="font-size:16px">💬</span> Order via WhatsApp'+
+  '</button>';
+  html+='<button class="wa-order-alt" onclick="openWA(\''+p.name+'\')">'+
+    '📞 Just Chat First'+
+  '</button>';
+  html+='<div class="trust-row">'+
+    '<div class="trust-item">🔒 No fees</div>'+
+    '<div class="trust-item">✅ Verified Pro</div>'+
+    '<div class="trust-item">💯 Real Portfolio</div>'+
+  '</div>';
+  html+='</div>';
+
+  // member since
+  var joined=p.joinedDays>365?Math.floor(p.joinedDays/365)+' yr ago':p.joinedDays+' days ago';
+  html+='<div style="margin-top:14px;font-size:10px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;">'+
+    '<span>🗓 Joined '+joined+'</span>'+
+    '<span>📋 '+p.reviews+' reviews</span>'+
+    '<span>'+CATS[p.cat].icon+' '+CATS[p.cat].label+'</span>'+
+  '</div>';
+
+  document.getElementById('pm-aside').innerHTML=html;
+}
+
+function scrollToOrder(){
+  var op=document.getElementById('order-panel');
+  if(op) op.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function placeOrder(){
+  var p=currentPro; if(!p) return;
+  var pkgs=p.packages;
+  var pkg=pkgs[selectedPkg]||pkgs[0];
+  var note=document.getElementById('op-note');
+  var noteVal=note?note.value:'';
+  var sub='Your order for <b>'+pkg.name+'</b> ('+pkg.price+') from <b>'+p.name+'</b> has been sent.<br><br>'+
+    'They will reach you on WhatsApp within '+p.responseTime+'.'+
+    (noteVal?'<br><br><em>"'+noteVal.slice(0,80)+'"</em>':'');
+  document.getElementById('os-sub').innerHTML=sub;
+  document.getElementById('os').classList.add('open');
+}
+
+function closePModal(){
+  document.getElementById('pmodal-bg').classList.remove('open');
+  document.body.style.overflow='';
+  currentPro=null;
+}
+
+function maybeClosePM(e){
+  if(e.target===document.getElementById('pmodal-bg')) closePModal();
+}
+
+// ================================================================
+// IMAGE VIEWER
+// ================================================================
+function openImageViewer(emoji,label,proName){
+  document.getElementById('iv-content').textContent=emoji;
+  document.getElementById('iv-label').textContent=label;
+  document.getElementById('iv-sub').textContent='Portfolio sample by '+proName;
+  document.getElementById('iv').classList.add('open');
+}
+function closeIV(){document.getElementById('iv').classList.remove('open');}
+
+// ================================================================
+// WHATSAPP
+// ================================================================
+function openWA(name){
+  alert('Opening WhatsApp chat with '+name+'…\n\n(In production this opens wa.me/+254XXXXXXXXX)');
+}
+
+// ================================================================
+// ORDER SUCCESS
+// ================================================================
+function closeOS(){document.getElementById('os').classList.remove('open');}
+
+// ================================================================
+// UPLOAD / JOIN
+// ================================================================
+function openUpload(){
+  var opts=Object.keys(CATS).map(function(k){
+    return '<option value="'+k+'">'+CATS[k].icon+' '+CATS[k].label+'</option>';
+  }).join('');
+
+  var html='<div style="max-width:420px;margin:auto;">';
+  html+='<div style="font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.7;">Create your portfolio page in minutes. No CV, no references — just upload samples of your work and start getting customers.</div>';
+  html+='<div class="jfield"><label>Full Name</label><input type="text" placeholder="e.g. Wanjiku Muthoni"/></div>';
+  html+='<div class="jfield"><label>WhatsApp Number</label><input type="text" placeholder="+254 7XX XXX XXX"/></div>';
+  html+='<div class="jfield"><label>Service / Profession</label><input type="text" placeholder="e.g. Professional Chef, Graphic Designer…"/></div>';
+  html+='<div class="jfield"><label>Industry</label><select><option>Select your industry…</option>'+opts+'</select></div>';
+  html+='<div class="jfield"><label>Area (Nairobi)</label><input type="text" placeholder="e.g. Westlands, Kasarani, CBD…"/></div>';
+  html+='<div class="jfield"><label>Starting Price (KES)</label><input type="number" placeholder="e.g. 500"/></div>';
+  html+='<div class="jfield"><label>Short Bio (optional)</label><textarea class="op-note" style="height:80px" placeholder="Tell customers about your experience and what makes you stand out…"></textarea></div>';
+  html+='<div class="jfield"><label>Work Samples (Photos / Videos / Documents)</label>';
+  html+='<div class="udrop"><div style="font-size:28px;margin-bottom:8px;">📂</div><p style="font-size:12px;color:var(--muted);line-height:1.5;">Drag &amp; drop your best work samples here.<br><b style="color:var(--text)">Your portfolio does the talking — no CV needed.</b></p></div></div>';
+  html+='<button class="btn btn-prime" style="width:100%;padding:13px;font-size:14px;border-radius:10px;" onclick="alert(\'Profile submitted! We will contact you on WhatsApp to verify and go live.\')">🚀 Create My Portfolio Page</button>';
+  html+='</div>';
+
+  // Reuse order success overlay as a quick modal
+  document.getElementById('os-sub').innerHTML=html;
+  document.getElementById('os').querySelector('.os-emoji').textContent='📂';
+  document.getElementById('os').querySelector('.os-title').textContent='List Your Service';
+  document.getElementById('os').querySelector('.os-wa').style.display='none';
+  document.getElementById('os').classList.add('open');
+}
+
+// ================================================================
+// LIVE COUNTER
+// ================================================================
+setInterval(function(){
+  var el=document.getElementById('h-online');
+  if(el) el.textContent=Math.max(100,parseInt(el.textContent)+(Math.random()>.5?1:-1));
+},3000);
+
+// ================================================================
+// BOOT
+// ================================================================
+buildCatFilters();
+renderGrid();
+</script>
+<!-- KAZIHUB CHATBOT -->
+<button id="kh-chat-btn" onclick="khChatToggle()" title="Chat with KaziHub">
+  🤖
+  <div class="kh-chat-unread" id="kh-unread">1</div>
+</button>
+<div id="kh-chat-panel">
+  <div class="kh-chat-head">
+    <div class="kh-chat-avatar">🤖</div>
+    <div>
+      <div class="kh-chat-title">KaziHub Assistant</div>
+      <div class="kh-chat-sub">● Online · Nairobi</div>
+    </div>
+    <button class="kh-chat-close" onclick="khChatToggle()">✕</button>
+  </div>
+  <div class="kh-chat-msgs" id="kh-msgs"></div>
+  <div class="kh-chips" id="kh-chips"></div>
+  <div class="kh-chat-foot">
+    <textarea class="kh-chat-input" id="kh-input" rows="1"
+      placeholder="Find a plumber, electrician…"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();khSend();}"></textarea>
+    <button class="kh-chat-send" id="kh-send-btn" onclick="khSend()">➤</button>
+  </div>
+</div>
+<script>
+(function(){
+var KH_PANEL,KH_MSGS,KH_INPUT,KH_SEND,KH_CHIPS,KH_UNREAD;
+var khOpen=false,khHistory=[],khBusy=false;
+
+function khServiceList(){
+  if(typeof DATA!=='undefined'){
+    return DATA.slice(0,100).map(function(d){return d.emoji+' '+d.label;}).join(', ');
+  }
+  return 'Electricians, Plumbers, Carpenters, House Cleaners, Photographers, Web Designers, Tailors, Event Caterers, Drivers, Security Guards, Fitness Trainers, Lawyers, Accountants, Nannies, Barbers, DJs, Plumbers, Masons, Solar Installers, and 240+ more';
+}
+
+var KH_SYS='You are KaziHub Assistant — a sharp, friendly AI for KaziHub, Kenya\'s gig economy marketplace in Nairobi.\nKaziHub connects customers with verified local professionals across 259 service categories.\nServices available: '+khServiceList()+'\n\nRules:\n- Keep replies SHORT (2-4 sentences max). No walls of text.\n- When a user describes a need, identify the best matching service and recommend it directly.\n- Always end service recommendations with a WhatsApp CTA on a new line in this exact format: [WA:ServiceName:Neighbourhood]\n  Example: [WA:Electrician:Westlands]\n- Typical prices in KES: small jobs 500-2000, medium 2000-8000, large 8000-50000+.\n- Payment is via M-Pesa STK Push after booking on WhatsApp.\n- If you need more info, ask ONE question only (area or urgency).\n- Never make up specific pro names or phone numbers.\n- If user writes in Swahili, respond in Swahili.';
+
+var STARTERS=['Find me a plumber 🪠','I need an electrician ⚡','House cleaning today 🧹','Event photographer 📸','Graphic designer 🎨'];
+
+function khInit(){
+  KH_PANEL=document.getElementById('kh-chat-panel');
+  KH_MSGS=document.getElementById('kh-msgs');
+  KH_INPUT=document.getElementById('kh-input');
+  KH_SEND=document.getElementById('kh-send-btn');
+  KH_CHIPS=document.getElementById('kh-chips');
+  KH_UNREAD=document.getElementById('kh-unread');
+  if(!KH_PANEL)return;
+  khAddMsg('bot','Hey! 👋 I\'m your KaziHub assistant. Tell me what service you need and I\'ll match you with a verified pro in Nairobi.');
+  STARTERS.forEach(function(s){
+    var c=document.createElement('button');
+    c.className='kh-chip';c.textContent=s;
+    c.onclick=function(){KH_INPUT.value=s;khSend();};
+    KH_CHIPS.appendChild(c);
+  });
+  setTimeout(function(){if(KH_UNREAD)KH_UNREAD.classList.add('show');},2000);
+  var inp=document.getElementById('kh-input');
+  if(inp){inp.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px';});}
+}
+
+function khChatToggle(){
+  if(!KH_PANEL)return;
+  khOpen=!khOpen;
+  KH_PANEL.classList.toggle('open',khOpen);
+  if(khOpen){
+    if(KH_UNREAD)KH_UNREAD.classList.remove('show');
+    setTimeout(function(){if(KH_INPUT)KH_INPUT.focus();},250);
+  }
+}
+
+function khAddMsg(role,content){
+  if(!KH_MSGS)return null;
+  var div=document.createElement('div');
+  div.className='kh-msg '+role;
+  var html=content.replace(/\[WA:([^\]]+)\]/g,function(_,p){
+    var pts=p.split(':'),svc=pts[0]||'service',loc=pts[1]||'Nairobi';
+    var msg=encodeURIComponent('Hi, I found you on KaziHub. I need '+svc+' in '+loc+'. Are you available?');
+    return '<br><a class="kh-wa-cta" href="https://wa.me/254700000000?text='+msg+'" target="_blank">💬 Book via WhatsApp — '+svc+'</a>';
+  });
+  html=html.replace(/\n/g,'<br>');
+  div.innerHTML=html;
+  KH_MSGS.appendChild(div);
+  KH_MSGS.scrollTop=KH_MSGS.scrollHeight;
+  return div;
+}
+
+function khRemove(el){if(el&&el.parentNode)el.parentNode.removeChild(el);}
+
+async function khSend(){
+  if(khBusy||!KH_INPUT)return;
+  var text=(KH_INPUT.value||'').trim();if(!text)return;
+  KH_INPUT.value='';KH_INPUT.style.height='';
+  if(KH_CHIPS)KH_CHIPS.innerHTML='';
+  khAddMsg('user',text);
+  khHistory.push({role:'user',content:text});
+  khBusy=true;if(KH_SEND)KH_SEND.disabled=true;
+  var thinking=khAddMsg('thinking','● thinking…');
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:300,
+        system:KH_SYS,
+        messages:khHistory
+      })
+    });
+    var data=await res.json();
+    var reply=(data.content&&data.content[0]&&data.content[0].text)||'Sorry, something went wrong. Try again.';
+    khRemove(thinking);
+    khAddMsg('bot',reply);
+    khHistory.push({role:'assistant',content:reply});
+    if(khHistory.length>20)khHistory=khHistory.slice(-20);
+  }catch(e){
+    khRemove(thinking);
+    khAddMsg('bot','Connection issue — please try again in a moment.');
+  }
+  khBusy=false;if(KH_SEND)KH_SEND.disabled=false;if(KH_INPUT)KH_INPUT.focus();
+}
+
+window.khChatToggle=khChatToggle;
+window.khSend=khSend;
+document.addEventListener('DOMContentLoaded',khInit);
+})();
+</script>
+</body>
+</html>

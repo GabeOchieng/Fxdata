@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KaziHub — Kenya's Gig Economy Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04060e;--bg2:#08091a;--bg3:#0e1022;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --text:#f0eee8;--text2:#9a98b5;--muted:#3e4260;
+  --amber:#f5a623;--cyan:#00e5ff;--green:#00ffb3;
+  --magenta:#ff2d87;--violet:#a78bfa;--orange:#ff6b2b;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden;}
+
+/* atmospheric layers */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -20%,rgba(0,229,255,.06) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 100% 60%,rgba(255,45,135,.04) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 30% at 0% 80%,rgba(245,166,35,.05) 0%,transparent 60%),
+    radial-gradient(1px 1px at 18% 22%,rgba(255,255,255,.5) 0%,transparent 100%),
+    radial-gradient(1px 1px at 72% 15%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 91% 68%,rgba(255,255,255,.35) 0%,transparent 100%),
+    radial-gradient(1px 1px at 35% 88%,rgba(255,255,255,.2) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 60% 50%,rgba(255,255,255,.15) 0%,transparent 100%);
+}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  background:rgba(4,6,14,.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(24px);
+  display:flex;align-items:center;gap:0;
+  height:52px;padding:0 28px;
+}
+.tb-logo{
+  font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;
+  color:var(--text);text-decoration:none;
+  display:flex;align-items:center;gap:8px;margin-right:20px;
+}
+.tb-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.tb-logo em{color:var(--cyan);font-style:normal;}
+.tb-sep{width:1px;height:20px;background:var(--border);margin:0 16px;}
+.tb-nav{display:flex;align-items:center;gap:4px;flex:1;}
+.tb-link{
+  padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;
+  text-decoration:none;color:var(--text2);transition:all .15s;
+  letter-spacing:.2px;border:1px solid transparent;
+}
+.tb-link:hover{color:var(--text);background:rgba(255,255,255,.05);}
+.tb-link.active{color:var(--text);background:rgba(255,255,255,.07);border-color:var(--border);}
+.tb-link.docs-link{color:var(--amber);border-color:rgba(245,166,35,.2);}
+.tb-link.docs-link:hover{background:rgba(245,166,35,.06);}
+.tb-r{display:flex;gap:8px;align-items:center;}
+.tb-cta{
+  padding:7px 18px;border-radius:8px;border:none;
+  background:var(--cyan);color:#04060e;
+  font-family:'Outfit',sans-serif;font-size:12px;font-weight:800;
+  cursor:pointer;letter-spacing:.3px;transition:all .15s;
+}
+.tb-cta:hover{box-shadow:0 0 18px rgba(0,229,255,.35);transform:translateY(-1px);}
+
+/* ── HERO ── */
+.hero{
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:100px 28px 60px;
+  overflow:hidden;
+}
+.hero-bg-word{
+  position:absolute;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(120px,22vw,320px);
+  letter-spacing:-8px;
+  color:rgba(255,255,255,.018);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  white-space:nowrap;pointer-events:none;user-select:none;
+  animation:drift 20s ease-in-out infinite;
+}
+@keyframes drift{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-52%,-48%)}}
+
+.hero-inner{
+  position:relative;z-index:2;
+  max-width:1100px;width:100%;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 16px;border-radius:99px;
+  border:1px solid rgba(0,229,255,.25);
+  background:rgba(0,229,255,.06);
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;
+  color:var(--cyan);margin-bottom:24px;
+}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan);}
+.hero-h{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(54px,11vw,140px);
+  letter-spacing:-1px;line-height:.9;
+  margin-bottom:24px;
+}
+.hero-h .line1{
+  display:block;
+  background:linear-gradient(135deg,#fff 30%,rgba(255,255,255,.5));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-h .line2{
+  display:block;
+  background:linear-gradient(135deg,var(--cyan),var(--magenta));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  font-size:clamp(14px,1.8vw,18px);color:var(--text2);
+  max-width:580px;line-height:1.75;margin-bottom:36px;
+}
+.hero-sub b{color:var(--text);}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:60px;}
+.hb{
+  padding:14px 32px;border-radius:12px;
+  font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;
+  cursor:pointer;border:none;letter-spacing:.3px;transition:all .18s;
+  text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+}
+.hb-prime{background:var(--cyan);color:#04060e;}
+.hb-prime:hover{box-shadow:0 0 28px rgba(0,229,255,.4);transform:translateY(-2px);}
+.hb-ghost{background:transparent;border:1px solid var(--border2);color:var(--text);}
+.hb-ghost:hover{border-color:var(--cyan);color:var(--cyan);}
+.hb-amber{background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.3);color:var(--amber);}
+.hb-amber:hover{background:rgba(245,166,35,.18);}
+
+/* hero ticker */
+.hero-ticker{
+  width:100%;overflow:hidden;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:12px 0;margin-bottom:60px;
+  background:rgba(255,255,255,.015);
+}
+.ticker-track{
+  display:flex;gap:40px;
+  animation:ticker 30s linear infinite;
+  white-space:nowrap;
+}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.tk{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:8px;}
+.tk b{color:var(--text2);}
+.tk-dot{width:4px;height:4px;border-radius:50%;background:var(--cyan);}
+
+/* ── MODULE CARDS ── */
+.modules{
+  position:relative;z-index:1;
+  padding:0 28px 80px;
+  max-width:1200px;margin:0 auto;
+}
+.modules-head{
+  text-align:center;margin-bottom:48px;
+}
+.sec-eyebrow{
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;
+  color:var(--cyan);margin-bottom:12px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.sec-eyebrow::before,.sec-eyebrow::after{content:'';width:32px;height:1px;background:currentColor;opacity:.4;}
+.sec-h{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(32px,5vw,64px);letter-spacing:.5px;
+  line-height:1;margin-bottom:12px;
+}
+.sec-sub{font-size:13px;color:var(--text2);max-width:480px;margin:0 auto;line-height:1.7;}
+
+.module-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  grid-template-rows:auto auto;
+  gap:16px;
+}
+@media(max-width:700px){.module-grid{grid-template-columns:1fr;}}
+
+.mcard{
+  border-radius:22px;overflow:hidden;
+  border:1px solid var(--border);
+  cursor:pointer;
+  transition:all .28s cubic-bezier(.23,1,.32,1);
+  position:relative;text-decoration:none;display:block;
+  animation:mcardIn .5s ease both;
+}
+@keyframes mcardIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.mcard:hover{
+  border-color:var(--card-color,var(--cyan));
+  transform:translateY(-6px);
+  box-shadow:0 28px 64px rgba(0,0,0,.7),0 0 0 1px var(--card-color,var(--cyan)) inset;
+}
+.mcard:nth-child(1){--card-color:var(--cyan);animation-delay:.05s;}
+.mcard:nth-child(2){--card-color:var(--amber);animation-delay:.1s;}
+.mcard:nth-child(3){--card-color:var(--green);animation-delay:.15s;}
+.mcard:nth-child(4){--card-color:var(--magenta);animation-delay:.2s;}
+
+/* big card spans 2 rows */
+.mcard.big{grid-row:span 2;}
+
+.mc-visual{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.mcard.big .mc-visual{height:280px;}
+.mcard:not(.big) .mc-visual{height:180px;}
+
+.mc-bg{position:absolute;inset:0;transition:transform .4s ease;}
+.mcard:hover .mc-bg{transform:scale(1.04);}
+.mc-slash{position:absolute;inset:0;transition:opacity .3s;}
+.mc-icon{
+  font-size:72px;position:relative;z-index:1;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  filter:drop-shadow(0 12px 28px rgba(0,0,0,.5));
+}
+.mcard.big .mc-icon{font-size:100px;}
+.mcard:hover .mc-icon{transform:scale(1.1) translateY(-5px);}
+
+.mc-body{padding:20px 22px 22px;}
+.mcard.big .mc-body{padding:24px 26px 26px;}
+.mc-tag{
+  font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+  margin-bottom:6px;
+}
+.mc-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:26px;letter-spacing:.5px;line-height:1;margin-bottom:5px;
+}
+.mcard.big .mc-title{font-size:36px;}
+.mc-desc{font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:14px;}
+.mc-stats{display:flex;gap:14px;flex-wrap:wrap;}
+.mc-stat{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--text2);
+}
+.mc-stat b{color:var(--text);font-size:14px;display:block;margin-bottom:1px;}
+.mc-arrow{
+  position:absolute;bottom:20px;right:20px;
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.06);border:1px solid var(--border);
+  font-size:16px;transition:all .2s;
+}
+.mcard:hover .mc-arrow{background:var(--card-color,var(--cyan));color:#04060e;border-color:transparent;}
+
+/* ── DOCS SECTION ── */
+.docs-section{
+  position:relative;z-index:1;
+  padding:0 28px 80px;
+  max-width:1200px;margin:0 auto;
+}
+.docs-card{
+  border-radius:22px;
+  background:linear-gradient(135deg,rgba(245,166,35,.08),rgba(167,139,250,.06));
+  border:1px solid rgba(245,166,35,.15);
+  padding:48px;
+  display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:space-between;
+  position:relative;overflow:hidden;
+}
+.docs-card::before{
+  content:'📋';position:absolute;
+  right:40px;top:50%;transform:translateY(-50%);
+  font-size:120px;opacity:.05;pointer-events:none;
+}
+.docs-card-text{}
+.docs-card h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(28px,4vw,52px);letter-spacing:.5px;
+  margin-bottom:10px;line-height:1;
+}
+.docs-card h2 em{
+  background:linear-gradient(135deg,var(--amber),var(--orange));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-style:normal;
+}
+.docs-card p{font-size:13px;color:var(--text2);line-height:1.75;max-width:500px;margin-bottom:20px;}
+.docs-pills{display:flex;flex-wrap:wrap;gap:7px;}
+.dpill{
+  padding:5px 13px;border-radius:99px;font-size:11px;font-weight:600;
+  background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text2);
+}
+.docs-btn{
+  padding:14px 36px;border-radius:12px;border:none;
+  background:var(--amber);color:#04060e;
+  font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;
+  cursor:pointer;transition:all .15s;letter-spacing:.3px;
+  text-decoration:none;display:inline-block;white-space:nowrap;flex-shrink:0;
+}
+.docs-btn:hover{box-shadow:0 0 24px rgba(245,166,35,.4);transform:translateY(-2px);}
+
+/* ── HOW IT WORKS ── */
+.hiw{
+  position:relative;z-index:1;
+  padding:0 28px 80px;max-width:1100px;margin:0 auto;
+}
+.hiw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-top:40px;}
+.hiw-card{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:16px;padding:24px;
+  transition:border-color .2s;
+  animation:mcardIn .5s ease both;
+}
+.hiw-card:hover{border-color:var(--border2);}
+.hiw-num{
+  font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:-1px;
+  background:linear-gradient(135deg,var(--cyan),var(--magenta));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;margin-bottom:12px;
+}
+.hiw-icon{font-size:28px;margin-bottom:10px;}
+.hiw-title{font-size:14px;font-weight:800;margin-bottom:6px;}
+.hiw-desc{font-size:12px;color:var(--text2);line-height:1.65;}
+
+/* ── TECH STACK MARQUEE ── */
+.stack-row{
+  position:relative;z-index:1;
+  padding:32px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  overflow:hidden;margin-bottom:80px;background:rgba(255,255,255,.01);
+}
+.stack-track{display:flex;gap:32px;animation:ticker 22s linear infinite;}
+.st{
+  flex-shrink:0;padding:8px 18px;
+  border-radius:99px;border:1px solid var(--border);
+  font-size:12px;font-weight:600;color:var(--text2);
+  display:flex;align-items:center;gap:7px;
+  white-space:nowrap;
+}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:1;
+  border-top:1px solid var(--border);
+  padding:32px 28px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:14px;
+  max-width:100%;
+}
+.ft-brand{
+  font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;
+  color:var(--text2);display:flex;align-items:center;gap:8px;
+}
+.ft-brand em{color:var(--cyan);font-style:normal;}
+.ft-links{display:flex;gap:14px;flex-wrap:wrap;}
+.ft-link{font-size:12px;color:var(--muted);text-decoration:none;transition:color .13s;}
+.ft-link:hover{color:var(--text);}
+.ft-copy{font-size:11px;color:var(--muted);}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+@media(max-width:640px){
+  .topbar{padding:0 16px;}
+  .tb-link:not(.docs-link){display:none;}
+  .hero{padding:80px 16px 40px;}
+  .modules,.docs-section,.hiw{padding-left:16px;padding-right:16px;}
+  .docs-card{padding:24px;}
+  .docs-card::before{display:none;}
+}
+
+/* ── KAZIHUB CHATBOT ──────────────────────────────────────── */
+#kh-chat-btn{
+  position:fixed;bottom:22px;right:22px;z-index:200;
+  width:52px;height:52px;border-radius:50%;
+  background:var(--accent,#00ffb3);
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 24px rgba(0,255,179,.35);
+  transition:transform .2s, box-shadow .2s;
+  font-size:22px;
+}
+#kh-chat-btn:hover{transform:scale(1.08);box-shadow:0 6px 32px rgba(0,255,179,.5);}
+#kh-chat-btn .kh-chat-unread{
+  position:absolute;top:-2px;right:-2px;
+  width:16px;height:16px;border-radius:50%;
+  background:#ff3d5a;color:#fff;
+  font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;
+}
+#kh-chat-btn .kh-chat-unread.show{opacity:1;}
+#kh-chat-panel{
+  position:fixed;bottom:86px;right:22px;z-index:200;
+  width:340px;max-height:520px;
+  background:rgba(6,10,22,.97);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  display:flex;flex-direction:column;
+  box-shadow:0 16px 60px rgba(0,0,0,.7);
+  backdrop-filter:blur(24px);
+  transform:scale(.9) translateY(12px);
+  opacity:0;pointer-events:none;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), opacity .18s;
+  overflow:hidden;
+}
+#kh-chat-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
+.kh-chat-head{
+  padding:14px 16px 12px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.kh-chat-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#00ffb3,#00d4ff);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+}
+.kh-chat-title{font-size:13px;font-weight:700;color:#f0eee8;}
+.kh-chat-sub{font-size:10px;color:rgba(0,255,179,.8);margin-top:1px;}
+.kh-chat-close{
+  margin-left:auto;background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.35);font-size:16px;padding:2px 4px;transition:color .15s;
+}
+.kh-chat-close:hover{color:rgba(255,255,255,.7);}
+.kh-chat-msgs{
+  flex:1;overflow-y:auto;padding:12px;
+  display:flex;flex-direction:column;gap:8px;min-height:0;
+}
+.kh-chat-msgs::-webkit-scrollbar{width:3px;}
+.kh-chat-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+.kh-msg{max-width:86%;padding:9px 12px;border-radius:14px;font-size:12px;line-height:1.55;}
+.kh-msg.bot{background:rgba(255,255,255,.06);color:#dde3f0;border-bottom-left-radius:4px;align-self:flex-start;}
+.kh-msg.user{background:#00ffb3;color:#04070f;font-weight:600;border-bottom-right-radius:4px;align-self:flex-end;}
+.kh-msg.thinking{background:rgba(255,255,255,.04);color:rgba(221,227,240,.45);font-style:italic;align-self:flex-start;}
+.kh-chips{display:flex;flex-wrap:wrap;gap:5px;padding:0 12px 10px;flex-shrink:0;}
+.kh-chip{
+  padding:4px 11px;border-radius:99px;font-size:10px;font-weight:700;cursor:pointer;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:rgba(221,227,240,.8);transition:all .15s;white-space:nowrap;
+}
+.kh-chip:hover{background:rgba(0,255,179,.12);border-color:rgba(0,255,179,.4);color:#00ffb3;}
+.kh-chat-foot{
+  padding:10px 12px;border-top:1px solid rgba(255,255,255,.06);
+  display:flex;gap:8px;align-items:center;flex-shrink:0;
+}
+.kh-chat-input{
+  flex:1;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);border-radius:10px;
+  padding:8px 12px;color:#dde3f0;font-size:12px;
+  font-family:inherit;outline:none;transition:border-color .15s;
+  resize:none;max-height:80px;
+}
+.kh-chat-input:focus{border-color:rgba(0,255,179,.5);}
+.kh-chat-input::placeholder{color:rgba(255,255,255,.25);}
+.kh-chat-send{
+  width:34px;height:34px;border-radius:10px;
+  background:#00ffb3;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .15s;color:#04070f;font-size:14px;
+}
+.kh-chat-send:hover{box-shadow:0 0 14px rgba(0,255,179,.4);}
+.kh-chat-send:disabled{opacity:.35;cursor:not-allowed;}
+.kh-wa-cta{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:8px;padding:7px 13px;border-radius:9px;
+  background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.35);
+  color:#25d366;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;
+  transition:all .15s;
+}
+.kh-wa-cta:hover{background:rgba(37,211,102,.25);}
+@media(max-width:400px){#kh-chat-panel{width:calc(100vw - 20px);right:10px;}}
+</style>
+<style id="kh-topbar-css">
+#kh-topbar{
+  position:fixed;top:0;left:0;right:0;z-index:9999;
+  background:rgba(4,6,14,.97);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(20px);
+  display:flex;align-items:center;height:40px;padding:0 20px;gap:0;
+  font-family:'Outfit','DM Sans',sans-serif;
+}
+#kh-topbar a.kh-logo{
+  font-size:16px;font-weight:800;
+  color:#f0eee8;text-decoration:none;
+  display:flex;align-items:center;gap:6px;margin-right:14px;
+  font-family:'Bebas Neue','Outfit',sans-serif;font-size:20px;
+}
+#kh-topbar a.kh-logo em{color:#00e5ff;font-style:normal;}
+.kh-tb-dot{width:6px;height:6px;border-radius:50%;background:#00e5ff;box-shadow:0 0 6px #00e5ff;animation:kh_pulse 2s ease-in-out infinite;}
+@keyframes kh_pulse{0%,100%{opacity:1}50%{opacity:.3}}
+#kh-topbar .kh-sep{width:1px;height:16px;background:rgba(255,255,255,.08);margin:0 12px;}
+#kh-topbar .kh-nav{display:flex;align-items:center;gap:2px;flex:1;}
+#kh-topbar .kh-link{
+  padding:4px 11px;border-radius:7px;font-size:11px;font-weight:600;
+  text-decoration:none;color:rgba(154,152,181,.85);
+  transition:all .13s;border:1px solid transparent;
+}
+#kh-topbar .kh-link:hover{color:#f0eee8;background:rgba(255,255,255,.05);}
+#kh-topbar .kh-link.kh-active{color:#f0eee8;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.1);}
+#kh-topbar .kh-link.kh-docs{color:#f5a623 !important;}
+#kh-topbar .kh-link.kh-docs:hover{background:rgba(245,166,35,.06);}
+#kh-topbar .kh-link.kh-docs.kh-active{border-color:rgba(245,166,35,.2);background:rgba(245,166,35,.07);}
+#kh-topbar .kh-link.kh-merch{color:#c8ff00 !important;}
+#kh-topbar .kh-link.kh-merch:hover{background:rgba(200,255,0,.06);}
+#kh-topbar .kh-link.kh-merch.kh-active{border-color:rgba(200,255,0,.2);background:rgba(200,255,0,.07);}
+body{padding-top:40px;}
+</style>
+</head>
+<body>
+<div id="kh-topbar">
+  <a class="kh-logo" href="kazihub-home.html"><div class="kh-tb-dot"></div>Kazi<em>Hub</em></a>
+  <div class="kh-sep"></div>
+  <div class="kh-nav">
+    <a class="kh-link kh-active" href="kazihub-home.html">Home</a>
+    <a class="kh-link" href="kazihub.html">🗺 Market</a>
+    <a class="kh-link" href="kazihub-store.html">👔 Hire a Pro</a>
+    <a class="kh-link" href="kazihub-rentals.html">🏠 Rentals</a>
+    <a class="kh-link" href="kazihub-footwear.html">👟 Footwear</a>
+    <a class="kh-link kh-merch" href="kazihub-tshirt.html">👕 Merch</a>
+  </div>
+</div>
+
+
+
+<!-- TOPBAR (global, on all pages) -->
+<nav class="topbar">
+  <a class="tb-logo" href="kazihub-home.html">
+    <div class="tb-dot"></div>
+    Kazi<em>Hub</em>
+  </a>
+  <div class="tb-sep"></div>
+  <div class="tb-nav">
+    <a class="tb-link active" href="kazihub-home.html">Home</a>
+    <a class="tb-link" href="kazihub.html">🗺 Market</a>
+    <a class="tb-link" href="kazihub-store.html">👔 Hire a Pro</a>
+    <a class="tb-link" href="kazihub-rentals.html">🏠 Rentals</a>
+    <a class="tb-link" href="kazihub-footwear.html">👟 Footwear</a>
+  </div>
+  <div class="tb-r">
+    <button class="tb-cta" onclick="window.location='kazihub-store.html'">List Your Service</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-word">KAZIHUB</div>
+  <div class="hero-inner">
+    <div class="hero-badge">Kenya's Gig Economy Platform</div>
+    <h1 class="hero-h">
+      <span class="line1">Every Hustle</span>
+      <span class="line2">One Platform</span>
+    </h1>
+    <p class="hero-sub">Find a <b>skilled pro</b>, rent a <b>space</b>, buy <b>footwear</b> or discover <b>259 service categories</b> across Nairobi — all connected, all WhatsApp-native, zero agent fees.</p>
+    <div class="hero-btns">
+      <a class="hb hb-prime" href="kazihub.html">🗺 Explore Market</a>
+      <a class="hb hb-ghost" href="kazihub-store.html">👔 Hire a Pro</a>
+    </div>
+    <div class="hero-ticker">
+      <div class="ticker-track">
+        <span class="tk"><span class="tk-dot"></span>259 Service Categories</span>
+        <span class="tk"><span class="tk-dot"></span>Nairobi & Surrounding Areas</span>
+        <span class="tk"><span class="tk-dot"></span>WhatsApp-Native Orders</span>
+        <span class="tk"><span class="tk-dot"></span>M-Pesa Integrated</span>
+        <span class="tk"><span class="tk-dot"></span>0% Agent Fees</span>
+        <span class="tk"><span class="tk-dot"></span>Real-Time Bubble Visualization</span>
+        <span class="tk"><span class="tk-dot"></span>Rental Listings</span>
+        <span class="tk"><span class="tk-dot"></span>Footwear Catalog</span>
+        <span class="tk"><span class="tk-dot"></span>FastAPI + PostgreSQL Backend</span>
+        <!-- duplicate for seamless loop -->
+        <span class="tk"><span class="tk-dot"></span>259 Service Categories</span>
+        <span class="tk"><span class="tk-dot"></span>Nairobi & Surrounding Areas</span>
+        <span class="tk"><span class="tk-dot"></span>WhatsApp-Native Orders</span>
+        <span class="tk"><span class="tk-dot"></span>M-Pesa Integrated</span>
+        <span class="tk"><span class="tk-dot"></span>0% Agent Fees</span>
+        <span class="tk"><span class="tk-dot"></span>Real-Time Bubble Visualization</span>
+        <span class="tk"><span class="tk-dot"></span>Rental Listings</span>
+        <span class="tk"><span class="tk-dot"></span>Footwear Catalog</span>
+        <span class="tk"><span class="tk-dot"></span>FastAPI + PostgreSQL Backend</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section class="modules">
+  <div class="modules-head">
+    <div class="sec-eyebrow">Platform Modules</div>
+    <h2 class="sec-h">Four Marketplaces.<br>One Ecosystem.</h2>
+    <p class="sec-sub">Each module is fully functional, WhatsApp-native and designed for Nairobi's real economy.</p>
+  </div>
+  <div class="module-grid">
+
+    <!-- Market Map — big card -->
+    <a class="mcard big" href="kazihub.html" style="animation-delay:.05s">
+      <div class="mc-visual">
+        <div class="mc-bg" style="background:linear-gradient(135deg,rgba(0,229,255,.15),rgba(0,229,255,.03));"></div>
+        <div class="mc-slash" style="position:absolute;inset:0;background:linear-gradient(160deg,rgba(0,229,255,.1) 0%,transparent 50%);"></div>
+        <div class="mc-icon">🗺️</div>
+      </div>
+      <div class="mc-body">
+        <div class="mc-tag" style="color:var(--cyan)">Market Intelligence</div>
+        <div class="mc-title">Live Service Market</div>
+        <div class="mc-desc">Crypto-bubble visualization of 259 gig economy categories. Real-time XP tiers, industry sliders, and physics simulation — see where demand is hottest right now.</div>
+        <div class="mc-stats">
+          <div class="mc-stat"><b style="color:var(--cyan)">259</b>Categories</div>
+          <div class="mc-stat"><b style="color:var(--cyan)">21</b>Industries</div>
+          <div class="mc-stat"><b style="color:var(--cyan)">2,847</b>Active Pros</div>
+        </div>
+      </div>
+      <div class="mc-arrow">→</div>
+    </a>
+
+    <!-- Hire a Pro -->
+    <a class="mcard" href="kazihub-store.html" style="animation-delay:.1s">
+      <div class="mc-visual">
+        <div class="mc-bg" style="background:linear-gradient(135deg,rgba(245,166,35,.15),rgba(245,166,35,.03));"></div>
+        <div class="mc-icon" style="font-size:60px;">👔</div>
+      </div>
+      <div class="mc-body">
+        <div class="mc-tag" style="color:var(--amber)">Pro Marketplace</div>
+        <div class="mc-title">Hire a Pro</div>
+        <div class="mc-desc">Browse verified professionals, view portfolios, read reviews and order via WhatsApp.</div>
+        <div class="mc-stats">
+          <div class="mc-stat"><b style="color:var(--amber)">200+</b>Pros</div>
+          <div class="mc-stat"><b style="color:var(--amber)">4.8★</b>Avg Rating</div>
+        </div>
+      </div>
+      <div class="mc-arrow">→</div>
+    </a>
+
+    <!-- Rentals -->
+    <a class="mcard" href="kazihub-rentals.html" style="animation-delay:.15s">
+      <div class="mc-visual">
+        <div class="mc-bg" style="background:linear-gradient(135deg,rgba(0,255,179,.12),rgba(0,255,179,.02));"></div>
+        <div class="mc-icon" style="font-size:60px;">🏠</div>
+      </div>
+      <div class="mc-body">
+        <div class="mc-tag" style="color:var(--green)">Rentals & Stays</div>
+        <div class="mc-title">Find a Space</div>
+        <div class="mc-desc">Bedsitters, SQs, furnished apartments, short stays and office spaces — no agent fees, direct to landlord.</div>
+        <div class="mc-stats">
+          <div class="mc-stat"><b style="color:var(--green)">847</b>Listings</div>
+          <div class="mc-stat"><b style="color:var(--green)">38</b>Areas</div>
+        </div>
+      </div>
+      <div class="mc-arrow">→</div>
+    </a>
+
+    <!-- Footwear -->
+    <a class="mcard" href="kazihub-footwear.html" style="animation-delay:.2s">
+      <div class="mc-visual">
+        <div class="mc-bg" style="background:linear-gradient(135deg,rgba(255,45,135,.12),rgba(255,45,135,.02));"></div>
+        <div class="mc-icon" style="font-size:60px;">👟</div>
+      </div>
+      <div class="mc-body">
+        <div class="mc-tag" style="color:var(--magenta)">Footwear Store</div>
+        <div class="mc-title">Sole'd Out</div>
+        <div class="mc-desc">Sneakers, loafers, heels and boots with WhatsApp checkout and Nairobi delivery options.</div>
+        <div class="mc-stats">
+          <div class="mc-stat"><b style="color:var(--magenta)">30+</b>Styles</div>
+          <div class="mc-stat"><b style="color:var(--magenta)">24h</b>Delivery</div>
+        </div>
+      </div>
+      <div class="mc-arrow">→</div>
+    </a>
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="hiw">
+  <div class="modules-head">
+    <div class="sec-eyebrow">How It Works</div>
+    <h2 class="sec-h">Simple. Fast. Kenyan.</h2>
+  </div>
+  <div class="hiw-grid">
+    <div class="hiw-card" style="animation-delay:.05s"><div class="hiw-num">01</div><div class="hiw-icon">🔍</div><div class="hiw-title">Discover</div><div class="hiw-desc">Browse 259 service categories, rental listings, or the footwear catalog. Filter by area, price, availability and skill level.</div></div>
+    <div class="hiw-card" style="animation-delay:.1s"><div class="hiw-num">02</div><div class="hiw-icon">👀</div><div class="hiw-title">Review</div><div class="hiw-desc">View verified portfolios, check star ratings, read real reviews and compare packages before deciding.</div></div>
+    <div class="hiw-card" style="animation-delay:.15s"><div class="hiw-num">03</div><div class="hiw-icon">💬</div><div class="hiw-title">Order via WhatsApp</div><div class="hiw-desc">One tap generates a formatted WhatsApp order message — items, sizes, delivery zone and total price, sent directly to the seller.</div></div>
+    <div class="hiw-card" style="animation-delay:.2s"><div class="hiw-num">04</div><div class="hiw-icon">📱</div><div class="hiw-title">Pay via M-Pesa</div><div class="hiw-desc">Confirm payment through M-Pesa. STK push integration means no cash, no hassle — just pay and wait for delivery or service.</div></div>
+    <div class="hiw-card" style="animation-delay:.25s"><div class="hiw-num">05</div><div class="hiw-icon">⭐</div><div class="hiw-title">Review & Repeat</div><div class="hiw-desc">Leave a review, earn XP, build trust. The platform gets smarter with every transaction — pros level up, buyers find better faster.</div></div>
+  </div>
+</section>
+
+<!-- TECH STACK MARQUEE -->
+<div class="stack-row">
+  <div class="stack-track">
+    <span class="st">🐍 Python FastAPI</span>
+    <span class="st">🐘 PostgreSQL</span>
+    <span class="st">⚡ Redis Cache</span>
+    <span class="st">🔷 SQLAlchemy ORM</span>
+    <span class="st">📦 Pydantic v2</span>
+    <span class="st">🔐 JWT Auth</span>
+    <span class="st">📱 WhatsApp Business API</span>
+    <span class="st">💚 M-Pesa Daraja API</span>
+    <span class="st">☁️ AWS S3 Storage</span>
+    <span class="st">🔍 Elasticsearch</span>
+    <span class="st">📬 Celery + Redis Queue</span>
+    <span class="st">🐳 Docker + ECS</span>
+    <span class="st">🌍 Africa's Talking SMS</span>
+    <span class="st">🔄 Alembic Migrations</span>
+    <span class="st">🐍 Python FastAPI</span>
+    <span class="st">🐘 PostgreSQL</span>
+    <span class="st">⚡ Redis Cache</span>
+    <span class="st">🔷 SQLAlchemy ORM</span>
+    <span class="st">📦 Pydantic v2</span>
+    <span class="st">🔐 JWT Auth</span>
+    <span class="st">📱 WhatsApp Business API</span>
+    <span class="st">💚 M-Pesa Daraja API</span>
+    <span class="st">☁️ AWS S3 Storage</span>
+    <span class="st">🔍 Elasticsearch</span>
+    <span class="st">📬 Celery + Redis Queue</span>
+    <span class="st">🐳 Docker + ECS</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-brand"><div class="tb-dot" style="margin-right:2px;"></div>Kazi<em>Hub</em></div>
+  <div class="ft-links">
+    <a class="ft-link" href="kazihub.html">Market</a>
+    <a class="ft-link" href="kazihub-store.html">Hire a Pro</a>
+    <a class="ft-link" href="kazihub-rentals.html">Rentals</a>
+    <a class="ft-link" href="kazihub-footwear.html">Footwear</a>
+  </div>
+  <div class="ft-copy">© 2025 KaziHub · Nairobi, Kenya · Built on the hustle</div>
+</footer>
+
+<!-- KAZIHUB CHATBOT -->
+<button id="kh-chat-btn" onclick="khChatToggle()" title="Chat with KaziHub">
+  🤖
+  <div class="kh-chat-unread" id="kh-unread">1</div>
+</button>
+<div id="kh-chat-panel">
+  <div class="kh-chat-head">
+    <div class="kh-chat-avatar">🤖</div>
+    <div>
+      <div class="kh-chat-title">KaziHub Assistant</div>
+      <div class="kh-chat-sub">● Online · Nairobi</div>
+    </div>
+    <button class="kh-chat-close" onclick="khChatToggle()">✕</button>
+  </div>
+  <div class="kh-chat-msgs" id="kh-msgs"></div>
+  <div class="kh-chips" id="kh-chips"></div>
+  <div class="kh-chat-foot">
+    <textarea class="kh-chat-input" id="kh-input" rows="1"
+      placeholder="Find a plumber, electrician…"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();khSend();}"></textarea>
+    <button class="kh-chat-send" id="kh-send-btn" onclick="khSend()">➤</button>
+  </div>
+</div>
+<script>
+(function(){
+var KH_PANEL,KH_MSGS,KH_INPUT,KH_SEND,KH_CHIPS,KH_UNREAD;
+var khOpen=false,khHistory=[],khBusy=false;
+
+function khServiceList(){
+  if(typeof DATA!=='undefined'){
+    return DATA.slice(0,100).map(function(d){return d.emoji+' '+d.label;}).join(', ');
+  }
+  return 'Electricians, Plumbers, Carpenters, House Cleaners, Photographers, Web Designers, Tailors, Event Caterers, Drivers, Security Guards, Fitness Trainers, Lawyers, Accountants, Nannies, Barbers, DJs, Plumbers, Masons, Solar Installers, and 240+ more';
+}
+
+var KH_SYS='You are KaziHub Assistant — a sharp, friendly AI for KaziHub, Kenya\'s gig economy marketplace in Nairobi.\nKaziHub connects customers with verified local professionals across 259 service categories.\nServices available: '+khServiceList()+'\n\nRules:\n- Keep replies SHORT (2-4 sentences max). No walls of text.\n- When a user describes a need, identify the best matching service and recommend it directly.\n- Always end service recommendations with a WhatsApp CTA on a new line in this exact format: [WA:ServiceName:Neighbourhood]\n  Example: [WA:Electrician:Westlands]\n- Typical prices in KES: small jobs 500-2000, medium 2000-8000, large 8000-50000+.\n- Payment is via M-Pesa STK Push after booking on WhatsApp.\n- If you need more info, ask ONE question only (area or urgency).\n- Never make up specific pro names or phone numbers.\n- If user writes in Swahili, respond in Swahili.';
+
+var STARTERS=['Find me a plumber 🪠','I need an electrician ⚡','House cleaning today 🧹','Event photographer 📸','Graphic designer 🎨'];
+
+function khInit(){
+  KH_PANEL=document.getElementById('kh-chat-panel');
+  KH_MSGS=document.getElementById('kh-msgs');
+  KH_INPUT=document.getElementById('kh-input');
+  KH_SEND=document.getElementById('kh-send-btn');
+  KH_CHIPS=document.getElementById('kh-chips');
+  KH_UNREAD=document.getElementById('kh-unread');
+  if(!KH_PANEL)return;
+  khAddMsg('bot','Hey! 👋 I\'m your KaziHub assistant. Tell me what service you need and I\'ll match you with a verified pro in Nairobi.');
+  STARTERS.forEach(function(s){
+    var c=document.createElement('button');
+    c.className='kh-chip';c.textContent=s;
+    c.onclick=function(){KH_INPUT.value=s;khSend();};
+    KH_CHIPS.appendChild(c);
+  });
+  setTimeout(function(){if(KH_UNREAD)KH_UNREAD.classList.add('show');},2000);
+  var inp=document.getElementById('kh-input');
+  if(inp){inp.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px';});}
+}
+
+function khChatToggle(){
+  if(!KH_PANEL)return;
+  khOpen=!khOpen;
+  KH_PANEL.classList.toggle('open',khOpen);
+  if(khOpen){
+    if(KH_UNREAD)KH_UNREAD.classList.remove('show');
+    setTimeout(function(){if(KH_INPUT)KH_INPUT.focus();},250);
+  }
+}
+
+function khAddMsg(role,content){
+  if(!KH_MSGS)return null;
+  var div=document.createElement('div');
+  div.className='kh-msg '+role;
+  var html=content.replace(/\[WA:([^\]]+)\]/g,function(_,p){
+    var pts=p.split(':'),svc=pts[0]||'service',loc=pts[1]||'Nairobi';
+    var msg=encodeURIComponent('Hi, I found you on KaziHub. I need '+svc+' in '+loc+'. Are you available?');
+    return '<br><a class="kh-wa-cta" href="https://wa.me/254700000000?text='+msg+'" target="_blank">💬 Book via WhatsApp — '+svc+'</a>';
+  });
+  html=html.replace(/\n/g,'<br>');
+  div.innerHTML=html;
+  KH_MSGS.appendChild(div);
+  KH_MSGS.scrollTop=KH_MSGS.scrollHeight;
+  return div;
+}
+
+function khRemove(el){if(el&&el.parentNode)el.parentNode.removeChild(el);}
+
+async function khSend(){
+  if(khBusy||!KH_INPUT)return;
+  var text=(KH_INPUT.value||'').trim();if(!text)return;
+  KH_INPUT.value='';KH_INPUT.style.height='';
+  if(KH_CHIPS)KH_CHIPS.innerHTML='';
+  khAddMsg('user',text);
+  khHistory.push({role:'user',content:text});
+  khBusy=true;if(KH_SEND)KH_SEND.disabled=true;
+  var thinking=khAddMsg('thinking','● thinking…');
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:300,
+        system:KH_SYS,
+        messages:khHistory
+      })
+    });
+    var data=await res.json();
+    var reply=(data.content&&data.content[0]&&data.content[0].text)||'Sorry, something went wrong. Try again.';
+    khRemove(thinking);
+    khAddMsg('bot',reply);
+    khHistory.push({role:'assistant',content:reply});
+    if(khHistory.length>20)khHistory=khHistory.slice(-20);
+  }catch(e){
+    khRemove(thinking);
+    khAddMsg('bot','Connection issue — please try again in a moment.');
+  }
+  khBusy=false;if(KH_SEND)KH_SEND.disabled=false;if(KH_INPUT)KH_INPUT.focus();
+}
+
+window.khChatToggle=khChatToggle;
+window.khSend=khSend;
+document.addEventListener('DOMContentLoaded',khInit);
+})();
+</script>
+</body>
+</html>
